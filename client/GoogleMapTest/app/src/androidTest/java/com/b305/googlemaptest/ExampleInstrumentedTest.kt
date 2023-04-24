@@ -1,4 +1,4 @@
-package com.hyunseokcheong.googlemaptest
+package com.b305.googlemaptest
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.hyunseokcheong.googlemaptest", appContext.packageName)
+        assertEquals("com.b305.googlemaptest", appContext.packageName)
     }
 }

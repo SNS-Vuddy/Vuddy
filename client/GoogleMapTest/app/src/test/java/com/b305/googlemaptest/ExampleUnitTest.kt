@@ -1,4 +1,4 @@
-package com.hyunseokcheong.googlemaptest
+package com.b305.googlemaptest
 
 import org.junit.Test
 
