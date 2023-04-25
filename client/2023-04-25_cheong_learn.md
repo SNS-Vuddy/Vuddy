@@ -2,7 +2,9 @@
 ## 초기 설정
 ### 완성된 모습
 
-![image](/client/230425_capture.png)
+<p align="center">
+<img src="230425_capture.png" width="270px">
+</p>
 
 ### Gradle JDK
 
