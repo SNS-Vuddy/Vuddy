@@ -1,5 +1,9 @@
 spring:
-#  datasource:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/buddy-db
+    username: root
+    password: LeonardSQL!00
 
   jpa:
     hibernate:
