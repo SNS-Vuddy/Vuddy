@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e2b5fc12-8155-489d-bed4-8a6d960cb67d" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/server/buddy/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/buddy/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/buddy/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/buddy/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/buddy/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/buddy/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/buddy/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/buddy/src/main/java/com/buddy/BuddyApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/buddy/src/main/java/com/buddy/model/entity/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/buddy/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/buddy/src/test/java/com/buddy/BuddyApplicationTests.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2OwZKlYMkSEAchim7oqq125Vh2p" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "RYU",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "AndroidSdkUpdater",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="e2b5fc12-8155-489d-bed4-8a6d960cb67d" name="변경" comment="" />
+      <created>1682473542541</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1682473542541</updated>
+      <workItem from="1682473544490" duration="2000" />
+    </task>
+    <servers />
+  </component>
+</project>
