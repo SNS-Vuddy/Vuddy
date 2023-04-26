@@ -2,8 +2,10 @@
 ## 초기 설정
 ### 완성된 모습
 
-<p align="center">
-<img src="230425_capture.png" width="270px">
+<p>
+<img src="asset01.jpg" width="270px">
+<img src="asset02.jpg" width="270px">
+<img src="asset03.jpg" width="270px">
 </p>
 
 ### Gradle JDK
