@@ -1,8 +1,7 @@
-package com.buddy.service;
+package com.buddy.model.service;
 
 import com.buddy.model.entity.User;
-import com.buddy.repository.TestRepository;
-import com.buddy.repository.UserRepository;
+import com.buddy.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,7 +17,6 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final TestRepository testRepository;
 
     @Autowired
     private final EntityManager em;
@@ -34,23 +32,23 @@ public class UserService {
     }
 
     private void validateDuplicateUser(User user) {
-        User findUser = testRepository.findByNickname(user.getNickname());
-        if (findUser != null) {
-            throw new IllegalStateException("이미 존재하는 회원입니다.");
+        if (userRepository.findByNickname(user.getNickname()) != null) {
+            throw new IllegalStateException("이 회원은 이미 존재합니다.");
         }
     }
 
     public User findByNickname(String nickname) {
-        return testRepository.findByNickname(nickname);
+        return userRepository.findByNickname(nickname);
+    }
+
+    public User findByUserId(Long userId) {
+        return userRepository.findById(userId).orElse(null);
     }
 
     @Transactional
-    public void changeUserStatusMessage(String userNickname, String statusMessage) {
-        User user = testRepository.findByNickname(userNickname);
-        System.out.println("==============================================================================");
-        System.out.println("statusMessage = " + statusMessage);
-        System.out.println("==============================================================================");
-        user.updateStatusMessage(statusMessage);
+    public void changeUserStatusMessage(Long userID, String statusMessage) {
+        User user = userRepository.findById(userID).orElse(null);
+        Objects.requireNonNull(user).updateStatusMessage(statusMessage);
     }
 
 }

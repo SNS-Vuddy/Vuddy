@@ -1,7 +1,7 @@
 package com.buddy.model.entity;
 
+import com.buddy.model.entity.enums.UserRoll;
 import lombok.Getter;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -35,6 +35,9 @@ public class User {
     @Column(name = "u_status_message")
     private String statusMessage;
 
+    @Column(name = "u_roll")
+    private UserRoll userRoll;
+
     @Column(name = "u_withdrawal_at")
     private LocalDateTime withdrawalAt;
 
@@ -42,12 +45,13 @@ public class User {
     private boolean isWithdrawal;
 
     // 생성 메서드
-    public static User createUser(String nickname, String password, String profileImage, String statusMessage) {
+    public static User createNormalUser(String nickname, String password, String profileImage, String statusMessage) {
         User user = new User();
         user.nickname = nickname;
         user.password = password;
         user.profileImage = profileImage;
         user.statusMessage = statusMessage;
+        user.userRoll = UserRoll.NORMAL_USER;
         return user;
     }
 

@@ -38,6 +38,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    // MethodArgumentNotValidException 커스텀 처리
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
@@ -46,6 +47,17 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .stream()
                 .map(fieldError -> fieldError.getField() + " " + fieldError.getDefaultMessage())
                 .collect(Collectors.joining(", "));
+
+        ErrorRes errorResponse = new ErrorRes(400, errorMessage);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    // NullPointerException 예외 커스텀 처리
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<Object> handleNullPointerException(NullPointerException ex, WebRequest request) {
+
+        String errorMessage = "NullPointerException 예외가 발생했습니다.";
 
         ErrorRes errorResponse = new ErrorRes(400, errorMessage);
 
