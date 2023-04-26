@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface TestRepository extends JpaRepository<User, Long> {
 
+    User findByNickname(String nickname);
 }

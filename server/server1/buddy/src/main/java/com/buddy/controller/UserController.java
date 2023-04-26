@@ -3,6 +3,7 @@ package com.buddy.controller;
 import com.buddy.model.dto.common.CommonRes;
 import com.buddy.model.dto.common.SingleRes;
 import com.buddy.model.dto.request.SignupReq;
+import com.buddy.model.dto.request.UserStatusChangeReq;
 import com.buddy.model.dto.response.FindUserRes;
 import com.buddy.model.entity.User;
 import com.buddy.service.UserService;
@@ -28,8 +29,8 @@ public class UserController {
     @PostMapping("/api/v1/user/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public CommonRes signup(@RequestBody @Valid SignupReq signupReq){
-        User signupUser = User.createUser(signupReq.getNickname(), passwordEncoder.encode(signupReq.getPassword()), signupReq.getProfileImage(), signupReq.getStatusMessage());
 
+        User signupUser = User.createUser(signupReq.getNickname(), passwordEncoder.encode(signupReq.getPassword()), signupReq.getProfileImage(), signupReq.getStatusMessage());
         userService.join(signupUser);
 
         return new CommonRes(201, "회원가입 성공");
@@ -50,9 +51,9 @@ public class UserController {
 //    }
 
     @PutMapping("/api/v1/user/profile/edit/status/{userNickname}")
-    public CommonRes editStatusMessage(@PathVariable String userNickname, @RequestBody String statusMessage) {
+    public CommonRes editStatusMessage(@PathVariable String userNickname, @RequestBody UserStatusChangeReq userStatusChangeReq) {
 //        User user = userService.findByNickname(userNickname);
-        userService.changeUserStatusMessage(userNickname, statusMessage);
+        userService.changeUserStatusMessage(userNickname, userStatusChangeReq.getStatusMessage());
         return new CommonRes(200, "상태메세지 수정 성공");
     }
 }
