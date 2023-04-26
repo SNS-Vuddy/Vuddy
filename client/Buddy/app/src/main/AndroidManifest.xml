@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- 인터넷 허용 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 위치 허용 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Buddy"
         tools:targetApi="31">
+
+        <!-- map -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDwSH5JWpAKR4nw2CxVqxWiYuP0kcQJofM" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
