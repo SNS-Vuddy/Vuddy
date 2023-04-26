@@ -1,12 +1,19 @@
 # 학습
-## 초기 설정
-### 완성된 모습
+
+- 지도 관련 기능을 직접 구현해보는 실습
+- 화면에 지도 띄우기
+- 지도에 내 위치 띄우기
+- 좌표 이용해서 API 통신 구현
+
+## 완성된 모습
 
 <p>
 <img src="asset01.jpg" width="270px">
 <img src="asset02.jpg" width="270px">
 <img src="asset03.jpg" width="270px">
 </p>
+
+## 초기 설정
 
 ### Gradle JDK
 
