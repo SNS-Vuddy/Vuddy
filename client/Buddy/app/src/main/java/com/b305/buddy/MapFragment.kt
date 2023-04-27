@@ -30,6 +30,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         
         binding = FragmentMapBinding.inflate(layoutInflater, container, false)
         
+        // 임시
+        binding.fabSignupTest.setOnClickListener {
+            it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
+        }
+        
         binding.ivFriend.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_friendFragment)
         }

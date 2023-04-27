@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_mapFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_signupActivity"
+            app:destination="@id/signupActivity" />
     </fragment>
     <fragment
         android:id="@+id/friendFragment"
@@ -65,4 +68,9 @@
             android:id="@+id/action_profileFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
     </fragment>
+    <activity
+        android:id="@+id/signupActivity"
+        android:name="com.b305.buddy.SignupActivity"
+        android:label="activity_signup"
+        tools:layout="@layout/activity_signup" />
 </navigation>
