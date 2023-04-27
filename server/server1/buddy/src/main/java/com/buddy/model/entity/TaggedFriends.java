@@ -6,37 +6,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "feed")
+@Table(name = "tagged_friends")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Feed {
+public class TaggedFriends {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "feed_id")
+    @Column(name = "tagged_friend_id")
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "feed_id")
+    private Feed feed;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "f_nickname")
+    @Column(name = "tf_nickname")
     private String nickname;
-
-    @Column(name = "f_content")
-    private String content;
-
-    @Column(name = "f_location")
-    private String location;
-
-    @Column(name = "f_created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "f_updated_at")
-    private LocalDateTime updatedAt;
-
 }

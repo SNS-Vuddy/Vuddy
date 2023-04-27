@@ -1,12 +1,16 @@
 package com.buddy.jwt;
 
+import com.buddy.model.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,13 +34,19 @@ public class TokenProvider implements InitializingBean {
    private final long refreshTokenValidityInMilliseconds;
    private static Key key;
 
+   private final UserRepository userRepository;
+
+   @Autowired
+   private RedisTemplate<String, String> redisTemplate;
+
    public TokenProvider(
            @Value("${jwt.secret}") String secret,
            @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds,
-           @Value("${jwt.refresh-token-validity-in-seconds}") long refreshTokenValidityInMilliseconds) {
+           @Value("${jwt.refresh-token-validity-in-seconds}") long refreshTokenValidityInMilliseconds, UserRepository userRepository) {
       this.secret = secret;
       this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
       this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds * 1000;
+      this.userRepository = userRepository;
    }
 
    @Override
@@ -138,14 +148,53 @@ public class TokenProvider implements InitializingBean {
       }
    }
 
-   public String getUserIdFromToken(String token) {
+   // 유저 아이디 레디스로 관리
+//   public Long getUserIdFromToken(String token) {
+//
+//      String accessToken = token.substring(7);
+//
+//      ValueOperations<String, String> vop = redisTemplate.opsForValue();
+//
+//
+//      String redisUserId = vop.get(accessToken);
+//      if (redisUserId == null) {
+//         System.out.println("=================================================================");
+//         System.out.println("레디스에 정보가 없다.");
+//         System.out.println("=================================================================");
+//
+//         String userNickname = Jwts
+//                 .parserBuilder()
+//                 .setSigningKey(key)
+//                 .build()
+//                 .parseClaimsJws(accessToken)
+//                 .getBody()
+//                 .getSubject();
+//
+//         Long userId = userRepository.findByNickname(userNickname).getId();
+//            vop.set(accessToken, userId.toString());
+//            return userId;
+//      } else {
+//         System.out.println("=================================================================");
+//         System.out.println("레디스에서 가져왔따.");
+//         System.out.println("=================================================================");
+//
+//         return Long.parseLong(redisUserId);
+//      }
+//
+//   }
+
+   public String getUserNicknameFromToken(String token) {
+
+      String assertToken = token.substring(7);
+
       Claims claims = Jwts
               .parserBuilder()
               .setSigningKey(key)
               .build()
-              .parseClaimsJws(token)
+              .parseClaimsJws(assertToken)
               .getBody();
 
       return claims.getSubject();
    }
+
 }

@@ -69,12 +69,21 @@ public class UserController {
         if (!passwordEncoder.matches(loginReq.getPassword(), loginUser.getPassword())) {
             return new ResponseEntity<>(new CommonRes(400, "비밀번호가 일치하지 않습니다."), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(new CommonRes(200, "로그인 성공"), HttpStatus.OK);
+
+        // 액세스 토큰 생성을 위한 인증 객체 생성
+        Authentication authentication = new UsernamePasswordAuthenticationToken(loginUser.getNickname(), loginUser.getPassword(), Collections.singletonList(loginUser.getUserRoll()));
+
+        // 액세스 토큰 생성
+        String accessToken = tokenProvider.createAccessToken(authentication);
+
+        return new ResponseEntity<>(new SignupRes(200, "로그인 성공", accessToken), HttpStatus.OK);
     }
 
-    @GetMapping("/api/v1/user/{userId}")
-    public CommonRes getUserInfo(@PathVariable Long userId) {
-        User user = userService.findByUserId(userId);
+    @GetMapping("/api/v1/user")
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public CommonRes getUserInfo(@RequestHeader("Authorization") String accessToken) {
+        String userNickname = tokenProvider.getUserNicknameFromToken(accessToken);
+        User user = userService.findByNickname(userNickname);
         FindUserRes findUserRes = new FindUserRes(user.getNickname(), user.getProfileImage(), user.getStatusMessage());
         return new SingleRes<>(200, "유저 정보 조회 성공", findUserRes);
     }
@@ -86,9 +95,11 @@ public class UserController {
 //        user.setProfileImage(profileImage);
 //    }
 
-    @PutMapping("/api/v1/user/profile/edit/status/{userId}")
-    public CommonRes editStatusMessage(@PathVariable Long userId, @RequestBody UserStatusChangeReq userStatusChangeReq) {
-//        User user = userService.findByNickname(userNickname);
+    @PutMapping("/api/v1/user/profile/edit/status")
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public CommonRes editStatusMessage(@RequestHeader("Authorization") String accessToken, @RequestBody UserStatusChangeReq userStatusChangeReq) {
+        String userNickname = tokenProvider.getUserNicknameFromToken(accessToken);
+        Long userId = userService.findByNickname(userNickname).getId();
         userService.changeUserStatusMessage(userId, userStatusChangeReq.getStatusMessage());
         return new CommonRes(200, "상태메세지 수정 성공");
     }
