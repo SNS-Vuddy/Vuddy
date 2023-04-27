@@ -6,6 +6,7 @@ import com.buddy2.buddy2.service.ChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -36,10 +37,21 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         System.out.println("===================접속=====================");
-        System.out.println(session.getId());
+        System.out.println(session.getId());  // 44a4e7cb-72a9-efce-f41f-a7ba84955b13
+        System.out.println(session.toString());  // StandardWebSocketSession[id=44a4e7cb-72a9-efce-f41f-a7ba84955b13, uri=ws://localhost:8080/chat]
+        System.out.println(session.getUri());  // ws://localhost:8080/chat
+        System.out.println(session.getPrincipal());  // null
+        System.out.println(session.getAcceptedProtocol());  //
+        System.out.println(session.getHandshakeHeaders());  // [sec-websocket-version:"13", sec-websocket-key:"h745gLfbf8MSaMMQy9RGYw==", connection:"Upgrade", upgrade:"websocket", sec-websocket-extensions:"permessage-deflate; client_max_window_bits", host:"localhost:8080"]
         System.out.println("===================접속=====================");
-        sessions.put(session.getId(), session);
+//        sessions.put(session.getId(), session);
         sessionsList.add(session);
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        System.out.println(session.getId());
+        sessionsList.remove(session);
     }
 
 
