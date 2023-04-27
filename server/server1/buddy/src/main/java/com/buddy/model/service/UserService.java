@@ -1,5 +1,6 @@
 package com.buddy.model.service;
 
+import com.buddy.jwt.TokenProvider;
 import com.buddy.model.entity.User;
 import com.buddy.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +18,7 @@ import java.util.Objects;
 public class UserService {
 
     private final UserRepository userRepository;
-
-    @Autowired
-    private final EntityManager em;
-
+    private final TokenProvider tokenProvider;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -45,10 +43,15 @@ public class UserService {
         return userRepository.findById(userId).orElse(null);
     }
 
+    public User findByToken(String token) {
+        return userRepository.findByNickname(tokenProvider.getUserNicknameFromToken(token));
+    }
+
     @Transactional
     public void changeUserStatusMessage(Long userID, String statusMessage) {
         User user = userRepository.findById(userID).orElse(null);
         Objects.requireNonNull(user).updateStatusMessage(statusMessage);
     }
+
 
 }

@@ -7,10 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,8 +33,8 @@ public class TokenProvider implements InitializingBean {
 
    private final UserRepository userRepository;
 
-   @Autowired
-   private RedisTemplate<String, String> redisTemplate;
+//   @Autowired
+//   private RedisTemplate<String, String> redisTemplate;
 
    public TokenProvider(
            @Value("${jwt.secret}") String secret,
@@ -103,14 +100,6 @@ public class TokenProvider implements InitializingBean {
          Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
-
-      System.out.println("======================================");
-      System.out.println("claims.getId() = " + claims.getId());
-      System.out.println("claims.getSubject() = " + claims.getSubject());
-      System.out.println("claims.getExpiration() = " + claims.getExpiration());
-      System.out.println("claims.get(AUTHORITIES_KEY) = " + claims.get(AUTHORITIES_KEY));
-
-      System.out.println("======================================");
 
       User principal = new User(claims.getSubject(), "", authorities);
 

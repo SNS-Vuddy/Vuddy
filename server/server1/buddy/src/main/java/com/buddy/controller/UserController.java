@@ -48,8 +48,6 @@ public class UserController {
         // 액세스 토큰 생성
         String accessToken = tokenProvider.createAccessToken(authentication);
 
-        tokenProvider.getAuthentication(accessToken);
-
         return new SignupRes(201, "회원가입 성공", accessToken);
     }
 
