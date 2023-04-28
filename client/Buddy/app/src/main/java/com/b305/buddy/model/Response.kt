@@ -2,7 +2,7 @@ package com.b305.buddy.model
 
 import com.google.gson.annotations.SerializedName
 
-data class SignupResponse(
+data class AuthResponse(
     
     @SerializedName("status")
     val status: String?,
@@ -11,5 +11,8 @@ data class SignupResponse(
     val message: String?,
     
     @SerializedName("accessToken")
-    val accessToken: String?
+    val accessToken: String?,
+    
+    @SerializedName("refreshToken")
+    val refreshToken: String?,
 )

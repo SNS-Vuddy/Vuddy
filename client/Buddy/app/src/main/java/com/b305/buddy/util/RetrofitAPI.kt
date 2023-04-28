@@ -1,6 +1,6 @@
 package com.b305.buddy.util
 
-import com.b305.buddy.service.SignupService
+import com.b305.buddy.service.AuthService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -27,7 +27,7 @@ object RetrofitAPI {
             .build()
     }
     
-    val signupService: SignupService by lazy {
-        retrofit.create(SignupService::class.java)
+    val authService: AuthService by lazy {
+        retrofit.create(AuthService::class.java)
     }
 }
