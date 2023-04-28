@@ -70,7 +70,7 @@
     </fragment>
     <activity
         android:id="@+id/signupActivity"
-        android:name="com.b305.buddy.SignupActivity"
+        android:name="com.b305.buddy.AuthActivity"
         android:label="activity_signup"
-        tools:layout="@layout/activity_signup" />
+        tools:layout="@layout/activity_auth" />
 </navigation>

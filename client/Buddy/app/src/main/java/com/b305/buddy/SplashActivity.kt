@@ -8,6 +8,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,16 +17,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.b305.buddy.databinding.ActivitySplashBinding
+import com.b305.buddy.model.Token
+import com.b305.buddy.model.User
+import com.b305.buddy.util.SharedManager
 
 class SplashActivity : AppCompatActivity() {
+    
     lateinit var binding: ActivitySplashBinding
+    private val sharedManager: SharedManager by lazy { SharedManager(this) }
     
     private val PERMISSIONS_REQUEST_CODE = 100
-    
     var REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-    
     lateinit var getGPSPermissionLauncher: ActivityResultLauncher<Intent>
-    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
@@ -35,9 +38,21 @@ class SplashActivity : AppCompatActivity() {
     }
     
     private fun moveMain() {
+        val token: Token = sharedManager.getCurrentToken()
+        val accessToken = token.accessToken
+        val refreshToken = token.refreshToken
+        val user: User = sharedManager.getCurrentUser()
+        val nickname = user.nickname
+        val password = user.password
+        
         Handler().postDelayed({
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            if (accessToken == "" || refreshToken == "" || nickname == "" || password == "") {
+                val intent = Intent(this, AuthActivity::class.java)
+                startActivity(intent)
+            } else {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
         }, 2000)
     }
     
@@ -59,7 +74,7 @@ class SplashActivity : AppCompatActivity() {
         val hasCoarseLocationPermission = ContextCompat.checkSelfPermission(this@SplashActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
         if (hasFineLocationPermission != PackageManager.PERMISSION_GRANTED || hasCoarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this@SplashActivity, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE)
-        } else { //
+        } else {
             moveMain()
         }
     }
@@ -84,7 +99,7 @@ class SplashActivity : AppCompatActivity() {
             if (!checkResult) {
                 Toast.makeText(this@SplashActivity, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.", Toast.LENGTH_LONG).show()
                 finish()
-            } else { //
+            } else {
                 moveMain()
             }
         }
