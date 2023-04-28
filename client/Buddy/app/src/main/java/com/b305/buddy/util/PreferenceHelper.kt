@@ -1,4 +1,4 @@
-package com.b305.buddy.data
+package com.b305.buddy.util
 
 import android.content.Context
 import android.content.SharedPreferences

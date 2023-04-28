@@ -7,11 +7,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.b305.buddy.data.SharedManager
-import com.b305.buddy.data.Token
-import com.b305.buddy.retrofit.RetrofitAPI
-import com.b305.buddy.retrofit.SignupRequest
-import com.b305.buddy.retrofit.SignupResponse
+import com.b305.buddy.model.SignupRequest
+import com.b305.buddy.model.SignupResponse
+import com.b305.buddy.model.Token
+import com.b305.buddy.util.RetrofitAPI
+import com.b305.buddy.util.SharedManager
 import retrofit2.Call
 import retrofit2.Response
 

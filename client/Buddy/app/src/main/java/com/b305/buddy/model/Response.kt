@@ -1,4 +1,4 @@
-package com.b305.buddy.retrofit
+package com.b305.buddy.model
 
 import com.google.gson.annotations.SerializedName
 

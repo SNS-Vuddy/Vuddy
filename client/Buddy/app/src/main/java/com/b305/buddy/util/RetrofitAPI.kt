@@ -1,5 +1,6 @@
-package com.b305.buddy.retrofit
+package com.b305.buddy.util
 
+import com.b305.buddy.service.SignupService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

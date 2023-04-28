@@ -1,4 +1,4 @@
-package com.b305.buddy
+package com.b305.buddy.util
 
 import android.Manifest
 import android.content.Context
