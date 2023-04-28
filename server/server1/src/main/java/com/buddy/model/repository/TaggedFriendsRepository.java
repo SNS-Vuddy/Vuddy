@@ -12,4 +12,5 @@ public interface TaggedFriendsRepository extends JpaRepository<TaggedFriends, Lo
 
     List<TaggedFriends> findAllByFeedId(Long feedId);
 
+    void deleteByFeedId(Long feedId);
 }

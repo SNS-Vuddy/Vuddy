@@ -7,6 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class TaggedFriendsDto {
 
-    private Long taggedFriendId;
     private String nickname;
 }

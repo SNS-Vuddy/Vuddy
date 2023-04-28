@@ -10,24 +10,21 @@ import com.buddy.model.dto.response.FindUserRes;
 import com.buddy.model.dto.response.SignupRes;
 import com.buddy.model.entity.User;
 import com.buddy.model.service.UserService;
-import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collections;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -36,7 +33,7 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @PostMapping("/api/v1/user/signup")
+    @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public CommonRes signup(@RequestBody @Valid SignupReq signupReq){
 
@@ -52,7 +49,7 @@ public class UserController {
         return new SignupRes(201, "회원가입 성공", accessToken, refreshToken);
     }
 
-    @PostMapping("/api/v1/user/login")
+    @PostMapping("/login")
     public ResponseEntity<CommonRes> login(@RequestBody @Valid LoginReq loginReq) {
         User loginUser = userService.findByNickname(loginReq.getNickname());
         if (loginUser == null) {
@@ -71,21 +68,17 @@ public class UserController {
     }
 
     // 토큰 확인용 API
-    @GetMapping("/api/v1/token")
+    @GetMapping("/token")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public CommonRes token(@RequestHeader("Authorization") String token) {
         return new CommonRes(200, token);
     }
 
-
-    @GetMapping("/api/v1/user")
-    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
-    public CommonRes getUserInfo(@RequestHeader("Authorization") String accessToken) {
-        String userNickname = tokenProvider.getUserNicknameFromToken(accessToken);
-        User user = userService.findByNickname(userNickname);
-        FindUserRes findUserRes = new FindUserRes(user.getNickname(), user.getProfileImage(), user.getStatusMessage());
-        return new SingleRes<>(200, "유저 정보 조회 성공", findUserRes);
+    @GetMapping("/ping")
+    public CommonRes ping() {
+        return new CommonRes(200, "pong");
     }
+
 
 //    유저 프로필이미지 수정은 추후에 구현
 //    @PutMapping("/api/v1/user/profile/edit/img/{userNickname}")
@@ -94,7 +87,16 @@ public class UserController {
 //        user.setProfileImage(profileImage);
 //    }
 
-    @PutMapping("/api/v1/user/profile/edit/status")
+    @GetMapping("/profile")
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public CommonRes getUserInfo(@RequestHeader("Authorization") String accessToken) {
+        String userNickname = tokenProvider.getUserNicknameFromToken(accessToken);
+        User user = userService.findByNickname(userNickname);
+        FindUserRes findUserRes = new FindUserRes(user.getNickname(), user.getProfileImage(), user.getStatusMessage());
+        return new SingleRes<>(200, "유저 정보 조회 성공", findUserRes);
+    }
+
+    @PutMapping("/profile/edit/status")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public CommonRes editStatusMessage(@RequestHeader("Authorization") String accessToken, @RequestBody UserStatusChangeReq userStatusChangeReq) {
         String userNickname = tokenProvider.getUserNicknameFromToken(accessToken);
@@ -103,7 +105,7 @@ public class UserController {
         return new CommonRes(200, "상태메세지 수정 성공");
     }
 
-    @PostMapping("/api/v1/user/refresh")
+    @PostMapping("/refresh")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public ResponseEntity<CommonRes> refreshAccessToken(@RequestHeader("Authorization") String refreshToken) {
 
