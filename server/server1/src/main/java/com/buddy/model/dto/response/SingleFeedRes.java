@@ -1,6 +1,5 @@
 package com.buddy.model.dto.response;
 
-import com.buddy.model.dto.TaggedFriendsDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,5 +14,5 @@ public class SingleFeedRes {
     private String location;
     private String createdAt;
     private String updatedAt;
-    private List<TaggedFriendsDto> taggedFriendsDtoList;
+    private List<String> taggedFriendsList;
 }

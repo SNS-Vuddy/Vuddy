@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -68,7 +69,10 @@ public class TokenProvider implements InitializingBean {
          .compact();
    }
 
-   public String createRefreshToken(Authentication authentication, Long userId) {
+   public String createRefreshToken(com.buddy.model.entity.User user) {
+      // 토큰 생성을 위한 인증 객체 생성
+      Authentication authentication = new UsernamePasswordAuthenticationToken(user.getNickname(), user.getPassword(), Collections.singletonList(user.getUserRoll()));
+
       String authorities = authentication.getAuthorities().stream()
               .map(GrantedAuthority::getAuthority)
               .collect(Collectors.joining(","));
@@ -79,7 +83,7 @@ public class TokenProvider implements InitializingBean {
       return Jwts.builder()
               .setSubject(authentication.getName())
               .claim(AUTHORITIES_KEY, authorities)
-              .claim("userId", userId)
+              .claim("userId", user.getId())
               .signWith(key, SignatureAlgorithm.HS512)
               .setExpiration(validity)
               .compact();
@@ -184,10 +188,12 @@ public class TokenProvider implements InitializingBean {
    }
 
    public Long getUserIdFromRefreshToken(String token) {
+      String refreshToken = token.substring(7);
+
       Claims claims = Jwts.parserBuilder()
               .setSigningKey(key)
               .build()
-              .parseClaimsJws(token)
+              .parseClaimsJws(refreshToken)
               .getBody();
 
       return claims.get("userId", Long.class);

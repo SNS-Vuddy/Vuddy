@@ -1,5 +1,6 @@
 package com.buddy.controller;
 
+import com.buddy.model.dto.request.FeedEditReq;
 import com.buddy.model.dto.response.SingleFeedRes;
 import com.buddy.model.dto.common.CommonRes;
 import com.buddy.model.dto.common.ListRes;
@@ -24,6 +25,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/feed")
 public class FeedController {
 
     private final FeedService feedService;
@@ -36,7 +38,7 @@ public class FeedController {
     }
 
     //피드 작성
-    @PostMapping("/api/v1/feed/write")
+    @PostMapping("/write")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public CommonRes writeFeed(@RequestHeader("Authorization") String token, @RequestBody FeedWriteReq req) {
 
@@ -60,7 +62,7 @@ public class FeedController {
     }
 
     //특정 유저의 모든 피드 조회
-    @GetMapping("/api/v1/feeds")
+    @GetMapping("/all")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public ResponseEntity<ListRes<UserFeedsRes>> getUserFeeds(@RequestHeader("Authorization") String token) {
         List<Feed> allFeeds = feedService.findAllByToken(token);
@@ -71,12 +73,18 @@ public class FeedController {
     }
 
     // 피드 상세 조회
-    @GetMapping("/api/v1/feed/{feedId}")
+    @GetMapping("/{feedId}")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
-    public SingleRes<SingleFeedRes> getFeedDetail(@PathVariable Long feedId, @RequestHeader("Authorization") String token) {
+    public SingleRes<SingleFeedRes> getFeedDetail(@PathVariable Long feedId, @RequestHeader("Authorization") String token, @RequestBody FeedEditReq req) {
         SingleFeedRes oneByFeedId = feedService.findOneByFeedId(feedId);
         return new SingleRes<>(200, "피드 상세 조회 성공", oneByFeedId);
     }
 
+    @PutMapping("/edit/{feedId}")
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public CommonRes editFeed(@PathVariable Long feedId, @RequestHeader("Authorization") String token, @RequestBody FeedEditReq req) {
+        feedService.editFeed(feedId, req);
+        return new CommonRes(200, "피드 수정 성공");
+    }
 
 }

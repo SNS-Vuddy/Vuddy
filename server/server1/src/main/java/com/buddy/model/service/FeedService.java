@@ -1,12 +1,16 @@
 package com.buddy.model.service;
 
 import com.buddy.model.dto.FeedWithTagsDto;
+import com.buddy.model.dto.FeedWithTagsListDto;
+import com.buddy.model.dto.request.FeedEditReq;
 import com.buddy.model.dto.response.SingleFeedRes;
-import com.buddy.model.dto.TaggedFriendsDto;
 import com.buddy.model.dto.response.UserFeedsRes;
 import com.buddy.model.entity.Feed;
 import com.buddy.model.entity.TaggedFriends;
+import com.buddy.model.entity.User;
 import com.buddy.model.repository.FeedRepository;
+import com.buddy.model.repository.TaggedFriendsRepository;
+import com.buddy.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +25,9 @@ import java.util.stream.Collectors;
 public class FeedService {
 
     private final FeedRepository feedRepository;
+    private final TaggedFriendsRepository taggedFriendsRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Transactional
     public void saveFeed(Feed feed) {
@@ -60,11 +66,11 @@ public class FeedService {
 
         Feed feed = result.get(0).getFeed();
 
-        List<TaggedFriendsDto> taggedFriendsList = result.stream()
+        List<String> taggedFriendsList = result.stream()
                 .filter(feedWithTagsResult -> feedWithTagsResult.getTaggedFriend() != null)
                 .map(feedWithTagsResult -> {
                     TaggedFriends taggedFriend = feedWithTagsResult.getTaggedFriend();
-                    return new TaggedFriendsDto(taggedFriend.getId(), taggedFriend.getNickname());
+                    return taggedFriend.getNickname();
                 })
                 .collect(Collectors.toList());
 
@@ -75,6 +81,30 @@ public class FeedService {
                 .location(feed.getLocation())
                 .createdAt(feed.getCreatedAt().toString())
                 .updatedAt(feed.getUpdatedAt().toString())
-                .taggedFriendsDtoList(taggedFriendsList)
-                .build();    }
+                .taggedFriendsList(taggedFriendsList)
+                .build();
+    }
+
+    @Transactional
+    public void editFeed(Long feedId, FeedEditReq req) {
+        FeedWithTagsListDto feedWithTagsListDto = feedRepository.findFeedWithTagsListById(feedId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 피드가 존재하지 않습니다."));
+
+        Feed feed = feedWithTagsListDto.getFeed();
+
+        feed.updateContentAndLocation(req.getContent(), req.getLocation());
+
+        taggedFriendsRepository.deleteByFeedId(feedId);
+
+        // 이미지는 구현 예정
+        // imagesRepository.deleteByFeedId(feedId);
+
+        List<TaggedFriends> newTaggedFriends = req.getTags().stream()
+                .map(tag -> {
+                    User taggedUser = userRepository.findByNickname(tag);
+                    return req.toTagEntity(feed, taggedUser);
+                })
+                .collect(Collectors.toList());
+        taggedFriendsRepository.saveAll(newTaggedFriends);
+    }
 }

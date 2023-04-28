@@ -65,7 +65,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .antMatchers(
-                        "/api/v1/**",
+                        "/**",
                         "/redis",
                         "/favicon.ico",
                         "/error"

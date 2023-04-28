@@ -39,4 +39,10 @@ public class Feed {
     @Column(name = "f_updated_at")
     private LocalDateTime updatedAt;
 
+    public void updateContentAndLocation(String content, String location) {
+        this.content = content;
+        this.location = location;
+        this.updatedAt = LocalDateTime.now();
+    }
+
 }
