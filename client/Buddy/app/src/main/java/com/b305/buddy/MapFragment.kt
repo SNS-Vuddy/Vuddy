@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.buddy.databinding.FragmentMapBinding
 import com.b305.buddy.util.LocationProvider
+import com.b305.buddy.util.SharedManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     
+    private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
     lateinit var binding: FragmentMapBinding
     lateinit var mMap: GoogleMap
     
@@ -31,10 +34,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         
         binding = FragmentMapBinding.inflate(layoutInflater, container, false)
         
-        // 임시
-        binding.fabSignupTest.setOnClickListener {
+        // 임시1
+        binding.fabLogout.setOnClickListener {
+            sharedManager.removeCurrentToken()
+            sharedManager.removeCurrentToken()
+            Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
         }
+        
+        // 임시2
+        binding.tvMap1.text = sharedManager.getCurrentUser().nickname
+        binding.tvMap2.text = sharedManager.getCurrentUser().password
+        binding.tvMap3.text = sharedManager.getCurrentToken().accessToken
+        binding.tvMap4.text = sharedManager.getCurrentToken().refreshToken
         
         binding.ivFriend.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_friendFragment)
@@ -80,8 +92,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(currentLat, currentLng), 16f))
     }
     
-    private fun setMarker() {
-        // 친구 테스트용
+    private fun setMarker() { // 친구 테스트용
         val f1Lat: Double = 36.3507133
         val f1Lng: Double = 127.2986109
         val f2Lat: Double = 36.3599459
