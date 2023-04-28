@@ -27,6 +27,7 @@ build-job:       # This job runs in the build stage, which runs first.
       - devops/feature/api-gateway
   script:
     - echo -e "\033[32mCompiling the code...\033[0m"
+    - cd api-gateway
     - docker build -t itmagician/b305-vuddy:api-gateway .
     - echo "Compile complete."
 
