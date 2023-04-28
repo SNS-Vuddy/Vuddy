@@ -30,6 +30,11 @@ public class FeedController {
     private final UserService userService;
     private final TaggedFriendsService taggedFriendsService;
 
+    @RequstMapping("/api/v1/health")
+    public String hello() {
+        return "Hello World!";
+    }
+
     //피드 작성
     @PostMapping("/api/v1/feed/write")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
