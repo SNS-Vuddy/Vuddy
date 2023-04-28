@@ -37,7 +37,7 @@ deploy-job/clean:
     only:
       - devops/feature/api-gateway
     environment: production
-    need: ["build-job"]
+    needs: ["build-job"]
     allow_failure: true
     script:
         - docker container stop api-gateway
@@ -48,7 +48,7 @@ deploy-job/deploy:      # This job runs in the deploy stage.
   only:
       - devops/feature/api-gateway
   environment: production
-  need: ["deploy-job/clean"]
+  needs: ["deploy-job/clean"]
   script:
     - echo "Deploying application..."
     - docker run --name api-gateway -p 80:80 -d itmagician/b305-vuddy:api-gateway 
