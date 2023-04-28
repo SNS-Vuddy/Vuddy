@@ -7,9 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.logging.HttpLoggingInterceptor
 
 object RetrofitAPI {
-    // Todo: Change BASE_URL to your server's IP address
-    //private const val BASE_URL = "http://localhost:8080"
-    private const val BASE_URL = "http://10.0.2.2:8080"
+    private const val BASE_URL = "http://k8b305.p.ssafy.io:9001"
     
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
