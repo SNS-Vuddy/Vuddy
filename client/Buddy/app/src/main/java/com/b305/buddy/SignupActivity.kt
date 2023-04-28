@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.b305.buddy.databinding.ActivitySignupBinding
 import com.b305.buddy.model.AuthRequest
@@ -53,9 +54,21 @@ class SignupActivity : AppCompatActivity() {
             }
         }
         
+        binding.btnCheck.setOnClickListener {
+            val accessToken: String = sharedManager.getCurrentToken().accessToken.toString()
+            val refreshToken: String = sharedManager.getCurrentToken().refreshToken.toString()
+            Toast.makeText(this, accessToken + refreshToken, Toast.LENGTH_SHORT).show()
+        }
+        
         val cancelBtn = findViewById<Button>(R.id.btn_signup_cancel)
         cancelBtn.setOnClickListener {
-            finish()
+            sharedManager.removeCurrentToken()
+            
+            val accessToken: String = sharedManager.getCurrentToken().accessToken.toString()
+            val refreshToken: String = sharedManager.getCurrentToken().refreshToken.toString()
+            Toast.makeText(this, accessToken + refreshToken, Toast.LENGTH_SHORT).show()
+            
+            //finish()
         }
     }
     

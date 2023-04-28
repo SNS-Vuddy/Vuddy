@@ -22,4 +22,8 @@ object PreferenceHelper {
     operator fun <T> SharedPreferences.get(key: String, defaultValue: T? = null): T {
         return getString(key, defaultValue as? String) as T
     }
+    
+    fun SharedPreferences.remove(key: String) {
+        edit { it.remove(key) }
+    }
 }

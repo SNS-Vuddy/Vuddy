@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.b305.buddy.model.Token
 import com.b305.buddy.util.PreferenceHelper.get
+import com.b305.buddy.util.PreferenceHelper.remove
 import com.b305.buddy.util.PreferenceHelper.set
 
 class SharedManager(context: Context) {
@@ -20,5 +21,10 @@ class SharedManager(context: Context) {
             accessToken = prefs["accessToken", ""]
             refreshToken = prefs["refreshToken", ""]
         }
+    }
+    
+    fun removeCurrentToken() {
+        prefs.remove("accessToken")
+        prefs.remove("refreshToken")
     }
 }

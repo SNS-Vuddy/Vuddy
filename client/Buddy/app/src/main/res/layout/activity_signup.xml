@@ -46,6 +46,14 @@
                 android:layout_margin="10dp"
                 android:background="@color/unselected"
                 android:text="log in" />
+
+            <Button
+                android:id="@+id/btn_check"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                android:background="@color/unselected"
+                android:text="check" />
         </LinearLayout>
 
         <EditText
