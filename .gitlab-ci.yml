@@ -40,5 +40,5 @@ deploy-job/tmp/deploy:      # This job runs in the deploy stage.
   when: on_success
   script:
     - echo "Deploying application..."
-    - docker run --name tmp -p 9001:8080 -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_URL=$MYSQL_URL -e MYSQL_USERNAME=$MYSQL_USERNAME -d itmagician/b305-vuddy:test
+    - docker run --name tmp -p 9001:8080 -d itmagician/b305-vuddy:test
     - echo "Application successfully deployed."
