@@ -7,8 +7,6 @@ WORKDIR /usr/src/app
 # RUN chmod +x gradlew 
 # RUN sudo ./gradlew clean bootJar -x test 
 
-ENTRYPOINT ["echo","$MYSQL_PASSWORD"]
-
 ARG JAR_FILE=./build/libs/*-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
 CMD ["java","-jar","app.jar","--spring.datasource.url","$MYSQL_PASSWORD","--spring.datasource.username","$MYSQL_URL","--spring.datasource.password","$MYSQL_USERNAME"]
