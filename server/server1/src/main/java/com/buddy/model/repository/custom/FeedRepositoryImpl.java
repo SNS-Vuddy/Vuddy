@@ -63,5 +63,4 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom{
         return Optional.of(feedWithTagsListDto);
     }
 
-
 }
