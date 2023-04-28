@@ -1,9 +1,6 @@
 package com.b305.buddy
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.b305.buddy.databinding.ActivitySignupBinding
@@ -17,7 +14,9 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class SignupActivity : AppCompatActivity() {
+    
     lateinit var binding: ActivitySignupBinding
+    
     private val sharedManager: SharedManager by lazy { SharedManager(this) }
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,12 +39,10 @@ class SignupActivity : AppCompatActivity() {
             binding.btnLogin.setBackgroundResource(R.color.selected)
         }
         
-        
-        val okBtn = findViewById<Button>(R.id.btn_signup_ok)
-        okBtn.setOnClickListener {
-            val nickName = findViewById<EditText>(R.id.et_signup_id)?.text.toString()
-            val password = findViewById<EditText>(R.id.et_signup_pw)?.text.toString()
-            val userData = AuthRequest(nickName, password)
+        binding.btnSignupOk.setOnClickListener {
+            val nickname = binding.etNickname.text.toString()
+            val password = binding.etPassword.text.toString()
+            val userData = AuthRequest(nickname, password)
             
             if (isSignup) {
                 signup(userData)
@@ -54,21 +51,18 @@ class SignupActivity : AppCompatActivity() {
             }
         }
         
+        binding.btnSignupCancel.setOnClickListener {
+            finish()
+        }
+        
         binding.btnCheck.setOnClickListener {
             val accessToken: String = sharedManager.getCurrentToken().accessToken.toString()
             val refreshToken: String = sharedManager.getCurrentToken().refreshToken.toString()
             Toast.makeText(this, accessToken + refreshToken, Toast.LENGTH_SHORT).show()
         }
         
-        val cancelBtn = findViewById<Button>(R.id.btn_signup_cancel)
-        cancelBtn.setOnClickListener {
+        binding.btnDelete.setOnClickListener {
             sharedManager.removeCurrentToken()
-            
-            val accessToken: String = sharedManager.getCurrentToken().accessToken.toString()
-            val refreshToken: String = sharedManager.getCurrentToken().refreshToken.toString()
-            Toast.makeText(this, accessToken + refreshToken, Toast.LENGTH_SHORT).show()
-            
-            //finish()
         }
     }
     
@@ -85,13 +79,13 @@ class SignupActivity : AppCompatActivity() {
                     val token: Token = Token(accessToken, refreshToken)
                     
                     sharedManager.saveCurrentToken(token)
-                    Log.d("로그인 성공", "$result")
+                    Toast.makeText(this@SignupActivity, accessToken + refreshToken, Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
             
             override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                Log.d("로그인 실패", t.message.toString())
+                Toast.makeText(this@SignupActivity, "로그인 실패", Toast.LENGTH_SHORT).show()
             }
         })
         
@@ -110,13 +104,13 @@ class SignupActivity : AppCompatActivity() {
                     val token: Token = Token(accessToken, refreshToken)
                     
                     sharedManager.saveCurrentToken(token)
-                    Log.d("회원가입 성공", "$result")
+                    Toast.makeText(this@SignupActivity, accessToken + refreshToken, Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
             
             override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                Log.d("회원가입 실패", t.message.toString())
+                Toast.makeText(this@SignupActivity, "회원가입 실패", Toast.LENGTH_SHORT).show()
             }
         })
     }
