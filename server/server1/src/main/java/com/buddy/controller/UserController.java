@@ -43,27 +43,13 @@ public class UserController {
         User signupUser = User.createNormalUser(signupReq.getNickname(), passwordEncoder.encode(signupReq.getPassword()), signupReq.getProfileImage(), signupReq.getStatusMessage());
         userService.join(signupUser);
 
-        // 토큰 생성을 위한 인증 객체 생성
-        Authentication authentication = new UsernamePasswordAuthenticationToken(signupUser.getNickname(), signupUser.getPassword(), Collections.singletonList(signupUser.getUserRoll()));
-
         // 액세스 토큰 생성
-        String accessToken = tokenProvider.createAccessToken(authentication);
+        String accessToken = userService.createAccessToken(signupUser);
 
         // 리프레쉬 토큰 생성
-        String refreshToken = tokenProvider.createRefreshToken(authentication, signupUser.getId());
-
-        System.out.println("=================================================================");
-        System.out.println("refreshToken = " + tokenProvider.getUserIdFromRefreshToken(refreshToken));
-        System.out.println("=================================================================");
+        String refreshToken = userService.createRefreshToken(signupUser);
 
         return new SignupRes(201, "회원가입 성공", accessToken, refreshToken);
-    }
-
-    // 토큰 확인용 API
-    @GetMapping("/api/v1/token")
-    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
-    public CommonRes token(@RequestHeader("Authorization") String token) {
-        return new CommonRes(200, token);
     }
 
     @PostMapping("/api/v1/user/login")
@@ -76,14 +62,21 @@ public class UserController {
             return new ResponseEntity<>(new CommonRes(400, "비밀번호가 일치하지 않습니다."), HttpStatus.BAD_REQUEST);
         }
 
-        // 액세스 토큰 생성을 위한 인증 객체 생성
-        Authentication authentication = new UsernamePasswordAuthenticationToken(loginUser.getNickname(), loginUser.getPassword(), Collections.singletonList(loginUser.getUserRoll()));
-
         // 액세스 토큰 생성
-        String accessToken = tokenProvider.createAccessToken(authentication);
+        String accessToken = userService.createAccessToken(loginUser);
 
-        return new ResponseEntity<>(new SignupRes(200, "로그인 성공", accessToken, "refreshToken"), HttpStatus.OK);
+        String refreshToken = userService.createRefreshToken(loginUser);
+
+        return new ResponseEntity<>(new SignupRes(200, "로그인 성공", accessToken, refreshToken), HttpStatus.OK);
     }
+
+    // 토큰 확인용 API
+    @GetMapping("/api/v1/token")
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public CommonRes token(@RequestHeader("Authorization") String token) {
+        return new CommonRes(200, token);
+    }
+
 
     @GetMapping("/api/v1/user")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
@@ -111,13 +104,13 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/user/refresh")
-    public ResponseEntity<CommonRes> refreshAccessToken(@RequestHeader("refreshToken") String refreshToken) {
-        try {
-            Long userId = tokenProvider.getUserIdFromRefreshToken(refreshToken);
-            // userId를 이용하여 사용자 정보를 가져온 후, 액세스 토큰 재발급 로직을 구현합니다.
-            return new ResponseEntity<>(new CommonRes(200, "액세스 토큰 재발급 성공"), HttpStatus.OK);
-        } catch (JwtException | IllegalArgumentException e) {
-            return new ResponseEntity<>(new CommonRes(400, "Invalid refresh token"), HttpStatus.BAD_REQUEST);
-        }
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public ResponseEntity<CommonRes> refreshAccessToken(@RequestHeader("Authorization") String refreshToken) {
+
+        Long userId = tokenProvider.getUserIdFromRefreshToken(refreshToken);
+        User user = userService.findById(userId);
+        String accessToken = userService.createAccessToken(user);
+
+        return new ResponseEntity<>(new SingleRes<>(200, "토큰 재발급 성공", accessToken), HttpStatus.OK);
     }
 }

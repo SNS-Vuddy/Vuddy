@@ -5,11 +5,14 @@ import com.buddy.model.entity.User;
 import com.buddy.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.Objects;
 
 @Service
@@ -54,4 +57,18 @@ public class UserService {
     }
 
 
+    public User findById(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
+    public String createAccessToken(User user) {
+        // 액세스 토큰 생성을 위한 인증 객체 생성
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getNickname(), user.getPassword(), Collections.singletonList(user.getUserRoll()));
+        return tokenProvider.createAccessToken(authentication);
+    }
+
+    public String createRefreshToken(User user) {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getNickname(), user.getPassword(), Collections.singletonList(user.getUserRoll()));
+        return tokenProvider.createRefreshToken(user);
+    }
 }
