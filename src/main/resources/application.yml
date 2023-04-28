@@ -1,0 +1,6 @@
+spring:
+  datasource:
+
+    url: jdbc:mysql://k8b305.p.ssafy.io:3306/vuddy?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=true
+    username: ssafy
+    password: b305b305
