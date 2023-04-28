@@ -30,7 +30,7 @@ public class FeedController {
     private final UserService userService;
     private final TaggedFriendsService taggedFriendsService;
 
-    @RequstMapping("/api/v1/health")
+    @RequestMapping("/api/v1/health")
     public String hello() {
         return "Hello World!";
     }
