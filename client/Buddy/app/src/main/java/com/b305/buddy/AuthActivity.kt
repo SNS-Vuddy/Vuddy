@@ -2,6 +2,7 @@ package com.b305.buddy
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.b305.buddy.databinding.ActivityAuthBinding
@@ -11,6 +12,7 @@ import com.b305.buddy.model.Token
 import com.b305.buddy.model.User
 import com.b305.buddy.util.RetrofitAPI
 import com.b305.buddy.util.SharedManager
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -99,6 +101,10 @@ class AuthActivity : AppCompatActivity() {
                     val intent = Intent(this@AuthActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()
+                } else {
+                    var errorMessage = JSONObject(response.errorBody()?.string()!!)
+                    Log.d("****", errorMessage.toString())
+                    Toast.makeText(this@AuthActivity, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
                 }
             }
             
@@ -131,6 +137,10 @@ class AuthActivity : AppCompatActivity() {
                     val intent = Intent(this@AuthActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()
+                } else {
+                    var errorMessage = JSONObject(response.errorBody()?.string()!!)
+                    Log.d("****", errorMessage.toString())
+                    Toast.makeText(this@AuthActivity, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
                 }
             }
             
