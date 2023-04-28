@@ -77,4 +77,16 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
+    // IllegalArgumentException 예외 커스텀 처리
+    @ExceptionHandler(value = {IllegalArgumentException.class})
+    @ResponseBody
+    protected ResponseEntity<ErrorRes> handleDuplicateNickname(IllegalArgumentException e) {
+
+        String errorMessage = e.getMessage();
+
+        ErrorRes errorResponse = new ErrorRes(400, errorMessage);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }
