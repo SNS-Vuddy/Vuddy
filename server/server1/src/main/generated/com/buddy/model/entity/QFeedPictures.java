@@ -1,8 +1,7 @@
-package com.buddy.model.entity.enums;
+package com.buddy.model.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.buddy.model.entity.FeedPictures;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -17,13 +16,13 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QFeedPictures extends EntityPathBase<FeedPictures> {
 
-    private static final long serialVersionUID = -49270912L;
+    private static final long serialVersionUID = -827034780L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QFeedPictures feedPictures = new QFeedPictures("feedPictures");
 
-    public final com.buddy.model.entity.QFeed feed;
+    public final QFeed feed;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -47,7 +46,7 @@ public class QFeedPictures extends EntityPathBase<FeedPictures> {
 
     public QFeedPictures(Class<? extends FeedPictures> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.feed = inits.isInitialized("feed") ? new com.buddy.model.entity.QFeed(forProperty("feed"), inits.get("feed")) : null;
+        this.feed = inits.isInitialized("feed") ? new QFeed(forProperty("feed"), inits.get("feed")) : null;
     }
 
 }

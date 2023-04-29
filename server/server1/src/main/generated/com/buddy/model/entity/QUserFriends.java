@@ -28,7 +28,7 @@ public class QUserFriends extends EntityPathBase<UserFriends> {
 
     public final QUser requstUser;
 
-    public final StringPath status = createString("status");
+    public final EnumPath<com.buddy.model.entity.enums.UserFriendStatus> status = createEnum("status", com.buddy.model.entity.enums.UserFriendStatus.class);
 
     public QUserFriends(String variable) {
         this(UserFriends.class, forVariable(variable), INITS);
