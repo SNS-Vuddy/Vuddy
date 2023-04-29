@@ -2,6 +2,7 @@ package com.buddy.model.entity.enums;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.buddy.model.entity.FeedPictures;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;

@@ -1,5 +1,6 @@
 package com.buddy.model.entity;
 
+import com.buddy.model.entity.enums.UserFriendStatus;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -22,6 +23,6 @@ public class UserFriends {
     private User receiveUser;
 
     @Column(name = "uf_status")
-    private String status;
+    private UserFriendStatus status;
 
 }

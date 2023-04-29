@@ -36,6 +36,10 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom{
                 .where(feed.id.eq(id))
                 .fetch();
 
+        if (results.isEmpty()) {
+            return null;
+        }
+
         return results;
     }
 

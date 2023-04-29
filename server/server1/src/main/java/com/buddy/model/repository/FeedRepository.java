@@ -10,4 +10,7 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, FeedRepositor
 
     List<Feed> findAllByUserId(Long userId);
 
+    List<Feed> findAllByNickname(String nickname);
+
+
 }

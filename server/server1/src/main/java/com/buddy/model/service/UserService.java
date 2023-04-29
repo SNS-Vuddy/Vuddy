@@ -42,10 +42,6 @@ public class UserService {
         return userRepository.findByNickname(nickname);
     }
 
-    public User findByUserId(Long userId) {
-        return userRepository.findById(userId).orElse(null);
-    }
-
     public User findByToken(String token) {
         return userRepository.findByNickname(tokenProvider.getUserNicknameFromToken(token));
     }
@@ -55,7 +51,6 @@ public class UserService {
         User user = userRepository.findById(userID).orElse(null);
         Objects.requireNonNull(user).updateStatusMessage(statusMessage);
     }
-
 
     public User findById(Long userId) {
         return userRepository.findById(userId).orElse(null);

@@ -33,6 +33,9 @@ public class Feed {
     @Column(name = "f_location")
     private String location;
 
+    @Column(name = "f_main_img")
+    private String mainImg;
+
     @Column(name = "f_created_at")
     private LocalDateTime createdAt;
 

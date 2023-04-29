@@ -36,6 +36,7 @@ public class User {
     private String statusMessage;
 
     @Column(name = "u_roll")
+    @Enumerated(EnumType.STRING)
     private UserRoll userRoll;
 
     @Column(name = "u_withdrawal_at")
