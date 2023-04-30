@@ -8,6 +8,7 @@ import com.buddy.model.service.FriendService;
 import com.buddy.model.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,23 +29,35 @@ public class FriendController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public ResponseEntity<CommonRes> addFriend(@RequestHeader("Authorization") String token, @RequestBody RequestAddFriendReq req) {
-        List<User> users = userService.findAllByNicknameIn(List.of(req.getFriendNickname(), userService.findUserNicknameByToken(token)));
+        User requester, receiver;
+        try {
+            List<User> users = userService.findAllByNicknameIn(List.of(req.getFriendNickname(), userService.findUserNicknameByToken(token)));
+            receiver = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(0) : users.get(1);
+            requester = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(1) : users.get(0);
 
-        User receiver = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(0) : users.get(1);
-        User requester = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(1) : users.get(0);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CommonRes(400, "유저의 닉네임 정보에 문제가 있습니다."), HttpStatus.BAD_REQUEST);
+        }
 
         friendService.requestAddFriend(requester, receiver);
         return ResponseEntity.ok(new CommonRes(200, "친구 추가 요청 성공"));
+
     }
 
     // 친구 추가 요청 수락
     @PostMapping("/accept")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public ResponseEntity<CommonRes> acceptFriend(@RequestHeader("Authorization") String token, @RequestBody RequestAddFriendReq req) {
-        List<User> users = userService.findAllByNicknameIn(List.of(req.getFriendNickname(), userService.findUserNicknameByToken(token)));
+        User requester, receiver;
 
-        User requester = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(0) : users.get(1);
-        User receiver = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(1) : users.get(0);
+        try {
+            List<User> users = userService.findAllByNicknameIn(List.of(req.getFriendNickname(), userService.findUserNicknameByToken(token)));
+
+            requester = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(0) : users.get(1);
+            receiver = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(1) : users.get(0);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CommonRes(400, "유저의 닉네임 정보에 문제가 있습니다."), HttpStatus.BAD_REQUEST);
+        }
 
         friendService.UpdateFriendStatus(requester, receiver, UserFriendStatus.ACCEPTED);
 
@@ -55,10 +68,15 @@ public class FriendController {
     @PostMapping("/deny")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public ResponseEntity<CommonRes> denyFriend(@RequestHeader("Authorization") String token, @RequestBody RequestAddFriendReq req) {
-        List<User> users = userService.findAllByNicknameIn(List.of(req.getFriendNickname(), userService.findUserNicknameByToken(token)));
+        User requester, receiver;
+        try {
+            List<User> users = userService.findAllByNicknameIn(List.of(req.getFriendNickname(), userService.findUserNicknameByToken(token)));
 
-        User requester = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(0) : users.get(1);
-        User receiver = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(1) : users.get(0);
+            requester = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(0) : users.get(1);
+            receiver = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(1) : users.get(0);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CommonRes(400, "유저의 닉네임 정보에 문제가 있습니다."), HttpStatus.BAD_REQUEST);
+        }
 
         friendService.UpdateFriendStatus(requester, receiver, UserFriendStatus.DENIED);
         return ResponseEntity.ok(new CommonRes(200, "친구 추가 요청 거절 성공"));
@@ -68,13 +86,28 @@ public class FriendController {
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public ResponseEntity<CommonRes> deleteFriend(@RequestHeader("Authorization") String token, @RequestBody RequestAddFriendReq req) {
-        List<User> users = userService.findAllByNicknameIn(List.of(req.getFriendNickname(), userService.findUserNicknameByToken(token)));
+        User requester, receiver;
 
-        User requester = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(0) : users.get(1);
-        User receiver = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(1) : users.get(0);
+        try {
+            List<User> users = userService.findAllByNicknameIn(List.of(req.getFriendNickname(), userService.findUserNicknameByToken(token)));
+
+            requester = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(0) : users.get(1);
+            receiver = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(1) : users.get(0);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new CommonRes(400, "유저의 닉네임 정보에 문제가 있습니다."), HttpStatus.BAD_REQUEST);
+        }
 
         friendService.deleteFriend(requester, receiver);
         return ResponseEntity.ok(new CommonRes(200, "친구 삭제 성공"));
     }
+
+    // 내 친구 전체 조회
+//    @GetMapping("/all")
+//    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+//    public ResponseEntity<CommonRes> getAllFriend(@RequestHeader("Authorization") String token) {
+//        String userNickname = userService.findUserNicknameByToken(token);
+//        List<User> friends = friendService.findAllFriend(user);
+//        return ResponseEntity.ok(new CommonRes(200, "친구 전체 조회 성공", friends));
+//    }
 
 }
