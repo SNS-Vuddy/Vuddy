@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -21,8 +22,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
     public Long join(User user) {
@@ -43,6 +42,14 @@ public class UserService {
 
     public User findByToken(String token) {
         return userRepository.findByNickname(tokenProvider.getUserNicknameFromToken(token));
+    }
+
+    public String findUserNicknameByToken(String token) {
+        return tokenProvider.getUserNicknameFromToken(token);
+    }
+
+    public List<User> findAllByNicknameIn(List<String> nicknames) {
+        return userRepository.findAllByNicknameIn(nicknames);
     }
 
     @Transactional

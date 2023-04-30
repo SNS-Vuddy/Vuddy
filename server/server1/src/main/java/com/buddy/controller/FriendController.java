@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -25,8 +28,11 @@ public class FriendController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public ResponseEntity<CommonRes> addFriend(@RequestHeader("Authorization") String token, @RequestBody RequestAddFriendReq req) {
-        User requester = userService.findByToken(token);
-        User receiver = userService.findByNickname(req.getFriendNickname());
+        List<User> users = userService.findAllByNicknameIn(List.of(req.getFriendNickname(), userService.findUserNicknameByToken(token)));
+
+        User requester = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(0) : users.get(1);
+        User receiver = users.get(0).getNickname().equals(req.getFriendNickname()) ? users.get(1) : users.get(0);
+
         friendService.requestAddFriend(requester, receiver);
         return ResponseEntity.ok(new CommonRes(200, "친구 추가 요청 성공"));
     }

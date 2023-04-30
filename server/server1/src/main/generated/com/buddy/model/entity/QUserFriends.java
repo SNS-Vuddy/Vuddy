@@ -26,7 +26,7 @@ public class QUserFriends extends EntityPathBase<UserFriends> {
 
     public final QUser receiveUser;
 
-    public final QUser requstUser;
+    public final QUser requestUser;
 
     public final EnumPath<com.buddy.model.entity.enums.UserFriendStatus> status = createEnum("status", com.buddy.model.entity.enums.UserFriendStatus.class);
 
@@ -49,7 +49,7 @@ public class QUserFriends extends EntityPathBase<UserFriends> {
     public QUserFriends(Class<? extends UserFriends> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.receiveUser = inits.isInitialized("receiveUser") ? new QUser(forProperty("receiveUser")) : null;
-        this.requstUser = inits.isInitialized("requstUser") ? new QUser(forProperty("requstUser")) : null;
+        this.requestUser = inits.isInitialized("requestUser") ? new QUser(forProperty("requestUser")) : null;
     }
 
 }

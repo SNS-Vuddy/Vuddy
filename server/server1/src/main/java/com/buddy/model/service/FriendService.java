@@ -16,12 +16,15 @@ public class FriendService {
 
     @Transactional
     public void requestAddFriend(User requester, User receiver) {
-        UserFriends userFriends = UserFriends.createRequest(requester, receiver);
-        System.out.println("=================================================================");
-        System.out.println("userFriends.getRequstUser().getNickname() = " + userFriends.getRequstUser().getNickname());
-        System.out.println("userFriends.getReceiveUser().getNickname() = " + userFriends.getReceiveUser().getNickname());
-        System.out.println("=================================================================");
 
-        friendRepository.save(userFriends);
+        boolean isExist = friendRepository.existsByRequestUserAndReceiveUser(requester, receiver);
+
+        if (isExist) {
+            throw new IllegalStateException("이미 친구 추가 요청을 보냈습니다.");
+        } else {
+            UserFriends userFriends = UserFriends.createRequest(requester, receiver);
+            friendRepository.save(userFriends);
+        }
+
     }
 }

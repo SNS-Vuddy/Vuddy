@@ -19,7 +19,7 @@ public class UserFriends {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_id")
-    private User requstUser;
+    private User requestUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")
@@ -31,7 +31,7 @@ public class UserFriends {
 
     public static UserFriends createRequest(User requstUser, User receiveUser) {
         return UserFriends.builder()
-                .requstUser(requstUser)
+                .requestUser(requstUser)
                 .receiveUser(receiveUser)
                 .status(UserFriendStatus.PENDING) // 혹은 초기 상태값 설정
                 .build();
