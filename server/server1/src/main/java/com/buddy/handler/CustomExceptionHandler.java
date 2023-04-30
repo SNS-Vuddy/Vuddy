@@ -1,5 +1,6 @@
 package com.buddy.handler;
 
+import com.buddy.exception.FriendRequestNotFoundException;
 import com.buddy.model.dto.response.ErrorRes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -82,6 +83,18 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorRes errorResponse = new ErrorRes(400, errorMessage);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    // FriendRequestNotFoundException 예외 커스텀 처리
+    @ExceptionHandler(value = {FriendRequestNotFoundException.class})
+    @ResponseBody
+    protected ResponseEntity<ErrorRes> handleDuplicateNickname(FriendRequestNotFoundException e) {
+
+        String errorMessage = e.getMessage();
+
+        ErrorRes errorResponse = new ErrorRes(404, errorMessage);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
 }

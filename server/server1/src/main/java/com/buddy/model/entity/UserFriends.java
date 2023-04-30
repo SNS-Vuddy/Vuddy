@@ -37,4 +37,11 @@ public class UserFriends {
                 .build();
     }
 
+    public void accept() {
+        this.status = UserFriendStatus.ACCEPTED;
+    }
+
+    public void deny() {
+        this.status = UserFriendStatus.DENIED;
+    }
 }
