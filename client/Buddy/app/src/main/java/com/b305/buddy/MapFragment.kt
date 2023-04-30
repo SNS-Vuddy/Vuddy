@@ -4,46 +4,149 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.b305.buddy.databinding.FragmentMapBinding
+import com.b305.buddy.util.LocationProvider
+import com.b305.buddy.util.SharedManager
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     
-    private var mMap: GoogleMap? = null
+    private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
+    lateinit var binding: FragmentMapBinding
+    lateinit var mMap: GoogleMap
+    
+    var currentLat: Double = 37.4979769 // default: 강남역
+    var currentLng: Double = 127.027729
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
     
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { // 구글맵 쓰려면 SHA-1 인증서랑, 패키지 이름 등록해야함
-        // 이 페이지에서 nullpointerexception 발생하면 이거 의심해 봐야함
-        // https://console.cloud.google.com/apis/credentials/key/e0832e83-9623-49c5-af00-c04c27585abf?hl=ko&project=airquality-384811
-        // 윈도우
-        // "C:\Program Files\Android\Android Studio\jre\bin\keytool" -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         
-        val mapFragment = this.childFragmentManager.findFragmentById(R.id.fg_map) as SupportMapFragment?
-        mapFragment?.getMapAsync(this)
+        binding = FragmentMapBinding.inflate(layoutInflater, container, false)
         
-        val view = inflater.inflate(R.layout.fragment_map, container, false)
+        // 임시1
+        binding.fabLogout.setOnClickListener {
+            sharedManager.removeCurrentToken()
+            sharedManager.removeCurrentToken()
+            Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
+            it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
+        }
         
-        view.findViewById<ImageView>(R.id.iv_friend).setOnClickListener {
+        // 임시2
+        binding.tvMap1.text = sharedManager.getCurrentUser().nickname
+        binding.tvMap2.text = sharedManager.getCurrentUser().password
+        binding.tvMap3.text = sharedManager.getCurrentToken().accessToken
+        binding.tvMap4.text = sharedManager.getCurrentToken().refreshToken
+        
+        binding.ivFriend.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_friendFragment)
         }
-        view.findViewById<ImageView>(R.id.iv_message).setOnClickListener {
+        binding.ivMessage.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_messageFragment)
         }
-        view.findViewById<ImageView>(R.id.iv_profile).setOnClickListener {
+        binding.ivProfile.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_profileFragment)
         }
         
-        return view
+        setButton()
+        return binding.root
+    }
+    
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        val supportMapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        supportMapFragment.getMapAsync(this)
     }
     
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        
+        getLocation()
+    }
+    
+    private fun setButton() {
+        binding.fabCurrentLocation.setOnClickListener {
+            getLocation()
+        }
+    }
+    
+    private fun getLocation() {
+        val locationProvider = LocationProvider(requireActivity())
+        
+        currentLat = locationProvider.getLocationLatitude()!!
+        currentLng = locationProvider.getLocationLongitude()!!
+        
+        setMarker()
+        
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(currentLat, currentLng), 16f))
+    }
+    
+    private fun setMarker() { // 친구 테스트용
+        val f1Lat: Double = 36.3507133
+        val f1Lng: Double = 127.2986109
+        val f2Lat: Double = 36.3599459
+        val f2Lng: Double = 127.3051566
+        val f3Lat: Double = 36.3616414
+        val f3Lng: Double = 127.3575561
+        val friend1 = Friend()
+        friend1.nickname = 1
+        friend1.lat = f1Lat
+        friend1.lng = f1Lng
+        val friend2 = Friend()
+        friend2.nickname = 2
+        friend2.lat = f2Lat
+        friend2.lng = f2Lng
+        val friend3 = Friend()
+        friend3.nickname = 3
+        friend3.lat = f3Lat
+        friend3.lng = f3Lng
+        
+        val friendList: ArrayList<Friend> = ArrayList()
+        friendList.add(friend1)
+        friendList.add(friend2)
+        friendList.add(friend3)
+        
+        mMap.let {
+            it.clear()
+            val markerOption = MarkerOptions()
+            markerOption.position(LatLng(currentLat, currentLng))
+            val marker = it.addMarker(markerOption)
+            
+            // 친구 테스트용
+            for (friend in friendList) {
+                val friendMarkerOption = MarkerOptions()
+                friendMarkerOption.position(friend.getLocation())
+                val friendMarker = it.addMarker(friendMarkerOption)
+            }
+        }
+    }
+    
+    inner class Friend {
+        var nickname: Long? = null
+        var lat: Double? = null
+        var lng: Double? = null
+        
+        fun getLatitude(): Double { // 수정된 이름
+            return lat ?: 0.0
+        }
+        
+        fun getLongitude(): Double {
+            return lng ?: 0.0
+        }
+        
+        fun getLocation(): LatLng {
+            return LatLng(lat!!, lng!!)
+        }
     }
 }
