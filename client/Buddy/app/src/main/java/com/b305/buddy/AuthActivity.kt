@@ -2,7 +2,6 @@ package com.b305.buddy
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.b305.buddy.databinding.ActivityAuthBinding
@@ -103,7 +102,6 @@ class AuthActivity : AppCompatActivity() {
                     finish()
                 } else {
                     var errorMessage = JSONObject(response.errorBody()?.string()!!)
-                    Log.d("****", errorMessage.toString())
                     Toast.makeText(this@AuthActivity, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
                 }
             }
@@ -138,8 +136,7 @@ class AuthActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 } else {
-                    var errorMessage = JSONObject(response.errorBody()?.string()!!)
-                    Log.d("****", errorMessage.toString())
+                    val errorMessage = JSONObject(response.errorBody()?.string()!!)
                     Toast.makeText(this@AuthActivity, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
                 }
             }
