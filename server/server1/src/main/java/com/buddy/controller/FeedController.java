@@ -1,16 +1,15 @@
 package com.buddy.controller;
 
-import com.buddy.model.dto.request.FeedEditReq;
-import com.buddy.model.dto.response.SingleFeedRes;
 import com.buddy.model.dto.common.CommonRes;
 import com.buddy.model.dto.common.ListRes;
 import com.buddy.model.dto.common.SingleRes;
+import com.buddy.model.dto.request.FeedEditReq;
 import com.buddy.model.dto.request.FeedWriteReq;
+import com.buddy.model.dto.response.SingleFeedRes;
 import com.buddy.model.dto.response.UserFeedsRes;
 import com.buddy.model.entity.Feed;
 import com.buddy.model.entity.TaggedFriends;
 import com.buddy.model.entity.User;
-import com.buddy.model.repository.FeedRepository;
 import com.buddy.model.service.FeedService;
 import com.buddy.model.service.TaggedFriendsService;
 import com.buddy.model.service.UserService;
@@ -28,8 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/feed")
 public class FeedController {
-    private final FeedRepository feedRepository;
-
     private final FeedService feedService;
     private final UserService userService;
     private final TaggedFriendsService taggedFriendsService;
