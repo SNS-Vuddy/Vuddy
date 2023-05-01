@@ -51,3 +51,25 @@ jwt:
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
+  com:
+    amazonaws:
+      util:
+        EC2MetadataUtils: error
+
+# S3 설정
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIAUU76SCU7UFA32BQ4
+      secretKey: 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
+    s3:
+      bucket: vuddy-s3-bucket1
+    region:
+      static: us-east-1
+    stack:
+      auto: false
+
+
+server:
+  tomcat:
+    connection-timeout: -1
