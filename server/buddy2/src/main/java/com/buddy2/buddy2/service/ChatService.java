@@ -34,12 +34,10 @@ public class ChatService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendMessage(KafkaMessageData message) throws Exception {
+    public void sendMessage(String key, String value) throws Exception {
         System.out.println("------- 2 --------");
-        System.out.println(message);
+        System.out.println(key + "   :   " + value);
         System.out.println("------- 2 --------");
-        String key = message.getKey();
-        String value = objectMapper.writeValueAsString(message.getValue());
         kafkaTemplate.send("chat-message", key, value);
     }
 }
