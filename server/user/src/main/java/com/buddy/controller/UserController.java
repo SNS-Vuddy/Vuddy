@@ -104,7 +104,6 @@ public class UserController {
     }
 
     @PutMapping("/profile/edit/status")
-    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public CommonRes editStatusMessage(@RequestHeader("Authorization") String accessToken, @RequestBody UserStatusChangeReq userStatusChangeReq) {
         String userNickname = tokenProvider.getUserNicknameFromToken(accessToken);
         Long userId = userService.findByNickname(userNickname).getId();

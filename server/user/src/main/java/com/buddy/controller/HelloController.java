@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class HelloController {
 
-    @GetMapping("/auth/health")
+    @GetMapping("/user/health")
     public String hello() {
         return "Hello World!";
     }
