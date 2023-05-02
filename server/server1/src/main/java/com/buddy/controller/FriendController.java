@@ -1,6 +1,8 @@
 package com.buddy.controller;
 
+import com.buddy.model.dto.AllFriendDto;
 import com.buddy.model.dto.common.CommonRes;
+import com.buddy.model.dto.common.ListRes;
 import com.buddy.model.dto.request.RequestAddFriendReq;
 import com.buddy.model.entity.User;
 import com.buddy.model.entity.enums.UserFriendStatus;
@@ -101,13 +103,13 @@ public class FriendController {
         return ResponseEntity.ok(new CommonRes(200, "친구 삭제 성공"));
     }
 
-    // 내 친구 전체 조회
-//    @GetMapping("/all")
-//    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
-//    public ResponseEntity<CommonRes> getAllFriend(@RequestHeader("Authorization") String token) {
-//        String userNickname = userService.findUserNicknameByToken(token);
-//        List<User> friends = friendService.findAllFriend(user);
-//        return ResponseEntity.ok(new CommonRes(200, "친구 전체 조회 성공", friends));
-//    }
+//     내 친구 전체 조회
+    @GetMapping("/all")
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public ResponseEntity<CommonRes> getAllFriend(@RequestHeader("Authorization") String token) {
+        User user = userService.findByToken(token);
+        List<AllFriendDto> friends = friendService.findAllFriend(user);
+        return ResponseEntity.ok(new ListRes<>(200, "친구 전체 조회 성공", friends));
+    }
 
 }
