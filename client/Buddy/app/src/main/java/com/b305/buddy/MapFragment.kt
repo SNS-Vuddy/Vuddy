@@ -42,6 +42,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
         }
         
+        // 임시 3
+        binding.fabSocket.setOnClickListener {
+            it.findNavController().navigate(R.id.action_mapFragment_to_socketActivity)
+        }
+        
         // 임시2
         binding.tvMap1.text = sharedManager.getCurrentUser().nickname
         binding.tvMap2.text = sharedManager.getCurrentUser().password

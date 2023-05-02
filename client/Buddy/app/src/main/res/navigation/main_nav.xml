@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_mapFragment_to_signupActivity"
             app:destination="@id/signupActivity" />
+        <action
+            android:id="@+id/action_mapFragment_to_socketActivity"
+            app:destination="@id/socketActivity" />
     </fragment>
     <fragment
         android:id="@+id/friendFragment"
@@ -73,4 +76,9 @@
         android:name="com.b305.buddy.AuthActivity"
         android:label="activity_signup"
         tools:layout="@layout/activity_auth" />
+    <activity
+        android:id="@+id/socketActivity"
+        android:name="com.b305.buddy.util.SocketActivity"
+        android:label="activity_socket"
+        tools:layout="@layout/activity_socket" />
 </navigation>
