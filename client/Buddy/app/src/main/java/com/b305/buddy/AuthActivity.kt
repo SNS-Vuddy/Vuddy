@@ -1,9 +1,11 @@
 package com.b305.buddy
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doOnTextChanged
 import com.b305.buddy.databinding.ActivityAuthBinding
 import com.b305.buddy.model.AuthRequest
 import com.b305.buddy.model.AuthResponse
@@ -33,61 +35,113 @@ class AuthActivity : AppCompatActivity() {
             isSignup = true
             binding.btnSignup.setBackgroundResource(R.color.selected)
             binding.btnLogin.setBackgroundResource(R.color.unselected)
+            binding.etPasswordConfirm.visibility = android.view.View.VISIBLE
+            binding.tvConfirm.visibility = android.view.View.VISIBLE
+            binding.etNickname.setText("")
+            binding.etPassword.setText("")
+            binding.etPasswordConfirm.setText("")
+            checkInput()
         }
         
         binding.btnLogin.setOnClickListener {
             isSignup = false
             binding.btnSignup.setBackgroundResource(R.color.unselected)
             binding.btnLogin.setBackgroundResource(R.color.selected)
+            binding.etPasswordConfirm.visibility = android.view.View.INVISIBLE
+            binding.tvConfirm.visibility = android.view.View.INVISIBLE
+            binding.etNickname.setText("")
+            binding.etPassword.setText("")
+        }
+        
+        if (isSignup) {
+            binding.etNickname.doOnTextChanged() { _, _, _, _ ->
+                checkInput()
+            }
+            
+            binding.etPassword.doOnTextChanged() { _, _, _, _ ->
+                checkInput()
+            }
+            
+            binding.etPasswordConfirm.doOnTextChanged() { _, _, _, _ ->
+                checkInput()
+            }
         }
         
         binding.btnOk.setOnClickListener {
             val nickname = binding.etNickname.text.toString()
             val password = binding.etPassword.text.toString()
+            val passwordConfirm = binding.etPasswordConfirm.text.toString()
             val userData = AuthRequest(nickname, password)
             
             if (isSignup) {
-                signup(userData)
+                signup(userData, passwordConfirm)
             } else {
                 login(userData)
             }
         }
-        
-        binding.btnCancel.setOnClickListener {
-            finish()
-        }
     }
     
-    private fun checkInputNicknameAndPassword(nickname: String, password: String): Boolean {
+    @SuppressLint("ResourceAsColor")
+    private fun checkInput() {
+        val nickname = binding.etNickname.text.toString()
+        val password = binding.etPassword.text.toString()
+        val passwordConfirm = binding.etPasswordConfirm.text.toString()
+        
         if (nickname.isEmpty()) {
-            Toast.makeText(this, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
+            binding.tvConfirm.text = getString(R.string.auth_nickname_empty)
+            binding.tvConfirm.resources.getColor(R.color.auth_error)
+            return
+        }
+        if (nickname.length > 20 || nickname.length < 4) {
+            binding.tvConfirm.text = getString(R.string.auth_nickname_length_error)
+            binding.tvConfirm.resources.getColor(R.color.auth_error)
+            return
+        }
+        if (password.isEmpty()) {
+            binding.tvConfirm.text = getString(R.string.auth_password_empty)
+            binding.tvConfirm.resources.getColor(R.color.auth_error)
+            return
+        }
+        if (password.length > 20 || password.length < 8) {
+            binding.tvConfirm.text = getString(R.string.auth_password_length_error)
+            binding.tvConfirm.resources.getColor(R.color.auth_error)
+            return
+        }
+        if (password != passwordConfirm) {
+            binding.tvConfirm.text = getString(R.string.auth_password_confirm_error)
+            binding.tvConfirm.resources.getColor(R.color.auth_error)
+            return
+        }
+        binding.tvConfirm.text = getString(R.string.auth_success)
+        binding.tvConfirm.setTextColor(R.color.auth_success)
+    }
+    
+    private fun checkInputNicknameAndPassword(nickname: String, password: String, passwordConfirm: String): Boolean {
+        if (nickname.isEmpty()) {
+            Toast.makeText(this, R.string.auth_nickname_empty, Toast.LENGTH_SHORT).show()
             return false
         }
         
-        if (nickname.length > 20) {
-            Toast.makeText(this, "닉네임은 20자 이내로 입력해주세요.", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        
-        if (nickname.length < 4) {
-            Toast.makeText(this, "닉네임은 4자 이상으로 입력해주세요.", Toast.LENGTH_SHORT).show()
+        if (nickname.length > 20 || nickname.length < 4) {
+            Toast.makeText(this, R.string.auth_nickname_length_error, Toast.LENGTH_SHORT).show()
             return false
         }
         
         if (password.isEmpty()) {
-            Toast.makeText(this, "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.auth_password_empty, Toast.LENGTH_SHORT).show()
             return false
         }
         
-        if (password.length > 20) {
-            Toast.makeText(this, "비밀번호는 20자 이내로 입력해주세요.", Toast.LENGTH_SHORT).show()
+        if (password.length > 20 || password.length < 8) {
+            Toast.makeText(this, R.string.auth_password_empty, Toast.LENGTH_SHORT).show()
             return false
         }
         
-        if (password.length < 8) {
-            Toast.makeText(this, "비밀번호는 8자 이상으로 입력해주세요.", Toast.LENGTH_SHORT).show()
+        if (password != passwordConfirm) {
+            Toast.makeText(this, R.string.auth_password_confirm_error, Toast.LENGTH_SHORT).show()
             return false
         }
+        
         return true
     }
     
@@ -128,12 +182,13 @@ class AuthActivity : AppCompatActivity() {
         
     }
     
-    private fun signup(authRequest: AuthRequest) {
+    private fun signup(authRequest: AuthRequest, passwordConfirm: String) {
         val service = RetrofitAPI.authService
         val nickname = authRequest.nickname!!
         val password = authRequest.password!!
+        val passwordConfirm = passwordConfirm
         
-        if (!checkInputNicknameAndPassword(nickname, password)) {
+        if (!checkInputNicknameAndPassword(nickname, password, passwordConfirm)) {
             return
         }
         
