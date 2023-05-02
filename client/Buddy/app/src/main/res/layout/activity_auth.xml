@@ -17,53 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="30dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_check_token"
-                android:layout_width="80dp"
-                android:layout_height="30dp"
-                android:layout_margin="10dp"
-                android:background="@color/selected"
-                android:text="c-token" />
-
-            <Button
-                android:id="@+id/btn_remove_token"
-                android:layout_width="80dp"
-                android:layout_height="30dp"
-                android:layout_margin="10dp"
-                android:background="@color/unselected"
-                android:text="r-token" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="30dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_check_user"
-                android:layout_width="80dp"
-                android:layout_height="30dp"
-                android:layout_margin="10dp"
-                android:background="@color/selected"
-                android:text="c-user" />
-
-            <Button
-                android:id="@+id/btn_remove_user"
-                android:layout_width="80dp"
-                android:layout_height="30dp"
-                android:layout_margin="10dp"
-                android:background="@color/unselected"
-                android:text="r-user" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -125,7 +78,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_signup_ok"
+                android:id="@+id/btn_ok"
                 android:layout_width="80dp"
                 android:layout_height="30dp"
                 android:layout_margin="10dp"
@@ -133,7 +86,7 @@
                 android:text="OK" />
 
             <Button
-                android:id="@+id/btn_signup_cancel"
+                android:id="@+id/btn_cancel"
                 android:layout_width="80dp"
                 android:layout_height="30dp"
                 android:layout_margin="10dp"

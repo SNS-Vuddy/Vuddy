@@ -41,7 +41,7 @@ class AuthActivity : AppCompatActivity() {
             binding.btnLogin.setBackgroundResource(R.color.selected)
         }
         
-        binding.btnSignupOk.setOnClickListener {
+        binding.btnOk.setOnClickListener {
             val nickname = binding.etNickname.text.toString()
             val password = binding.etPassword.text.toString()
             val userData = AuthRequest(nickname, password)
@@ -53,28 +53,8 @@ class AuthActivity : AppCompatActivity() {
             }
         }
         
-        binding.btnSignupCancel.setOnClickListener {
+        binding.btnCancel.setOnClickListener {
             finish()
-        }
-        
-        // test
-        binding.btnCheckToken.setOnClickListener {
-            val accessToken: String = sharedManager.getCurrentToken().accessToken.toString()
-            val refreshToken: String = sharedManager.getCurrentToken().refreshToken.toString()
-            Toast.makeText(this, accessToken + refreshToken, Toast.LENGTH_SHORT).show()
-        }
-        binding.btnRemoveToken.setOnClickListener {
-            sharedManager.removeCurrentToken()
-            Toast.makeText(this, "토큰 삭제", Toast.LENGTH_SHORT).show()
-        }
-        binding.btnCheckUser.setOnClickListener {
-            val nickname: String = sharedManager.getCurrentUser().nickname.toString()
-            val password: String = sharedManager.getCurrentUser().password.toString()
-            Toast.makeText(this, nickname + password, Toast.LENGTH_SHORT).show()
-        }
-        binding.btnRemoveUser.setOnClickListener {
-            sharedManager.removeCurrentUser()
-            Toast.makeText(this, "유저 삭제", Toast.LENGTH_SHORT).show()
         }
     }
     
@@ -96,12 +76,14 @@ class AuthActivity : AppCompatActivity() {
                     val user = User(nickname, password)
                     sharedManager.saveCurrentUser(user)
                     
-                    Toast.makeText(this@AuthActivity, "로그인 성공", Toast.LENGTH_SHORT).show()
+                    val message: String = result?.message.toString()
+                    Toast.makeText(this@AuthActivity, message, Toast.LENGTH_SHORT).show()
+                    
                     val intent = Intent(this@AuthActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
-                    var errorMessage = JSONObject(response.errorBody()?.string()!!)
+                    val errorMessage = JSONObject(response.errorBody()?.string()!!)
                     Toast.makeText(this@AuthActivity, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
                 }
             }
@@ -131,7 +113,9 @@ class AuthActivity : AppCompatActivity() {
                     val user = User(nickname, password)
                     sharedManager.saveCurrentUser(user)
                     
-                    Toast.makeText(this@AuthActivity, "회원가입 성공", Toast.LENGTH_SHORT).show()
+                    val message: String = result?.message.toString()
+                    Toast.makeText(this@AuthActivity, message, Toast.LENGTH_SHORT).show()
+                    
                     val intent = Intent(this@AuthActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()
