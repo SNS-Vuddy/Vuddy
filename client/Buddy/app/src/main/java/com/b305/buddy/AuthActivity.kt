@@ -58,6 +58,39 @@ class AuthActivity : AppCompatActivity() {
         }
     }
     
+    private fun checkInputNicknameAndPassword(nickname: String, password: String): Boolean {
+        if (nickname.isEmpty()) {
+            Toast.makeText(this, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        
+        if (nickname.length > 20) {
+            Toast.makeText(this, "닉네임은 20자 이내로 입력해주세요.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        
+        if (nickname.length < 4) {
+            Toast.makeText(this, "닉네임은 4자 이상으로 입력해주세요.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        
+        if (password.isEmpty()) {
+            Toast.makeText(this, "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        
+        if (password.length > 20) {
+            Toast.makeText(this, "비밀번호는 20자 이내로 입력해주세요.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        
+        if (password.length < 8) {
+            Toast.makeText(this, "비밀번호는 8자 이상으로 입력해주세요.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
+    }
+    
     private fun login(authRequest: AuthRequest) {
         val service = RetrofitAPI.authService
         
@@ -97,6 +130,12 @@ class AuthActivity : AppCompatActivity() {
     
     private fun signup(authRequest: AuthRequest) {
         val service = RetrofitAPI.authService
+        val nickname = authRequest.nickname!!
+        val password = authRequest.password!!
+        
+        if (!checkInputNicknameAndPassword(nickname, password)) {
+            return
+        }
         
         service.signup(authRequest).enqueue(object : Callback<AuthResponse> {
             override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
@@ -108,8 +147,6 @@ class AuthActivity : AppCompatActivity() {
                     val token: Token = Token(accessToken, refreshToken)
                     sharedManager.saveCurrentToken(token)
                     
-                    val nickname = authRequest.nickname
-                    val password = authRequest.password
                     val user = User(nickname, password)
                     sharedManager.saveCurrentUser(user)
                     
