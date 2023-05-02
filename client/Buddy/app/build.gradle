@@ -63,7 +63,7 @@ dependencies {
 
     // api debugging
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
-    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
 
     // map
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
@@ -71,4 +71,7 @@ dependencies {
 
     // shared preference
     implementation 'androidx.preference:preference-ktx:1.2.0'
+
+    // recyclerView
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 }
