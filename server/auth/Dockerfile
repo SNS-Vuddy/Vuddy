@@ -9,6 +9,6 @@ WORKDIR /usr/src/app
 
 ARG JAR_FILE=./build/libs/*-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
-CMD ["java","-jar","app.jar","--spring.datasource.url=${MYSQL_URL}","--spring.datasource.username=${MYSQL_USERNAME}","--spring.datasource.password=${MYSQL_PASSWORD}"]
-
+# CMD ["java","-jar","app.jar","--spring.datasource.url=${MYSQL_URL}","--spring.datasource.username=${MYSQL_USERNAME}","--spring.datasource.password=${MYSQL_PASSWORD}"]
+CMD ["java","-jar","app.jar"]
 
