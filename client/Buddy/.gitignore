@@ -11,5 +11,5 @@
 .externalNativeBuild
 .cxx
 local.properties
-.gradle
-/build
+# .gradle
+# /build
