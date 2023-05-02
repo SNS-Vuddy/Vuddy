@@ -1,5 +1,6 @@
 package com.buddy.controller;
 
+import com.buddy.jwt.TokenProvider;
 import com.buddy.model.dto.common.CommonRes;
 import com.buddy.model.dto.request.CommentWriteReq;
 import com.buddy.model.service.CommentService;
@@ -16,13 +17,14 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
 
     private final CommentService commentService;
+    private final TokenProvider tokenProvider;
 
-    @PostMapping("/write")
+    @PostMapping("/write/{feedId}")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
-    public ResponseEntity<CommonRes> writeComment(@RequestHeader("Authorization") String token, @RequestBody CommentWriteReq req) {
+    public ResponseEntity<CommonRes> writeComment(@RequestHeader("Authorization") String token, @PathVariable Long feedId, @RequestBody CommentWriteReq req) {
 
-        String userNickname = TokenUtil.getUserNicknameFromToken(token);
-        commentService.createComment(userNickname, req.getFeedId(), req.getContent());
+        String userNickname = tokenProvider.getUserNicknameFromToken(token);
+        commentService.createComment(userNickname, feedId, req.getContent());
 
         return new ResponseEntity<>(new CommonRes(201, "댓글 작성 완료"), HttpStatus.CREATED);
     }
