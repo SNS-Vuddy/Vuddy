@@ -2,9 +2,11 @@ package com.b305.buddy
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import com.b305.buddy.databinding.ActivityAuthBinding
 import com.b305.buddy.model.AuthRequest
@@ -89,31 +91,31 @@ class AuthActivity : AppCompatActivity() {
         
         if (nickname.isEmpty()) {
             binding.tvConfirm.text = getString(R.string.auth_nickname_empty)
-            binding.tvConfirm.resources.getColor(R.color.auth_error)
+            binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_error))
             return
         }
         if (nickname.length > 20 || nickname.length < 4) {
             binding.tvConfirm.text = getString(R.string.auth_nickname_length_error)
-            binding.tvConfirm.resources.getColor(R.color.auth_error)
+            binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_error))
             return
         }
         if (password.isEmpty()) {
             binding.tvConfirm.text = getString(R.string.auth_password_empty)
-            binding.tvConfirm.resources.getColor(R.color.auth_error)
+            binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_error))
             return
         }
         if (password.length > 20 || password.length < 8) {
             binding.tvConfirm.text = getString(R.string.auth_password_length_error)
-            binding.tvConfirm.resources.getColor(R.color.auth_error)
+            binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_error))
             return
         }
         if (password != passwordConfirm) {
             binding.tvConfirm.text = getString(R.string.auth_password_confirm_error)
-            binding.tvConfirm.resources.getColor(R.color.auth_error)
+            binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_error))
             return
         }
         binding.tvConfirm.text = getString(R.string.auth_success)
-        binding.tvConfirm.setTextColor(R.color.auth_success)
+        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_success))
     }
     
     private fun checkInputNicknameAndPassword(nickname: String, password: String, passwordConfirm: String): Boolean {
