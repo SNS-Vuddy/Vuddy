@@ -1,11 +1,11 @@
 package com.buddy.controller;
 
-import com.buddy.model.dto.request.FeedEditReq;
-import com.buddy.model.dto.response.SingleFeedRes;
 import com.buddy.model.dto.common.CommonRes;
 import com.buddy.model.dto.common.ListRes;
 import com.buddy.model.dto.common.SingleRes;
+import com.buddy.model.dto.request.FeedEditReq;
 import com.buddy.model.dto.request.FeedWriteReq;
+import com.buddy.model.dto.response.SingleFeedRes;
 import com.buddy.model.dto.response.UserFeedsRes;
 import com.buddy.model.entity.Feed;
 import com.buddy.model.entity.TaggedFriends;
@@ -27,7 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/feed")
 public class FeedController {
-
     private final FeedService feedService;
     private final UserService userService;
     private final TaggedFriendsService taggedFriendsService;
@@ -61,10 +60,10 @@ public class FeedController {
         return new CommonRes(201, "피드 작성 성공");
     }
 
-    //특정 유저의 모든 피드 조회
-    @GetMapping("/all")
+    // 내 피드 전체 조회
+    @GetMapping("/feeds/mine")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
-    public ResponseEntity<ListRes<UserFeedsRes>> getUserFeeds(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<ListRes<UserFeedsRes>> getMyAllFeed(@RequestHeader("Authorization") String token) {
         List<Feed> allFeeds = feedService.findAllByToken(token);
         List<UserFeedsRes> allUserFeedsRes = feedService.changeAllFeedsToDto(allFeeds);
         log.info("allUserFeedsRes = {}", allUserFeedsRes);
@@ -72,14 +71,26 @@ public class FeedController {
         return new ResponseEntity<>(listRes, HttpStatus.OK);
     }
 
+    // 특정 유저 피드 전체 조회
+    @GetMapping("/feeds/nickname/{nickname}")
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public ResponseEntity<ListRes<UserFeedsRes>> getUserAllFeed(@RequestHeader("Authorization") String token, @PathVariable String nickname) {
+        List<Feed> allFeeds = feedService.findAllByNickname(nickname);
+
+        List<UserFeedsRes> allUserFeedsRes = feedService.changeAllFeedsToDto(allFeeds);
+        ListRes<UserFeedsRes> listRes = new ListRes<>(200, "피드 조회 성공", allUserFeedsRes);
+        return new ResponseEntity<>(listRes, HttpStatus.OK);
+    }
+
     // 피드 상세 조회
     @GetMapping("/{feedId}")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
-    public SingleRes<SingleFeedRes> getFeedDetail(@PathVariable Long feedId, @RequestHeader("Authorization") String token, @RequestBody FeedEditReq req) {
+    public SingleRes<SingleFeedRes> getFeedDetail(@PathVariable Long feedId, @RequestHeader("Authorization") String token) {
         SingleFeedRes oneByFeedId = feedService.findOneByFeedId(feedId);
         return new SingleRes<>(200, "피드 상세 조회 성공", oneByFeedId);
     }
 
+    // 피드 수정
     @PutMapping("/edit/{feedId}")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public CommonRes editFeed(@PathVariable Long feedId, @RequestHeader("Authorization") String token, @RequestBody FeedEditReq req) {

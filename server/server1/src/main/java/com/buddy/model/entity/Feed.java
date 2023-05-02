@@ -33,11 +33,17 @@ public class Feed {
     @Column(name = "f_location")
     private String location;
 
+    @Column(name = "f_main_img")
+    private String mainImg;
+
     @Column(name = "f_created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "f_updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "f_is_deleted")
+    private boolean isDeleted;
 
     public void updateContentAndLocation(String content, String location) {
         this.content = content;

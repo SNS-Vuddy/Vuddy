@@ -11,53 +11,50 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QFeed is a Querydsl query type for Feed
+ * QComments is a Querydsl query type for Comments
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QFeed extends EntityPathBase<Feed> {
+public class QComments extends EntityPathBase<Comments> {
 
-    private static final long serialVersionUID = 14109455L;
+    private static final long serialVersionUID = -960683291L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QFeed feed = new QFeed("feed");
+    public static final QComments comments = new QComments("comments");
 
     public final StringPath content = createString("content");
 
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
+    public final QFeed feed;
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final BooleanPath isDeleted = createBoolean("isDeleted");
-
-    public final StringPath location = createString("location");
-
-    public final StringPath mainImg = createString("mainImg");
-
-    public final StringPath nickname = createString("nickname");
 
     public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt", java.time.LocalDateTime.class);
 
     public final QUser user;
 
-    public QFeed(String variable) {
-        this(Feed.class, forVariable(variable), INITS);
+    public QComments(String variable) {
+        this(Comments.class, forVariable(variable), INITS);
     }
 
-    public QFeed(Path<? extends Feed> path) {
+    public QComments(Path<? extends Comments> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QFeed(PathMetadata metadata) {
+    public QComments(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QFeed(PathMetadata metadata, PathInits inits) {
-        this(Feed.class, metadata, inits);
+    public QComments(PathMetadata metadata, PathInits inits) {
+        this(Comments.class, metadata, inits);
     }
 
-    public QFeed(Class<? extends Feed> type, PathMetadata metadata, PathInits inits) {
+    public QComments(Class<? extends Comments> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.feed = inits.isInitialized("feed") ? new QFeed(forProperty("feed"), inits.get("feed")) : null;
         this.user = inits.isInitialized("user") ? new QUser(forProperty("user")) : null;
     }
 

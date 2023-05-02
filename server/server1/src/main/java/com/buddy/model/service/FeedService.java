@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +44,7 @@ public class FeedService {
         List<UserFeedsRes> userFeedsResList = new ArrayList<>();
 
         for (Feed feed : allFeeds) {
-            UserFeedsRes userFeedsRes = new UserFeedsRes(feed.getId(), feed.getContent());
+            UserFeedsRes userFeedsRes = new UserFeedsRes(feed.getId(), feed.getContent(), feed.getMainImg());
             userFeedsResList.add(userFeedsRes);
         }
 
@@ -87,10 +88,9 @@ public class FeedService {
 
     @Transactional
     public void editFeed(Long feedId, FeedEditReq req) {
-        FeedWithTagsListDto feedWithTagsListDto = feedRepository.findFeedWithTagsListById(feedId)
+        Feed feed = feedRepository.findFeedWithTagsListById(feedId)
+                .map(FeedWithTagsListDto::getFeed)
                 .orElseThrow(() -> new IllegalArgumentException("해당 피드가 존재하지 않습니다."));
-
-        Feed feed = feedWithTagsListDto.getFeed();
 
         feed.updateContentAndLocation(req.getContent(), req.getLocation());
 
@@ -99,12 +99,22 @@ public class FeedService {
         // 이미지는 구현 예정
         // imagesRepository.deleteByFeedId(feedId);
 
-        List<TaggedFriends> newTaggedFriends = req.getTags().stream()
+        List<String> userNicknames = req.getTags();
+
+        Map<String, User> userMap = userRepository.findAllByNicknameIn(userNicknames).stream()
+                .collect(Collectors.toMap(User::getNickname, user -> user));
+
+        List<TaggedFriends> newTaggedFriends = userNicknames.stream()
                 .map(tag -> {
-                    User taggedUser = userRepository.findByNickname(tag);
+//                    User taggedUser = userRepository.findByNickname(tag);
+                    User taggedUser = userMap.get(tag);
                     return req.toTagEntity(feed, taggedUser);
                 })
                 .collect(Collectors.toList());
         taggedFriendsRepository.saveAll(newTaggedFriends);
+    }
+
+    public List<Feed> findAllByNickname(String nickname) {
+        return feedRepository.findAllByNickname(nickname);
     }
 }

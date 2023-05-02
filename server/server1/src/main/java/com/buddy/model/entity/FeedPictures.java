@@ -1,4 +1,4 @@
-package com.buddy.model.entity.enums;
+package com.buddy.model.entity;
 
 import com.buddy.model.entity.Feed;
 import lombok.Getter;

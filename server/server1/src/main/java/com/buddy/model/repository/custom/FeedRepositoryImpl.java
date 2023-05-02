@@ -2,6 +2,7 @@ package com.buddy.model.repository.custom;
 
 import com.buddy.model.dto.FeedWithTagsDto;
 import com.buddy.model.dto.FeedWithTagsListDto;
+import com.buddy.model.dto.response.BriefFeedIngoDto;
 import com.buddy.model.entity.Feed;
 import com.buddy.model.entity.QFeed;
 import com.buddy.model.entity.QTaggedFriends;
@@ -22,7 +23,7 @@ import static com.buddy.model.entity.QTaggedFriends.taggedFriends;
 
 @Repository
 @RequiredArgsConstructor
-public class FeedRepositoryImpl implements FeedRepositoryCustom{
+public class FeedRepositoryImpl implements FeedRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
@@ -33,8 +34,12 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom{
                 .select(Projections.constructor(FeedWithTagsDto.class, feed, taggedFriends))
                 .from(feed)
                 .leftJoin(taggedFriends).on(feed.id.eq(taggedFriends.feed.id))
-                .where(feed.id.eq(id))
+                .where(feed.id.eq(id).and(feed.isDeleted.eq(false)))
                 .fetch();
+
+        if (results.isEmpty()) {
+            return null;
+        }
 
         return results;
     }
@@ -61,6 +66,16 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom{
         FeedWithTagsListDto feedWithTagsListDto = new FeedWithTagsListDto(feed, taggedFriends);
 
         return Optional.of(feedWithTagsListDto);
+    }
+
+    @Override
+    public List<BriefFeedIngoDto> findAllBriefInfoByUserId(Long userId) {
+        return queryFactory
+                .select(Projections.constructor(BriefFeedIngoDto.class, feed.id, feed.mainImg))
+                .from(feed)
+                .where(feed.user.id.eq(userId).and(feed.isDeleted.eq(false)))
+                .fetch();
+
     }
 
 }

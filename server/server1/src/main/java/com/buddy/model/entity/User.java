@@ -36,6 +36,7 @@ public class User {
     private String statusMessage;
 
     @Column(name = "u_roll")
+    @Enumerated(EnumType.STRING)
     private UserRoll userRoll;
 
     @Column(name = "u_withdrawal_at")
@@ -62,7 +63,6 @@ public class User {
         user.password = password;
         return user;
     }
-
 
     public void updateStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;

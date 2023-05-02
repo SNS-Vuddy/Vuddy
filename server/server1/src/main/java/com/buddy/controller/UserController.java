@@ -1,12 +1,12 @@
 package com.buddy.controller;
 
 import com.buddy.jwt.TokenProvider;
+import com.buddy.model.dto.UserWithFeedsDto;
 import com.buddy.model.dto.common.CommonRes;
 import com.buddy.model.dto.common.SingleRes;
 import com.buddy.model.dto.request.LoginReq;
 import com.buddy.model.dto.request.SignupReq;
 import com.buddy.model.dto.request.UserStatusChangeReq;
-import com.buddy.model.dto.response.FindUserRes;
 import com.buddy.model.dto.response.SignupRes;
 import com.buddy.model.entity.User;
 import com.buddy.model.service.UserService;
@@ -89,11 +89,18 @@ public class UserController {
 
     @GetMapping("/profile")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
-    public CommonRes getUserInfo(@RequestHeader("Authorization") String accessToken) {
-        String userNickname = tokenProvider.getUserNicknameFromToken(accessToken);
+    public CommonRes getMyInfoAndFeeds(@RequestHeader("Authorization") String accessToken) {
+        User user = userService.findByToken(accessToken);
+        UserWithFeedsDto userWithFeedsDto = userService.findUserAndFeeds(user);
+        return new SingleRes<>(200, "유저 정보 조회 성공", userWithFeedsDto);
+    }
+
+    @GetMapping("/profile/{userNickname}")
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public CommonRes getUserInfoAndFeeds(@RequestHeader("Authorization") String accessToken, @PathVariable String userNickname) {
         User user = userService.findByNickname(userNickname);
-        FindUserRes findUserRes = new FindUserRes(user.getNickname(), user.getProfileImage(), user.getStatusMessage());
-        return new SingleRes<>(200, "유저 정보 조회 성공", findUserRes);
+        UserWithFeedsDto userWithFeedsDto = userService.findUserAndFeeds(user);
+        return new SingleRes<>(200, "유저 정보 조회 성공", userWithFeedsDto);
     }
 
     @PutMapping("/profile/edit/status")
@@ -114,5 +121,15 @@ public class UserController {
         String accessToken = userService.createAccessToken(user);
 
         return new ResponseEntity<>(new SingleRes<>(200, "토큰 재발급 성공", accessToken), HttpStatus.OK);
+    }
+
+    // 더미 테스트 유저 토큰 발급용 API
+    @GetMapping("/vuddy/b305")
+    public ResponseEntity<CommonRes> getTest1Token() {
+        User testUser = userService.findByNickname("test1");
+        String accessToken = userService.createAccessToken(testUser);
+        String refreshToken = userService.createRefreshToken(testUser);
+        // "accessToken: "accessToken" 이런 형태의 JSON으로 리턴
+        return new ResponseEntity<>(new SignupRes(200, "로그인 성공", accessToken, refreshToken), HttpStatus.OK);
     }
 }
