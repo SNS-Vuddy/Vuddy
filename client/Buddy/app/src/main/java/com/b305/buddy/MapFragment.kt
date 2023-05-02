@@ -10,6 +10,7 @@ import androidx.navigation.findNavController
 import com.b305.buddy.databinding.FragmentMapBinding
 import com.b305.buddy.util.LocationProvider
 import com.b305.buddy.util.SharedManager
+import com.b305.buddy.util.Socket
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -22,9 +23,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
     lateinit var binding: FragmentMapBinding
     lateinit var mMap: GoogleMap
-    
-    var currentLat: Double = 37.4979769 // default: 강남역
-    var currentLng: Double = 127.027729
+    private var currentLat: Double = 37.4979769 // default: 강남역
+    private var currentLng: Double = 127.027729
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +40,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             sharedManager.removeCurrentToken()
             Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
+        }
+        
+        // 임시 3
+        binding.fabSendLocation.setOnClickListener {
+            val socket = Socket(requireContext())
+            socket.connection()
+            socket.sendLocation(currentLat.toString(), currentLng.toString())
         }
         
         // 임시2

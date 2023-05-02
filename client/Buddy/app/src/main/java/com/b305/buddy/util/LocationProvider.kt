@@ -57,9 +57,11 @@ class LocationProvider(val context: Context) {
                     if (gpsLocation.accuracy > networkLocation.accuracy) {
                         location = gpsLocation
                     } else {
+                        
+                        //Todo 모바일 환경에서는 아래 주석 해제하고 사용
                         location = networkLocation
                         
-                        // Todo 에뮬레이터 환경에서는 아래 주석 해제하고 사용
+                        //Todo 에뮬레이터 환경에서는 아래 주석 해제하고 사용
                         //location = gpsLocation
                     }
                 } else { // Case 2
