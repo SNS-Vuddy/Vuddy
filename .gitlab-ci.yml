@@ -1,0 +1,44 @@
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  # - test
+  - deploy
+
+build-job/tmp:       # This job runs in the build stage, which runs first.
+  stage: build
+  only:
+    - dev
+  script:
+    - echo "Compiling the code..."
+    - cd server/server1
+    - chmod +x gradlew
+    - ./gradlew clean bootJar
+    - docker build -t itmagician/b305-vuddy:test .
+    - echo "Compile complete."
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/server/server1/build/libs
+  
+
+deploy-job/tmp/clean:
+  stage: deploy
+  environment: production
+  only:
+    - dev
+  needs: ["build-job/tmp"]
+  allow_failure: true
+  when: on_success
+  script:
+    - docker container stop tmp 
+    - docker container rm tmp
+
+deploy-job/tmp/deploy:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  only:
+    - dev
+  needs: ["deploy-job/tmp/clean"]
+  when: on_success
+  script:
+    - echo "Deploying application..."
+    - docker run --name tmp -p 9001:8080 -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_URL=$MYSQL_URL -e MYSQL_USERNAME=$MYSQL_USERNAME -d itmagician/b305-vuddy:test
+    - echo "Application successfully deployed."
