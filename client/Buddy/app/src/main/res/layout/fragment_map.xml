@@ -25,7 +25,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline2" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_socket"
+        android:id="@+id/fab_send_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/grey"

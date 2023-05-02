@@ -1,9 +1,7 @@
 package com.b305.buddy.util
 
-import android.os.Bundle
+import android.content.Context
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import com.b305.buddy.databinding.ActivitySocketBinding
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -13,38 +11,13 @@ import okio.ByteString
 import org.json.JSONObject
 import java.time.LocalDateTime
 
-class SocketActivity : AppCompatActivity() {
+class Socket(context: Context) {
     private var client = OkHttpClient()
     private var url = "ws://192.168.31.14:8080/chat"
-    private lateinit var binding: ActivitySocketBinding
-    private val sharedManager: SharedManager by lazy { SharedManager(this) }
+    private val sharedManager: SharedManager by lazy { SharedManager(context) }
     private lateinit var webSocket: WebSocket
     
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySocketBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        
-        setButton()
-    }
-    
-    private fun setButton() {
-        binding.btnConnect.setOnClickListener {
-            connection()
-        }
-        
-        binding.btnChat.setOnClickListener {
-            var jsonObject = JSONObject()
-                .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
-                .put("nickname", sharedManager.getCurrentUser().nickname.toString())
-                .put("message", binding.etMessage.text.toString())
-                .put("localDateTime", LocalDateTime.now().toString())
-            
-            webSocket.send(jsonObject.toString())
-        }
-    }
-    
-    private fun connection() {
+    fun connection() {
         val request = Request.Builder()
             .url(url)
             .build()
@@ -67,5 +40,16 @@ class SocketActivity : AppCompatActivity() {
                 // 연결 실패 시 실행되는 코드를 작성합니다.
             }
         })
+    }
+    
+    fun sendLocation(latitude: String, longitude: String) {
+        var jsonObject = JSONObject()
+            .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
+            .put("nickname", sharedManager.getCurrentUser().nickname.toString())
+            .put("latitude", latitude)
+            .put("longitude", longitude)
+            .put("localDateTime", LocalDateTime.now().toString())
+        
+        webSocket.send(jsonObject.toString())
     }
 }
