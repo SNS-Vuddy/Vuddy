@@ -13,10 +13,13 @@ spring:
   ##    password:
   ##    driver-class-name: org.h2.Driver
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/vuddy?serverTimezone=Asia/Seoul&useSSL=false&tinyInt1isBit=false
-    username: root
-    password: 1234
+    # driver-class-name: com.mysql.cj.jdbc.Driver
+    # url: jdbc:mysql://127.0.0.1:3306/vuddy?serverTimezone=Asia/Seoul&useSSL=false&tinyInt1isBit=false
+    # username: root
+    # password: 1234
+    url: jdbc:mysql://k8b305.p.ssafy.io:3306/vuddy?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=true
+    username: ssafy
+    password: b305b305
 
   redis:
     lettuce:
