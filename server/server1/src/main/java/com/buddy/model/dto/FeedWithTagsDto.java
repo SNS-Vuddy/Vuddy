@@ -16,5 +16,4 @@ public class FeedWithTagsDto {
         this.taggedFriend = taggedFriend;
         this.feedLikes = feedLikes;
     }
-
 }

@@ -30,7 +30,6 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
 
     @Override
     public List<FeedWithTagsDto> findOneWithTags(Long id) {
-
         List<FeedWithTagsDto> results = queryFactory
                 .select(Projections.constructor(FeedWithTagsDto.class, feed, taggedFriends, feedLikes))
                 .from(feed)

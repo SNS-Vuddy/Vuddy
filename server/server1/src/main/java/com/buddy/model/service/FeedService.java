@@ -17,10 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,6 +79,15 @@ public class FeedService {
         boolean isLiked = result.stream()
                 .anyMatch(feedWithTagsResult -> feedWithTagsResult.getFeedLikes() != null);
 
+        Set<Long> likesCount = new HashSet<>();
+        result.stream()
+                .filter(feedWithTagsResult -> feedWithTagsResult.getFeedLikes() != null)
+                .forEach(feedWithTagsResult -> {
+                    FeedLikes feedLikes = feedWithTagsResult.getFeedLikes();
+                    likesCount.add(feedLikes.getId());
+                });
+
+
         return SingleFeedRes.builder()
                 .feedId(feed.getId())
                 .nickname(feed.getNickname())
@@ -91,6 +97,7 @@ public class FeedService {
                 .updatedAt(feed.getUpdatedAt().toString())
                 .isLiked(isLiked)
                 .taggedFriends(taggedFriendsList)
+                .likesCount((long) likesCount.size())
                 .build();
     }
 
