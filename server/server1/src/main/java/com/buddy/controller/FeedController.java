@@ -67,9 +67,9 @@ public class FeedController {
     }
 
     // 특정 유저 피드 전체 조회
-    @GetMapping("/feeds")
+    @GetMapping("/feeds/nickname/{nickname}")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
-    public ResponseEntity<ListRes<UserFeedsRes>> getUserAllFeed(@RequestHeader("Authorization") String token, @RequestParam String nickname) {
+    public ResponseEntity<ListRes<UserFeedsRes>> getUserAllFeed(@RequestHeader("Authorization") String token, @PathVariable String nickname) {
         List<Feed> allFeeds = feedService.findAllByNickname(nickname);
 
         List<UserFeedsRes> allUserFeedsRes = feedService.changeAllFeedsToDto(allFeeds);
@@ -92,6 +92,5 @@ public class FeedController {
         feedService.editFeed(feedId, req);
         return new CommonRes(200, "피드 수정 성공");
     }
-
 
 }

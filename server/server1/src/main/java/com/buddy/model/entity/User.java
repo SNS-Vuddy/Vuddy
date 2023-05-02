@@ -64,7 +64,6 @@ public class User {
         return user;
     }
 
-
     public void updateStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
     }

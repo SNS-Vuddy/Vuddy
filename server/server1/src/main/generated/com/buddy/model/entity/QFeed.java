@@ -28,6 +28,8 @@ public class QFeed extends EntityPathBase<Feed> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     public final StringPath location = createString("location");
 
     public final StringPath mainImg = createString("mainImg");

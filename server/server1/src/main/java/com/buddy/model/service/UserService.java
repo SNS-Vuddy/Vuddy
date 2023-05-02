@@ -1,13 +1,14 @@
 package com.buddy.model.service;
 
 import com.buddy.jwt.TokenProvider;
+import com.buddy.model.dto.UserWithFeedsDto;
+import com.buddy.model.dto.response.BriefFeedIngoDto;
 import com.buddy.model.entity.User;
+import com.buddy.model.repository.FeedRepository;
 import com.buddy.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
+    private final FeedRepository feedRepository;
 
     @Transactional
     public Long join(User user) {
@@ -71,5 +73,11 @@ public class UserService {
     public String createRefreshToken(User user) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getNickname(), user.getPassword(), Collections.singletonList(user.getUserRoll()));
         return tokenProvider.createRefreshToken(user);
+    }
+
+
+    public UserWithFeedsDto findUserAndFeeds(User user) {
+        List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(user.getId());
+        return new UserWithFeedsDto(user.getNickname(), user.getProfileImage(), user.getStatusMessage(), briefFeedIngoDtoList);
     }
 }

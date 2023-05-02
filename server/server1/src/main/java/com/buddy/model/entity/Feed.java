@@ -42,6 +42,9 @@ public class Feed {
     @Column(name = "f_updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "f_is_deleted")
+    private boolean isDeleted;
+
     public void updateContentAndLocation(String content, String location) {
         this.content = content;
         this.location = location;
