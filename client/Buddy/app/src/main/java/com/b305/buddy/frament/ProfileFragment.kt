@@ -1,11 +1,12 @@
 package com.b305.buddy.frament
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.buddy.R
 
@@ -14,6 +15,7 @@ class ProfileFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
     
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
@@ -28,6 +30,10 @@ class ProfileFragment : Fragment() {
         
         view.findViewById<ImageView>(R.id.iv_message).setOnClickListener {
             it.findNavController().navigate(R.id.action_profileFragment_to_messageFragment)
+        }
+        
+        view.findViewById<ImageView>(R.id.iv_write).setOnClickListener {
+            it.findNavController().navigate(R.id.action_profileFragment_to_writeFeedFragment)
         }
         
         return view

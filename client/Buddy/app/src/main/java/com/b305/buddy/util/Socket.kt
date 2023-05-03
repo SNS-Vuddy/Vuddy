@@ -25,6 +25,7 @@ class Socket(context: Context) {
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 // 연결이 성공적으로 열렸을 때 실행되는 코드를 작성합니다.
+                Log.d("onOpen", response.toString())
             }
             
             override fun onMessage(webSocket: WebSocket, text: String) {

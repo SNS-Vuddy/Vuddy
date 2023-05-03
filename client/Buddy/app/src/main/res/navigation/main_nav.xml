@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_mapFragment_to_signupActivity"
             app:destination="@id/signupActivity" />
+        <action
+            android:id="@+id/action_mapFragment_to_writeFeedFragment"
+            app:destination="@id/writeFeedFragment" />
     </fragment>
     <fragment
         android:id="@+id/friendFragment"
@@ -37,6 +40,12 @@
         <action
             android:id="@+id/action_friendFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_friendFragment_to_writeFeedFragment"
+            app:destination="@id/writeFeedFragment" />
+        <action
+            android:id="@+id/action_friendFragment_to_writeFeedFragment2"
+            app:destination="@id/writeFeedFragment" />
     </fragment>
     <fragment
         android:id="@+id/messageFragment"
@@ -52,6 +61,9 @@
         <action
             android:id="@+id/action_messageFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_messageFragment_to_writeFeedFragment"
+            app:destination="@id/writeFeedFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -67,10 +79,31 @@
         <action
             android:id="@+id/action_profileFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_writeFeedFragment"
+            app:destination="@id/writeFeedFragment" />
     </fragment>
     <activity
         android:id="@+id/signupActivity"
         android:name="com.b305.buddy.activity.AuthActivity"
         android:label="activity_signup"
         tools:layout="@layout/activity_auth" />
+    <fragment
+        android:id="@+id/writeFeedFragment"
+        android:name="com.b305.buddy.frament.WriteFeedFragment"
+        android:label="fragment_write_feed"
+        tools:layout="@layout/fragment_write_feed" >
+        <action
+            android:id="@+id/action_writeFeedFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_writeFeedFragment_to_friendFragment"
+            app:destination="@id/friendFragment" />
+        <action
+            android:id="@+id/action_writeFeedFragment_to_messageFragment"
+            app:destination="@id/messageFragment" />
+        <action
+            android:id="@+id/action_writeFeedFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 </navigation>

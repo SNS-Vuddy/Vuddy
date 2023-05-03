@@ -1,5 +1,6 @@
 package com.b305.buddy.frament
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,11 +8,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.b305.buddy.R
+import com.b305.buddy.activity.AuthActivity
 import com.b305.buddy.databinding.FragmentMapBinding
 import com.b305.buddy.util.LocationProvider
 import com.b305.buddy.util.SharedManager
-import com.b305.buddy.util.Socket
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -35,33 +37,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         
         binding = FragmentMapBinding.inflate(layoutInflater, container, false)
         
-        // 임시1
-        binding.fabLogout.setOnClickListener {
-            sharedManager.removeCurrentToken()
-            sharedManager.removeCurrentToken()
-            Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
-            it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
-        }
-        
-        // 임시 3
-        binding.fabSendLocation.setOnClickListener {
-            val socket = Socket(requireContext())
-            socket.connection()
-            socket.sendLocation(currentLat.toString(), currentLng.toString())
-        }
-        
-        // 임시2
-        binding.tvMap1.text = sharedManager.getCurrentUser().nickname
-        binding.tvMap2.text = sharedManager.getCurrentUser().password
-        binding.tvMap3.text = sharedManager.getCurrentToken().accessToken
-        binding.tvMap4.text = sharedManager.getCurrentToken().refreshToken
-        
         binding.ivFriend.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_friendFragment)
         }
+        
+        binding.ivWrite.setOnClickListener {
+            it.findNavController().navigate(R.id.action_mapFragment_to_writeFeedFragment)
+        }
+        
         binding.ivMessage.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_messageFragment)
         }
+        
         binding.ivProfile.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_profileFragment)
         }
@@ -87,6 +74,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.fabCurrentLocation.setOnClickListener {
             getLocation()
         }
+        binding.fabLogout.setOnClickListener {
+            logout()
+        }
+    }
+    
+    private fun logout() {
+        sharedManager.removeCurrentToken()
+        sharedManager.removeCurrentUser()
+        
+        this.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
     }
     
     private fun getLocation() {
