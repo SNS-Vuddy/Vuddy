@@ -1,6 +1,7 @@
 package com.buddy.controller;
 
 import com.buddy.jwt.TokenProvider;
+import com.buddy.model.dto.MyUserWithFeedsDto;
 import com.buddy.model.dto.UserWithFeedsDto;
 import com.buddy.model.dto.common.CommonRes;
 import com.buddy.model.dto.common.SingleRes;
@@ -33,9 +34,10 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    // 회원가입
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommonRes signup(@RequestBody @Valid SignupReq signupReq){
+    public CommonRes signup(@RequestBody @Valid SignupReq signupReq) {
 
         User signupUser = User.createNormalUser(signupReq.getNickname(), passwordEncoder.encode(signupReq.getPassword()), signupReq.getProfileImage(), signupReq.getStatusMessage());
         userService.join(signupUser);
@@ -49,6 +51,7 @@ public class UserController {
         return new SignupRes(201, "회원가입 성공", accessToken, refreshToken);
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<CommonRes> login(@RequestBody @Valid LoginReq loginReq) {
         User loginUser = userService.findByNickname(loginReq.getNickname());
@@ -88,21 +91,26 @@ public class UserController {
 //        user.setProfileImage(profileImage);
 //    }
 
+    // 내 프로필, 피드들 조회
     @GetMapping("/profile")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public CommonRes getMyInfoAndFeeds(@RequestHeader("Authorization") String accessToken) {
         User user = userService.findByToken(accessToken);
-        UserWithFeedsDto userWithFeedsDto = userService.findUserAndFeeds(user);
+        MyUserWithFeedsDto myUserWithFeedsDto = userService.findUserAndFeeds(user);
+        return new SingleRes<>(200, "유저 정보 조회 성공", myUserWithFeedsDto);
+    }
+
+    // 특정 유저 프로필, 피드들 조회
+    @GetMapping("/profile/{targetUserNickname}")
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public CommonRes getUserInfoAndFeeds(@RequestHeader("Authorization") String token, @PathVariable String targetUserNickname) {
+        String userNickname = tokenProvider.getUserNicknameFromToken(token);
+
+        UserWithFeedsDto userWithFeedsDto = userService.findUsersWithFriendStatus(userNickname, targetUserNickname);
+
         return new SingleRes<>(200, "유저 정보 조회 성공", userWithFeedsDto);
     }
 
-    @GetMapping("/profile/{userNickname}")
-    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
-    public CommonRes getUserInfoAndFeeds(@RequestHeader("Authorization") String accessToken, @PathVariable String userNickname) {
-        User user = userService.findByNickname(userNickname);
-        UserWithFeedsDto userWithFeedsDto = userService.findUserAndFeeds(user);
-        return new SingleRes<>(200, "유저 정보 조회 성공", userWithFeedsDto);
-    }
 
     @PutMapping("/profile/edit/status")
     public CommonRes editStatusMessage(@RequestHeader("Authorization") String accessToken, @RequestBody UserStatusChangeReq userStatusChangeReq) {

@@ -18,12 +18,14 @@ public class CommentController {
 
     private final CommentService commentService;
     private final TokenProvider tokenProvider;
+    private final TokenUtil tokenUtil;
 
     @PostMapping("/write/{feedId}")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public ResponseEntity<CommonRes> writeComment(@RequestHeader("Authorization") String token, @PathVariable Long feedId, @RequestBody CommentWriteReq req) {
 
         String userNickname = tokenProvider.getUserNicknameFromToken(token);
+//        String userNickname = tokenUtil.getUserNicknameFromToken(token);
         commentService.createComment(userNickname, feedId, req.getContent());
 
         return new ResponseEntity<>(new CommonRes(201, "댓글 작성 완료"), HttpStatus.CREATED);

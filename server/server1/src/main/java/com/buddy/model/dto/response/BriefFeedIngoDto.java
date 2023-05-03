@@ -11,4 +11,5 @@ public class BriefFeedIngoDto {
 
     private Long id;
     private String imageUrl;
+
 }

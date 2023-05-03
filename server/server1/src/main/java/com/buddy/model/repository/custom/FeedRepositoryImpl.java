@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import static com.buddy.model.entity.QFeed.feed;
 import static com.buddy.model.entity.QTaggedFriends.taggedFriends;
 import static com.buddy.model.entity.QFeedLikes.feedLikes;
+import static com.buddy.model.entity.QComments.comments;
 
 @Repository
 @RequiredArgsConstructor
@@ -31,10 +32,11 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
     @Override
     public List<FeedWithTagsDto> findOneWithTags(Long id) {
         List<FeedWithTagsDto> results = queryFactory
-                .select(Projections.constructor(FeedWithTagsDto.class, feed, taggedFriends, feedLikes))
+                .select(Projections.constructor(FeedWithTagsDto.class, feed, taggedFriends, feedLikes, comments))
                 .from(feed)
                 .leftJoin(taggedFriends).on(feed.id.eq(taggedFriends.feed.id))
                 .leftJoin(feedLikes).on(feed.id.eq(feedLikes.feed.id))
+                .leftJoin(comments).on(feed.id.eq(comments.feed.id))
                 .where(feed.id.eq(id).and(feed.isDeleted.eq(false)))
                 .fetch();
 
@@ -78,6 +80,8 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                 .fetch();
 
     }
+
+
 
 
 }

@@ -19,4 +19,5 @@ public class SingleFeedRes {
     private boolean isLiked;
     private List<String> taggedFriends;
     private Long likesCount;
+    private Long commentsCount;
 }

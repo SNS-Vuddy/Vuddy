@@ -88,7 +88,8 @@ public class FeedController {
     @GetMapping("/{feedId}")
     @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public SingleRes<SingleFeedRes> getFeedDetail(@PathVariable Long feedId, @RequestHeader("Authorization") String token) {
-        SingleFeedRes oneByFeedId = feedService.findOneByFeedId(feedId);
+        String nickname = tokenProvider.getUserNicknameFromToken(token);
+        SingleFeedRes oneByFeedId = feedService.findOneByFeedId(feedId, nickname);
         return new SingleRes<>(200, "피드 상세 조회 성공", oneByFeedId);
     }
 

@@ -1,7 +1,6 @@
 package com.buddy.model.dto;
 
 import com.buddy.model.dto.response.BriefFeedIngoDto;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,14 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserWithFeedsDto {
+public class MyUserWithFeedsDto {
 
     private String nickname;
     private String profileImage;
     private String statusMessage;
     private List<BriefFeedIngoDto> feeds;
-    private boolean canISeeFeeds;
-    @JsonProperty("isFriend")
-    private boolean isFriend;
 
 }

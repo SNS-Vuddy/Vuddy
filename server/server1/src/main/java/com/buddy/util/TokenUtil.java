@@ -11,7 +11,7 @@ public class TokenUtil {
 
     private static Key key;
 
-    public static String getUserNicknameFromToken(String token) {
+    public String getUserNicknameFromToken(String token) {
 
         String assertToken = token.substring(7);
 

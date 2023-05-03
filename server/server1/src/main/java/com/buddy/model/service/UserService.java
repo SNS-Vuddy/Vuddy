@@ -1,7 +1,9 @@
 package com.buddy.model.service;
 
 import com.buddy.jwt.TokenProvider;
+import com.buddy.model.dto.MyUserWithFeedsDto;
 import com.buddy.model.dto.UserWithFeedsDto;
+import com.buddy.model.dto.UserWithFriendDto;
 import com.buddy.model.dto.response.BriefFeedIngoDto;
 import com.buddy.model.entity.User;
 import com.buddy.model.repository.FeedRepository;
@@ -14,7 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,9 +80,36 @@ public class UserService {
         return tokenProvider.createRefreshToken(user);
     }
 
+    public UserWithFeedsDto findUsersWithFriendStatus(String myNickname, String userNickname) {
 
-    public UserWithFeedsDto findUserAndFeeds(User user) {
-        List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(user.getId());
-        return new UserWithFeedsDto(user.getNickname(), user.getProfileImage(), user.getStatusMessage(), briefFeedIngoDtoList);
+        List<User> users = findAllByNicknameIn(List.of(myNickname, userNickname));
+
+        Map<String, User> userMap = users.stream().collect(Collectors.toMap(User::getNickname, Function.identity()));
+        User myUser = userMap.get(myNickname);
+        User targetUser = userMap.get(userNickname);
+
+        boolean isFriend = userRepository.existsByMyUserNicknameAndTargetUserNickname(myNickname, userNickname);
+
+
+
+        UserWithFriendDto userWithFriendDto = new UserWithFriendDto(myUser, targetUser, isFriend);
+
+        List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(myUser.getId());
+
+        return UserWithFeedsDto.builder()
+                .nickname(userWithFriendDto.getMyUser().getNickname())
+                .profileImage(userWithFriendDto.getMyUser().getProfileImage())
+                .statusMessage(userWithFriendDto.getMyUser().getStatusMessage())
+                .feeds(briefFeedIngoDtoList)
+                .canISeeFeeds(true)
+                .isFriend(userWithFriendDto.getIsFriend())
+                .build();
+    }
+
+
+    public MyUserWithFeedsDto findUserAndFeeds(User myUser) {
+        List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(myUser.getId());
+
+        return new MyUserWithFeedsDto(myUser.getNickname(), myUser.getProfileImage(), myUser.getStatusMessage(), briefFeedIngoDtoList);
     }
 }

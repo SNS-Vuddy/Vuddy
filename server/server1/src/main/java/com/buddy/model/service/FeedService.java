@@ -5,10 +5,7 @@ import com.buddy.model.dto.FeedWithTagsListDto;
 import com.buddy.model.dto.request.FeedEditReq;
 import com.buddy.model.dto.response.SingleFeedRes;
 import com.buddy.model.dto.response.UserFeedsRes;
-import com.buddy.model.entity.Feed;
-import com.buddy.model.entity.FeedLikes;
-import com.buddy.model.entity.TaggedFriends;
-import com.buddy.model.entity.User;
+import com.buddy.model.entity.*;
 import com.buddy.model.repository.FeedLikesRepository;
 import com.buddy.model.repository.FeedRepository;
 import com.buddy.model.repository.TaggedFriendsRepository;
@@ -59,9 +56,8 @@ public class FeedService {
     }
 
 
-    public SingleFeedRes findOneByFeedId(Long feedId) {
+    public SingleFeedRes findOneByFeedId(Long feedId, String nickname) {
         List<FeedWithTagsDto> result = feedRepository.findOneWithTags(feedId);
-
         if (result.isEmpty()) {
             return null;
         }
@@ -69,24 +65,25 @@ public class FeedService {
         Feed feed = result.get(0).getFeed();
 
         List<String> taggedFriendsList = result.stream()
-                .filter(feedWithTagsResult -> feedWithTagsResult.getTaggedFriend() != null)
-                .map(feedWithTagsResult -> {
-                    TaggedFriends taggedFriend = feedWithTagsResult.getTaggedFriend();
-                    return taggedFriend.getNickname();
-                })
+                .map(FeedWithTagsDto::getTaggedFriend)
+                .filter(Objects::nonNull)
+                .map(TaggedFriends::getNickname)
                 .collect(Collectors.toList());
 
         boolean isLiked = result.stream()
-                .anyMatch(feedWithTagsResult -> feedWithTagsResult.getFeedLikes() != null);
+                .anyMatch(feedWithTagsResult -> Objects.equals(feedWithTagsResult.getFeedLikes().getUser().getNickname(), nickname));
 
-        Set<Long> likesCount = new HashSet<>();
-        result.stream()
-                .filter(feedWithTagsResult -> feedWithTagsResult.getFeedLikes() != null)
-                .forEach(feedWithTagsResult -> {
-                    FeedLikes feedLikes = feedWithTagsResult.getFeedLikes();
-                    likesCount.add(feedLikes.getId());
-                });
+        Set<Long> likesCount = result.stream()
+                .map(FeedWithTagsDto::getFeedLikes)
+                .filter(Objects::nonNull)
+                .map(FeedLikes::getId)
+                .collect(Collectors.toSet());
 
+        Set<Long> commentsCount = result.stream()
+                .map(FeedWithTagsDto::getComments)
+                .filter(Objects::nonNull)
+                .map(Comments::getId)
+                .collect(Collectors.toSet());
 
         return SingleFeedRes.builder()
                 .feedId(feed.getId())
@@ -98,6 +95,7 @@ public class FeedService {
                 .isLiked(isLiked)
                 .taggedFriends(taggedFriendsList)
                 .likesCount((long) likesCount.size())
+                .commentsCount((long) commentsCount.size())
                 .build();
     }
 
