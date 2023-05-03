@@ -25,16 +25,29 @@ class AdminActivity : AppCompatActivity() {
         binding = ActivityAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
+        setButton()
+    }
+    
+    private fun sendLocation() {
+        val locationProvider = LocationProvider(this)
+        val latitude = locationProvider.getLocationLatitude().toString()
+        val longitude = locationProvider.getLocationLongitude().toString()
         
+        socket.sendLocation(latitude, longitude)
+    }
+    
+    private fun setButton() {
+        // 로그아웃 버튼
         binding.btnLogout.setOnClickListener {
             sharedManager.removeCurrentToken()
-            sharedManager.removeCurrentToken()
+            sharedManager.removeCurrentUser()
             Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, AuthActivity::class.java)
             startActivity(intent)
             finish()
         }
         
+        // 소켓 연결 버튼
         binding.btnConnect.setOnClickListener {
             Log.d("AdminActivity", "connection")
             socket.connection()
@@ -48,20 +61,35 @@ class AdminActivity : AppCompatActivity() {
                 handler.postDelayed(this, 3000)
             }
         }
+        
+        // 소켓 인터벌 전송 버튼
         binding.btnSend.setOnClickListener {
             handler.post(runnable)
         }
         
+        // 소켓 인터벌 전송 정지 버튼
         binding.btnStop.setOnClickListener {
             handler.removeCallbacks(runnable)
         }
-    }
-    
-    private fun sendLocation() {
-        val locationProvider = LocationProvider(this)
-        val latitude = locationProvider.getLocationLatitude().toString()
-        val longitude = locationProvider.getLocationLongitude().toString()
         
-        socket.sendLocation(latitude, longitude)
+        // 이모탈 시작 버튼
+        binding.btnStartImmortal.setOnClickListener {
+            Log.d("AdminActivity: btnStartImmortal", "Click")
+        }
+        
+        // 서비스 A 정지 버튼
+        binding.btnEndA.setOnClickListener {
+            Log.d("AdminActivity: btnEndA", "Click")
+        }
+        
+        // 서비스 B 정지 버튼
+        binding.btnEndB.setOnClickListener {
+            Log.d("AdminActivity: btnEndB", "Click")
+        }
+        
+        // 서비스 둘다 정지 버튼
+        binding.btnEndBoth.setOnClickListener {
+            Log.d("AdminActivity: btnEndBoth", "Click")
+        }
     }
 }

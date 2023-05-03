@@ -13,7 +13,6 @@
         android:gravity="center"
         android:text="ADMIN"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -52,5 +51,39 @@
         android:textSize="30sp"
         app:layout_constraintTop_toBottomOf="@+id/btn_send" />
 
+    <Button
+        android:id="@+id/btn_start_immortal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="start immortal"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@+id/btn_stop" />
 
+    <Button
+        android:id="@+id/btn_end_a"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="end a"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@+id/btn_start_immortal" />
+
+    <Button
+        android:id="@+id/btn_end_b"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="end b"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@+id/btn_end_a" />
+
+    <Button
+        android:id="@+id/btn_end_both"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="end both"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@+id/btn_end_b" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,12 +1,16 @@
 package com.b305.buddy.frament
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.b305.buddy.R
+import com.b305.buddy.activity.AuthActivity
 import com.b305.buddy.databinding.FragmentMapBinding
 import com.b305.buddy.util.LocationProvider
 import com.b305.buddy.util.SharedManager
@@ -64,6 +68,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.fabCurrentLocation.setOnClickListener {
             getLocation()
         }
+        binding.fabLogout.setOnClickListener {
+            logout()
+        }
+    }
+    
+    private fun logout() {
+        sharedManager.removeCurrentToken()
+        sharedManager.removeCurrentUser()
+        
+        this.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
     }
     
     private fun getLocation() {
