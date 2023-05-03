@@ -1,4 +1,4 @@
-package com.b305.buddy
+package com.b305.buddy.activity
 
 import android.Manifest
 import android.content.DialogInterface
@@ -8,7 +8,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts

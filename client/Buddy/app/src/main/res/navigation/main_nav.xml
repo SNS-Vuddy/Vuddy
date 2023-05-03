@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.b305.buddy.MapFragment"
+        android:name="com.b305.buddy.frament.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/friendFragment"
-        android:name="com.b305.buddy.FriendFragment"
+        android:name="com.b305.buddy.frament.FriendFragment"
         android:label="fragment_friend"
         tools:layout="@layout/fragment_friend" >
         <action
@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/messageFragment"
-        android:name="com.b305.buddy.MessageFragment"
+        android:name="com.b305.buddy.frament.MessageFragment"
         android:label="fragment_message"
         tools:layout="@layout/fragment_message" >
         <action
@@ -55,7 +55,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.b305.buddy.ProfileFragment"
+        android:name="com.b305.buddy.frament.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -70,7 +70,7 @@
     </fragment>
     <activity
         android:id="@+id/signupActivity"
-        android:name="com.b305.buddy.AuthActivity"
+        android:name="com.b305.buddy.activity.AuthActivity"
         android:label="activity_signup"
         tools:layout="@layout/activity_auth" />
 </navigation>

@@ -1,4 +1,4 @@
-package com.b305.buddy
+package com.b305.buddy.frament
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.navigation.findNavController
+import com.b305.buddy.R
 
 class ProfileFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
