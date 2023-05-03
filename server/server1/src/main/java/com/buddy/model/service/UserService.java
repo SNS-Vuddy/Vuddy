@@ -88,11 +88,9 @@ public class UserService {
         User myUser = userMap.get(myNickname);
         User targetUser = userMap.get(userNickname);
 
-        boolean isFriend = userRepository.existsByMyUserNicknameAndTargetUserNickname(myNickname, userNickname);
+        String friendStatus = userRepository.existsByMyUserNicknameAndTargetUserNickname(myNickname, userNickname);
 
-
-
-        UserWithFriendDto userWithFriendDto = new UserWithFriendDto(myUser, targetUser, isFriend);
+        UserWithFriendDto userWithFriendDto = new UserWithFriendDto(myUser, targetUser, friendStatus);
 
         List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(myUser.getId());
 
@@ -102,7 +100,7 @@ public class UserService {
                 .statusMessage(userWithFriendDto.getMyUser().getStatusMessage())
                 .feeds(briefFeedIngoDtoList)
                 .canISeeFeeds(true)
-                .isFriend(userWithFriendDto.getIsFriend())
+                .isFriend(friendStatus)
                 .build();
     }
 

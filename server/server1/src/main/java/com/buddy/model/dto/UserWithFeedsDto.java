@@ -21,6 +21,6 @@ public class UserWithFeedsDto {
     private List<BriefFeedIngoDto> feeds;
     private boolean canISeeFeeds;
     @JsonProperty("isFriend")
-    private boolean isFriend;
+    private String isFriend;
 
 }

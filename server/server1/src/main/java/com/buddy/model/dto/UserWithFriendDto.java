@@ -11,7 +11,7 @@ import lombok.Setter;
 public class UserWithFriendDto {
     private User myUser;
     private User targetUser;
-    private boolean isFriend;
+    private String isFriend;
 
     public User getMyUser() {
         return myUser;
@@ -22,7 +22,7 @@ public class UserWithFriendDto {
     }
 
     @JsonGetter("isFriend")
-    public boolean getIsFriend() {
+    public String getIsFriend() {
         return isFriend;
     }
 }

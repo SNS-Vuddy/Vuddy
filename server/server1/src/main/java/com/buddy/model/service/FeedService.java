@@ -68,10 +68,15 @@ public class FeedService {
                 .map(FeedWithTagsDto::getTaggedFriend)
                 .filter(Objects::nonNull)
                 .map(TaggedFriends::getNickname)
+                .distinct()
                 .collect(Collectors.toList());
 
         boolean isLiked = result.stream()
-                .anyMatch(feedWithTagsResult -> Objects.equals(feedWithTagsResult.getFeedLikes().getUser().getNickname(), nickname));
+                .map(FeedWithTagsDto::getFeedLikes)
+                .filter(Objects::nonNull)
+                .map(FeedLikes::getUser)
+                .filter(Objects::nonNull)
+                .anyMatch(user -> Objects.equals(user.getNickname(), nickname));
 
         Set<Long> likesCount = result.stream()
                 .map(FeedWithTagsDto::getFeedLikes)

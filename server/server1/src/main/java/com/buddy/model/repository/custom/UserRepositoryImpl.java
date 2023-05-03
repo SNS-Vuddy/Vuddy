@@ -32,23 +32,30 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         User user2 = result.get(userFriends.receiveUser);
         UserFriendStatus status = result.get(userFriends.status);
 
-        return new UserWithFriendDto(user1, user2, status == UserFriendStatus.ACCEPTED);
+//        return new UserWithFriendDto(user1, user2, status == UserFriendStatus.ACCEPTED);
+        return new UserWithFriendDto(user1, user2, "안쓰는건데");
     }
 
     @Override
-    public boolean existsByMyUserNicknameAndTargetUserNickname(String myUserNickname, String targetUserNickname) {
+    public String existsByMyUserNicknameAndTargetUserNickname(String myUserNickname, String targetUserNickname) {
 
 
-        long count = queryFactory
-                .select(user)
+        Tuple tuple = queryFactory
+                .select(user, userFriends.status)
                 .from(user)
                 .join(userFriends).on(userFriends.requestUser.eq(user))
                 .where((user.nickname.eq(myUserNickname).and(userFriends.receiveUser.nickname.eq(targetUserNickname)))
                         .or(user.nickname.eq(targetUserNickname).and(userFriends.receiveUser.nickname.eq(myUserNickname))))
-                .fetch()
-                .size();
+                .fetchFirst();
 
-        return count > 0;
+        // 없는경우 No를 리턴
+        if (tuple == null) {
+            return "No";
+        } else if (tuple.get(userFriends.status) == UserFriendStatus.ACCEPTED) {
+            return "Yes";
+        } else {
+            return "Pending";
+        }
 
     }
 
