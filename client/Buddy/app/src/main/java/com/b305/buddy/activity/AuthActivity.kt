@@ -1,13 +1,13 @@
-package com.b305.buddy
+package com.b305.buddy.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
+import com.b305.buddy.R
 import com.b305.buddy.databinding.ActivityAuthBinding
 import com.b305.buddy.model.AuthRequest
 import com.b305.buddy.model.AuthResponse

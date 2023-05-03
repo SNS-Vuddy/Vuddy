@@ -1,4 +1,4 @@
-package com.b305.buddy
+package com.b305.buddy.frament
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.b305.buddy.util.ProfileAdapter
+import com.b305.buddy.R
+import com.b305.buddy.model.Profiles
 
 class FriendFragment : Fragment() {
 

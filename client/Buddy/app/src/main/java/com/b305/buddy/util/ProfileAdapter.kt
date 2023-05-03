@@ -1,4 +1,4 @@
-package com.b305.buddy
+package com.b305.buddy.util
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +8,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.b305.buddy.R
+import com.b305.buddy.model.Profiles
 
 class ProfileAdapter(private val profileLsit: ArrayList<Profiles>) : RecyclerView.Adapter<ProfileAdapter.CustomViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileAdapter.CustomViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_list_item, parent, false)
         return CustomViewHolder(view).apply {
             itemView.setOnClickListener {
@@ -23,7 +25,7 @@ class ProfileAdapter(private val profileLsit: ArrayList<Profiles>) : RecyclerVie
         }
     }
 
-    override fun onBindViewHolder(holder: ProfileAdapter.CustomViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         val currentItem = profileLsit[position]
         holder.gender.setImageResource(currentItem.gender)
         holder.name.text = currentItem.name
