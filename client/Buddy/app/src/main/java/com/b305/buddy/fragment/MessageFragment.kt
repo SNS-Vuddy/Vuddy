@@ -1,4 +1,4 @@
-package com.b305.buddy.frament
+package com.b305.buddy.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle

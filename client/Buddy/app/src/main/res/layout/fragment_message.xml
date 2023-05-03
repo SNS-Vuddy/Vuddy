@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".frament.MessageFragment">
+    tools:context=".fragment.MessageFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

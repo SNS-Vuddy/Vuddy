@@ -74,22 +74,22 @@ class AdminActivity : AppCompatActivity() {
         
         // 이모탈 시작 버튼
         binding.btnStartImmortal.setOnClickListener {
-            Log.d("AdminActivity: btnStartImmortal", "Click")
+            Log.d("AdminActivity", "Click Immortal Button")
         }
         
         // 서비스 A 정지 버튼
         binding.btnEndA.setOnClickListener {
-            Log.d("AdminActivity: btnEndA", "Click")
+            Log.d("AdminActivity", "Click EndA Button")
         }
         
         // 서비스 B 정지 버튼
         binding.btnEndB.setOnClickListener {
-            Log.d("AdminActivity: btnEndB", "Click")
+            Log.d("AdminActivity", "Click EndB Button")
         }
         
         // 서비스 둘다 정지 버튼
         binding.btnEndBoth.setOnClickListener {
-            Log.d("AdminActivity: btnEndBoth", "Click")
+            Log.d("AdminActivity", "Click EndBoth Button")
         }
     }
 }
