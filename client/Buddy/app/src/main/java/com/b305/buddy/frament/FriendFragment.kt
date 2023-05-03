@@ -14,14 +14,14 @@ import com.b305.buddy.R
 import com.b305.buddy.model.Profiles
 
 class FriendFragment : Fragment() {
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
+    
     private lateinit var profileAdapter: ProfileAdapter
     private lateinit var recyclerView: RecyclerView
-
+    
     private val profileList: ArrayList<Profiles> = arrayListOf(
         Profiles(R.drawable.man, "user1", "status1"),
         Profiles(R.drawable.woman, "user2", "status2"),
@@ -34,7 +34,7 @@ class FriendFragment : Fragment() {
         Profiles(R.drawable.man, "user9", "status9"),
         Profiles(R.drawable.woman, "user10", "status10"),
     )
-
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         
         val view = inflater.inflate(R.layout.fragment_friend, container, false)
@@ -42,7 +42,9 @@ class FriendFragment : Fragment() {
         view.findViewById<ImageView>(R.id.iv_map).setOnClickListener {
             it.findNavController().navigate(R.id.action_friendFragment_to_mapFragment)
         }
-        
+        view.findViewById<ImageView>(R.id.iv_write).setOnClickListener {
+            it.findNavController().navigate(R.id.action_friendFragment_to_writeFeedFragment)
+        }
         view.findViewById<ImageView>(R.id.iv_message).setOnClickListener {
             it.findNavController().navigate(R.id.action_friendFragment_to_messageFragment)
         }
@@ -53,10 +55,10 @@ class FriendFragment : Fragment() {
         
         return view
     }
-
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        
         val layoutManager = LinearLayoutManager(context)
         recyclerView = view.findViewById(R.id.rv_profile)
         recyclerView.layoutManager = layoutManager

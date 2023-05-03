@@ -40,9 +40,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.ivFriend.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_friendFragment)
         }
+        
+        binding.ivWrite.setOnClickListener {
+            it.findNavController().navigate(R.id.action_mapFragment_to_writeFeedFragment)
+        }
+        
         binding.ivMessage.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_messageFragment)
         }
+        
         binding.ivProfile.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_profileFragment)
         }
