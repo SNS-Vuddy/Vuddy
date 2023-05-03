@@ -105,8 +105,8 @@ public class FeedController {
     @PostMapping("/like/{feedId}")
     public ResponseEntity<?> likeFeed(@PathVariable Long feedId, @RequestHeader("Authorization") String token) {
         String nickname = tokenProvider.getUserNicknameFromToken(token);
-        feedService.likeFeed(feedId, nickname);
-        return new ResponseEntity<>(new CommonRes(200, "좋아요 / 좋아요 취소가 완료되었습니다."), HttpStatus.OK);
+        String msg = feedService.likeFeed(feedId, nickname);
+        return new ResponseEntity<>(new CommonRes(200, msg), HttpStatus.OK);
     }
 
 }

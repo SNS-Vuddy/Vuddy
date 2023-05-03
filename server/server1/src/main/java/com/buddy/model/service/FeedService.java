@@ -137,7 +137,7 @@ public class FeedService {
     }
 
     @Transactional
-    public void likeFeed(Long feedId, String nickname) {
+    public String likeFeed(Long feedId, String nickname) {
 
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 피드가 존재하지 않습니다."));
@@ -148,9 +148,11 @@ public class FeedService {
 
         if (findFeedLike.isPresent()) {
             feedLikesRepository.delete(findFeedLike.get());
+            return "좋아요 취소 성공";
         } else {
             FeedLikes feedLikes = FeedLikes.createLike(feed, user);
             feedLikesRepository.save(feedLikes);
+            return "좋아요 성공";
         }
     }
 }
