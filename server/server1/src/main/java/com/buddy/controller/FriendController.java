@@ -1,8 +1,11 @@
 package com.buddy.controller;
 
+import com.buddy.jwt.TokenProvider;
 import com.buddy.model.dto.AllFriendDto;
+import com.buddy.model.dto.FriendAndNoFriendDto;
 import com.buddy.model.dto.common.CommonRes;
 import com.buddy.model.dto.common.ListRes;
+import com.buddy.model.dto.common.SingleRes;
 import com.buddy.model.dto.request.RequestAddFriendReq;
 import com.buddy.model.entity.User;
 import com.buddy.model.entity.enums.UserFriendStatus;
@@ -25,6 +28,7 @@ public class FriendController {
 
     private final UserService userService;
     private final FriendService friendService;
+    private final TokenProvider tokenProvider;
 
 
     //친구 추가 요청
@@ -110,6 +114,17 @@ public class FriendController {
         User user = userService.findByToken(token);
         List<AllFriendDto> friends = friendService.findAllFriend(user);
         return ResponseEntity.ok(new ListRes<>(200, "친구 전체 조회 성공", friends));
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public ResponseEntity<CommonRes> searchFriend(@RequestHeader("Authorization") String token, @RequestParam("nickname") String nickname) {
+
+        String myNickname = tokenProvider.getUserNicknameFromToken(token);
+
+        FriendAndNoFriendDto friendAndNoFriendDto = friendService.searchFriend(myNickname, nickname);
+
+        return ResponseEntity.ok(new SingleRes<>(200, "친구 검색 성공", friendAndNoFriendDto));
     }
 
 }

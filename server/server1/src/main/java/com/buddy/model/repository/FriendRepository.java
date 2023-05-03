@@ -4,6 +4,7 @@ import com.buddy.model.dto.AllFriendDto;
 import com.buddy.model.entity.User;
 import com.buddy.model.entity.UserFriends;
 import com.buddy.model.entity.enums.UserFriendStatus;
+import com.buddy.model.repository.custom.FriendRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FriendRepository extends JpaRepository<UserFriends, Long> {
+public interface FriendRepository extends JpaRepository<UserFriends, Long>, FriendRepositoryCustom {
 
     boolean existsByRequestUserAndReceiveUser(User requester, User receiver);
 

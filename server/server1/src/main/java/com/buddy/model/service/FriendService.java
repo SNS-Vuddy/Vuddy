@@ -2,6 +2,7 @@ package com.buddy.model.service;
 
 import com.buddy.exception.FriendRequestNotFoundException;
 import com.buddy.model.dto.AllFriendDto;
+import com.buddy.model.dto.FriendAndNoFriendDto;
 import com.buddy.model.entity.User;
 import com.buddy.model.entity.UserFriends;
 import com.buddy.model.entity.enums.UserFriendStatus;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -67,5 +67,9 @@ public class FriendService {
     public List<AllFriendDto> findAllFriend(User user) {
         List<AllFriendDto> allFriendDtoList =  friendRepository.findAllByRequestUserAndStatusIs(user, UserFriendStatus.ACCEPTED);
         return allFriendDtoList;
+    }
+
+    public FriendAndNoFriendDto searchFriend(String myNickname, String nickname) {
+        return friendRepository.findMyFriendAndNoFriend(myNickname, nickname);
     }
 }
