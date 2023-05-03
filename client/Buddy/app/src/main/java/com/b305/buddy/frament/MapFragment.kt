@@ -35,27 +35,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         
         binding = FragmentMapBinding.inflate(layoutInflater, container, false)
         
-        // 임시1
-        binding.fabLogout.setOnClickListener {
-            sharedManager.removeCurrentToken()
-            sharedManager.removeCurrentToken()
-            Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
-            it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
-        }
-        
-        // 임시 3
-        binding.fabSendLocation.setOnClickListener {
-            val socket = Socket(requireContext())
-            socket.connection()
-            socket.sendLocation(currentLat.toString(), currentLng.toString())
-        }
-        
-        // 임시2
-        binding.tvMap1.text = sharedManager.getCurrentUser().nickname
-        binding.tvMap2.text = sharedManager.getCurrentUser().password
-        binding.tvMap3.text = sharedManager.getCurrentToken().accessToken
-        binding.tvMap4.text = sharedManager.getCurrentToken().refreshToken
-        
         binding.ivFriend.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_friendFragment)
         }

@@ -45,6 +45,12 @@ class SplashActivity : AppCompatActivity() {
         val password = user.password
         
         Handler().postDelayed({
+            // Todo : admin
+            if (sharedManager.getCurrentUser().nickname == "admin") {
+                val intent = Intent(this, AdminActivity::class.java)
+                startActivity(intent)
+                return@postDelayed
+            }
             if (accessToken == "" || refreshToken == "" || nickname == "" || password == "") {
                 val intent = Intent(this, AuthActivity::class.java)
                 startActivity(intent)

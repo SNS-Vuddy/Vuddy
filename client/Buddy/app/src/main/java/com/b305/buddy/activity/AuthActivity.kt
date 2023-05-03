@@ -1,6 +1,5 @@
 package com.b305.buddy.activity
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -83,7 +82,6 @@ class AuthActivity : AppCompatActivity() {
         }
     }
     
-    @SuppressLint("ResourceAsColor")
     private fun checkInput() {
         val nickname = binding.etNickname.text.toString()
         val password = binding.etPassword.text.toString()
@@ -167,6 +165,14 @@ class AuthActivity : AppCompatActivity() {
                     
                     val message: String = result?.message.toString()
                     Toast.makeText(this@AuthActivity, message, Toast.LENGTH_SHORT).show()
+                    
+                    // Todo : 관리자 페이지로 이동
+                    if (nickname == "admin") {
+                        val intent = Intent(this@AuthActivity, AdminActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                        return
+                    }
                     
                     val intent = Intent(this@AuthActivity, MainActivity::class.java)
                     startActivity(intent)
