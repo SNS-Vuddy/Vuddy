@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="grey">#808080</color>
+    <color name="selected">#B59EE2</color>
+    <color name="unselected">#FFFFFFFF</color>
+
+    <color name="auth_error">#FF0000</color>
+    <color name="auth_success">#B59EE2</color>
+</resources>

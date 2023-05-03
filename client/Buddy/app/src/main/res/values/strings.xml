@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Buddy</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="auth_nickname_empty">닉네임을 입력하세요.</string>
+    <string name="auth_password_empty">패스워드를 입력하세요.</string>
+    <string name="auth_nickname_length_error">닉네임은 4글자 이상 20글자 이하로 입력하세요.</string>
+    <string name="auth_password_length_error">패스워드는 8글자 이상 20글자 이하로 입력하세요.</string>
+    <string name="auth_password_confirm_error">패스워드가 일치하지 않습니다.</string>
+    <string name="auth_password_confirm_success">패스워드가 일치합니다.</string>
+    <string name="auth_success">확인 버튼을 눌러주세요.</string>
+</resources>
