@@ -1,0 +1,74 @@
+
+spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/BUDDY_LOCAL?serverTimezone=UTC&characterEncoding=UTF-8
+#    username: root
+#    password: 1234
+#  #    원래 꺼
+##    url: jdbc:h2:tcp://localhost/~/jpashop
+##    #    jwt테스트용
+##    #    url: jdbc:h2:mem:testdb
+##    username: sa
+##    password:
+##    driver-class-name: org.h2.Driver
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/buddy?serverTimezone=Asia/Seoul&useSSL=false&tinyInt1isBit=false
+    username: root
+    password: 1234
+
+  redis:
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 2
+    port: 6379
+    host: 127.0.0.1
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+#      ddl-auto: create
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 100
+
+jwt:
+  header: Authorization
+  #HS512 알고리즘을 사용할 것이기 때문에 512bit, 즉 64byte 이상의 secret key를 사용해야 한다.
+  #echo 'silvernine-tech-spring-boot-jwt-tutorial-secret-silvernine-tech-spring-boot-jwt-tutorial-secret'|base64
+  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10sdf324sdfsffd2223ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+  # 액세스 토큰 만료시간
+  token-validity-in-seconds: 315576000000
+  # 리프레시 토큰 만료시간
+  refresh-token-validity-in-seconds: 315576000000
+
+logging.level:
+  org.hibernate.SQL: debug
+#  org.hibernate.type: trace
+  com:
+    amazonaws:
+      util:
+        EC2MetadataUtils: error
+
+# S3 설정
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIAUU76SCU7UFA32BQ4
+      secretKey: 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
+    s3:
+      bucket: vuddy-s3-bucket1
+    region:
+      static: us-east-1
+    stack:
+      auto: false
+
+server:
+  tomcat:
+    connection-timeout: -1
