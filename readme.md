@@ -1,6 +1,6 @@
-### git 컨벤션
+# git 컨벤션
 
-# 브랜치명
+### 브랜치명
 네이밍 규칙 : ${group_name}/${devlop_type}/${function_name|service_name}  
 (예 : develop/android/gps, develop/backend/auth-microservice, feature/android/tracking, feature/react/login)
 
@@ -13,7 +13,7 @@
         * backend
     - function name / service name : 개발자가 담당하는 기능이나 서비스의 이름
 
-- 브랜치는 자신의 성(KIM, LEE...)
+## commit 메세지
 
 - type 커밋유형 종류
 ```
