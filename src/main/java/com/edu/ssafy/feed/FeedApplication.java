@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FeedApplication {
 
-    @GetMapping("/feed/hello")
+    @GetMapping("/feed/opened/hello")
     public String hello() {
         
         return "hello";
