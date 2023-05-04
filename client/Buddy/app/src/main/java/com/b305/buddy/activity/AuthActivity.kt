@@ -166,7 +166,7 @@ class AuthActivity : AppCompatActivity() {
                     val message: String = result?.message.toString()
                     Toast.makeText(this@AuthActivity, message, Toast.LENGTH_SHORT).show()
 
-                    val intent = Intent(this@AuthActivity, MainActivity::class.java)
+                    val intent = Intent(this@AuthActivity, SplashActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
