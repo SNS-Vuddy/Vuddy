@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.b305.buddy.databinding.ActivityAdminBinding
 import com.b305.buddy.util.LocationProvider
 import com.b305.buddy.util.SharedManager
-import com.b305.buddy.util.Socket
+import com.b305.buddy.util.ChatSocket
 import kotlinx.coroutines.Runnable
 
 // admin
@@ -18,13 +18,14 @@ class AdminActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityAdminBinding
     private val sharedManager: SharedManager by lazy { SharedManager(this) }
-    private val socket = Socket(this)
+    private val socket = ChatSocket(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.tvCurrentNickname.text = sharedManager.getCurrentUser().nickname
         setButton()
     }
 

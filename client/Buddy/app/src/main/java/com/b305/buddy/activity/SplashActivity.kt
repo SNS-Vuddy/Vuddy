@@ -21,10 +21,10 @@ import com.b305.buddy.model.User
 import com.b305.buddy.util.SharedManager
 
 class SplashActivity : AppCompatActivity() {
-    
+
     lateinit var binding: ActivitySplashBinding
     private val sharedManager: SharedManager by lazy { SharedManager(this) }
-    
+
     private val PERMISSIONS_REQUEST_CODE = 100
     var REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     lateinit var getGPSPermissionLauncher: ActivityResultLauncher<Intent>
@@ -32,10 +32,10 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+
         checkAllPermissions()
     }
-    
+
     private fun moveMain() {
         val token: Token = sharedManager.getCurrentToken()
         val accessToken = token.accessToken
@@ -43,10 +43,11 @@ class SplashActivity : AppCompatActivity() {
         val user: User = sharedManager.getCurrentUser()
         val nickname = user.nickname
         val password = user.password
-        
+
+        val adminList = listOf("admin1", "admin2", "admin3")
         Handler().postDelayed({
             // Todo : admin
-            if (sharedManager.getCurrentUser().nickname == "admin") {
+            if (adminList.contains(sharedManager.getCurrentUser().nickname)) {
                 val intent = Intent(this, AdminActivity::class.java)
                 startActivity(intent)
                 return@postDelayed
@@ -60,7 +61,7 @@ class SplashActivity : AppCompatActivity() {
             }
         }, 2000)
     }
-    
+
     private fun checkAllPermissions() {
         if (!isLocationServicesAvailable()) {
             showDialogForLocationServiceSetting();
@@ -68,12 +69,12 @@ class SplashActivity : AppCompatActivity() {
             isRunTimePermissionsGranted();
         }
     }
-    
+
     private fun isLocationServicesAvailable(): Boolean {
         val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
         return (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
     }
-    
+
     private fun isRunTimePermissionsGranted() {
         val hasFineLocationPermission = ContextCompat.checkSelfPermission(this@SplashActivity, Manifest.permission.ACCESS_FINE_LOCATION)
         val hasCoarseLocationPermission = ContextCompat.checkSelfPermission(this@SplashActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -83,24 +84,24 @@ class SplashActivity : AppCompatActivity() {
             moveMain()
         }
     }
-    
+
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray,
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSIONS_REQUEST_CODE && grantResults.size == REQUIRED_PERMISSIONS.size) {
-            
+
             var checkResult = true
-            
+
             for (result in grantResults) {
                 if (result != PackageManager.PERMISSION_GRANTED) {
                     checkResult = false
                     break
                 }
             }
-            
+
             if (!checkResult) {
                 Toast.makeText(this@SplashActivity, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.", Toast.LENGTH_LONG).show()
                 finish()
@@ -109,7 +110,7 @@ class SplashActivity : AppCompatActivity() {
             }
         }
     }
-    
+
     private fun showDialogForLocationServiceSetting() {
         getGPSPermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (isLocationServicesAvailable()) {
@@ -119,7 +120,7 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             }
         }
-        
+
         val builder: AlertDialog.Builder = AlertDialog.Builder(this@SplashActivity)
         builder.setTitle("위치 서비스 비활성화")
         builder.setMessage("위치 서비스가 꺼져있습니다. 설정해야 앱을 사용할 수 있습니다.")

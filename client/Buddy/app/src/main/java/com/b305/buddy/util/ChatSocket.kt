@@ -11,46 +11,46 @@ import okio.ByteString
 import org.json.JSONObject
 import java.time.LocalDateTime
 
-class Socket(context: Context) {
+class ChatSocket(context: Context) {
     private var client = OkHttpClient()
     private var url = "ws://192.168.31.14:8080/chat"
     private val sharedManager: SharedManager by lazy { SharedManager(context) }
     private lateinit var webSocket: WebSocket
-    
+
     fun connection() {
         val request = Request.Builder()
-            .url(url)
-            .build()
-        
+                .url(url)
+                .build()
+
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 // 연결이 성공적으로 열렸을 때 실행되는 코드를 작성합니다.
                 Log.d("onOpen", response.toString())
             }
-            
+
             override fun onMessage(webSocket: WebSocket, text: String) {
                 // 서버에서 텍스트 메시지를 수신했을 때 실행되는 코드를 작성합니다.
                 Log.d("onMessage", text)
             }
-            
+
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
                 // 서버에서 바이트 메시지를 수신했을 때 실행되는 코드를 작성합니다.
             }
-            
+
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 // 연결 실패 시 실행되는 코드를 작성합니다.
             }
         })
     }
-    
+
     fun sendLocation(latitude: String, longitude: String) {
         var jsonObject = JSONObject()
-            .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
-            .put("nickname", sharedManager.getCurrentUser().nickname.toString())
-            .put("latitude", latitude)
-            .put("longitude", longitude)
-            .put("localDateTime", LocalDateTime.now().toString())
-        
+                .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
+                .put("nickname", sharedManager.getCurrentUser().nickname.toString())
+                .put("latitude", latitude)
+                .put("longitude", longitude)
+                .put("localDateTime", LocalDateTime.now().toString())
+
         webSocket.send(jsonObject.toString())
     }
 }
