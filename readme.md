@@ -2,7 +2,7 @@
 
 # 브랜치명
 네이밍 규칙 : ${group_name}/${devlop_type}/${function_name|service_name}  
-(예 : develop/android/gps, develop/backend/auth-microservice, feature/android/tracking)
+(예 : develop/android/gps, develop/backend/auth-microservice, feature/android/tracking, feature/react/login)
 
 
     - group name
