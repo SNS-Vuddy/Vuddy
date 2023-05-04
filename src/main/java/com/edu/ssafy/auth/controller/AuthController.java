@@ -62,6 +62,7 @@ public class AuthController {
         return new ResponseEntity<>(new SignupRes(200, "로그인 성공", accessToken, refreshToken), HttpStatus.OK);
     }
 
+
     @GetMapping("/validate")
     public ResponseEntity<?> validate(@RequestHeader("Authorization") String token) {
         if (token == null) {
