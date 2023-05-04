@@ -13,6 +13,7 @@ build-job/getting-branch-name:
   #   - if: '$CI_COMMIT_REF_NAME =~ /^dev\/backend/'
   script:
     - echo "Getting branch name..."
+    - echo $CI_COMMIT_BRANCH
     - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
     - echo "SERVICE NAME is $SERVICE_NAME"
 
