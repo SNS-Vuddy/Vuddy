@@ -17,12 +17,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.b305.buddy.databinding.ActivitySplashBinding
-import com.b305.buddy.model.Token
-import com.b305.buddy.model.User
+import com.b305.buddy.extension.checkIsSavedUser
+import com.b305.buddy.extension.moveAuth
+import com.b305.buddy.extension.moveMain
 import com.b305.buddy.util.LocationProvider
 import com.b305.buddy.util.LocationSocket
 import com.b305.buddy.util.SharedManager
-import kotlinx.coroutines.Runnable
+
 
 /**
  * 1. 위치 권환 확인
@@ -74,24 +75,13 @@ class SplashActivity : AppCompatActivity() {
     }
 
     // 3.
-    private fun moveMain() {
-        val token: Token = sharedManager.getCurrentToken()
-        val accessToken = token.accessToken
-        val refreshToken = token.refreshToken
-        val user: User = sharedManager.getCurrentUser()
-        val nickname = user.nickname
-        val password = user.password
-
-        connectToLocationSocket()
-        Handler().postDelayed({
-            if (accessToken == "" || refreshToken == "" || nickname == "" || password == "") {
-                val intent = Intent(this, AuthActivity::class.java)
-                startActivity(intent)
-            } else {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-            }
-        }, 2000)
+    private fun moveMainOrAuth() {
+        if (checkIsSavedUser(sharedManager)) {
+            connectToLocationSocket()
+            moveMain()
+            return
+        }
+        moveAuth()
     }
 
     private fun checkAllPermissions() {
@@ -117,7 +107,7 @@ class SplashActivity : AppCompatActivity() {
         if (hasFineLocationPermission != PackageManager.PERMISSION_GRANTED || hasCoarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this@SplashActivity, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE)
         } else {
-            moveMain()
+            moveMainOrAuth()
         }
     }
 
@@ -142,7 +132,7 @@ class SplashActivity : AppCompatActivity() {
                 Toast.makeText(this@SplashActivity, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.", Toast.LENGTH_LONG).show()
                 finish()
             } else {
-                moveMain()
+                moveMainOrAuth()
             }
         }
     }
