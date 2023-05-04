@@ -12,7 +12,7 @@ import java.util.Map;
 @RestController
 public class UserApplication {
 
-    @GetMapping
+    @GetMapping("/user/hello")
     public String hello(@RequestHeader("x-forwarded-for-nickname") String nickname, @RequestHeader Map<String, String> map) {
         map.forEach((key, value) -> System.out.println(key + " : " + value));
         return nickname;
