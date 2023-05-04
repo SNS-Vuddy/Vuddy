@@ -26,7 +26,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_current_location"
+        android:id="@+id/fab_move_current_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
