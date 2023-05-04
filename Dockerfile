@@ -1,5 +1,5 @@
 
-FROM openjdk:11-alpine
+FROM openjdk:11-jre-slim
 WORKDIR /usr/src/app
 
 
