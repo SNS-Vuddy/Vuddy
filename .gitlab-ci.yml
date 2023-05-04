@@ -6,6 +6,7 @@ stages:          # List of stages for jobs, and their order of execution
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   only:
+    - devops/cicd-script/backend
     - /^dev/backend/[0-9]+(?:.[0-9]+)+$ # regular expression
   script:
     - echo "Compiling the code..."
