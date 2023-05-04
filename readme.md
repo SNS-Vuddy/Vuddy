@@ -1,17 +1,19 @@
 # git 컨벤션
 
 ### 브랜치명
-네이밍 규칙 : ${group_name}/${devlop_type}/${function_name|service_name}  
+네이밍 규칙 : ${group_name}/${type}/${function_name|service_name}  
 (예 : develop/android/gps, develop/backend/auth-microservice, feature/android/tracking, feature/react/login)
 
 
     - group name
-        * dev : 개발용 브랜치, CI가 개발 환경용 서버(네임스페이스)에 올려주는 브랜치로써 여러개의 feature 브랜치가 하나로 합쳐지는 레포지토리임.
         * feature : commit용 브랜치, 특정 기능이나 서비스를 개발해서 commit을 남기는 브랜치
+        * test : 하나로 합치는 브랜치, feature 브랜치에 작성한 기능을 하나로 합치는 브랜치임.
+        * dev : 개발용 브랜치, CI가 개발 환경용 서버(네임스페이스)에 올려주는 브랜치로써 여러개의 feature 브랜치가 하나로 합쳐지는 레포지토리임.
         * devops : 관련 브랜치, ci 스크립트 등을 남김
-    - develop type
+    - type
         * android
         * backend
+        * cicd-script
     - function name / service name : 개발자가 담당하는 기능이나 서비스의 이름
 
 - group name을 정의하게된 계기 :
