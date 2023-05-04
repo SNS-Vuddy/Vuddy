@@ -40,6 +40,9 @@ deploy-job/clean:      # This job runs in the deploy stage.
   needs: ["build-job"]
   environment: production
   allow_failure: true
+  before_script:
+    - echo $CI_COMMIT_BRANCH
+    - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
   script:
     - echo "clean ${SERVICE_NAME}-service container..."
     - docker container stop ${SERVICE_NAME}-service
@@ -50,6 +53,9 @@ deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   needs: ["deploy-job/clean"]
   environment: production
+  before_script:
+    - echo $CI_COMMIT_BRANCH
+    - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
   script:
     - echo "Deploying application..."
     - docker run --name ${SERVICE_NAME}-service -p 9001:8080 -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_URL=$MYSQL_URL -e MYSQL_USERNAME=$MYSQL_USERNAME -d itmagician/b305-vuddy:test
