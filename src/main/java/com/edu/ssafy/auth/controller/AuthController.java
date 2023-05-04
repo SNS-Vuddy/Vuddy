@@ -82,5 +82,15 @@ public class AuthController {
         return ResponseEntity.ok().header("nickname", encodedNickname).build();
     }
 
+    // 더미 테스트 유저 토큰 발급용 API
+    @GetMapping("/vuddy/b305")
+    public ResponseEntity<CommonRes> getTest1Token() {
+        User testUser = userService.findByNickname("test1");
+        String accessToken = userService.createAccessToken(testUser);
+        String refreshToken = userService.createRefreshToken(testUser);
+        // "accessToken: "accessToken" 이런 형태의 JSON으로 리턴
+        return new ResponseEntity<>(new SignupRes(200, "로그인 성공", accessToken, refreshToken), HttpStatus.OK);
+    }
+
 
 }
