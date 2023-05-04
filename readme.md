@@ -16,7 +16,7 @@
 ## commit 메세지
 
 ```sh
-git commit -m "feat: 로그인 기능 구현"
+$ git commit -m "feat: 로그인 기능 구현"
 ```
 
 - type 커밋유형 종류
