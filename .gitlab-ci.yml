@@ -44,7 +44,7 @@ deploy-job/clean:      # This job runs in the deploy stage.
 
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  needs: ["deploy-job/clean-docker-container"]
+  needs: ["deploy-job/clean"]
   environment: production
   script:
     - echo "Deploying application..."
