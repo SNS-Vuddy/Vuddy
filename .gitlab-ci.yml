@@ -15,7 +15,7 @@ build-job/getting-branch-name:
     - echo "Getting branch name..."
     - echo $CI_COMMIT_BRANCH
     # - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
-    - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH)
+    - read SERVICE_NAME < <(echo aa)
     - echo "SERVICE NAME is $SERVICE_NAME"
 
 build-job:       # This job runs in the build stage, which runs first.
