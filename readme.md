@@ -8,6 +8,7 @@
     - group name
         * dev : 개발용 브랜치, CI가 개발 환경용 서버(네임스페이스)에 올려주는 브랜치로써 여러개의 feature 브랜치가 하나로 합쳐지는 레포지토리임.
         * feature : commit용 브랜치, 특정 기능이나 서비스를 개발해서 commit을 남기는 브랜치
+        * devops : 관련 브랜치, ci 스크립트 등을 남김
     - develop type
         * android
         * backend
