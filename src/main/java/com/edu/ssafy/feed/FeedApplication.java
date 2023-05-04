@@ -11,11 +11,9 @@ import java.util.Base64;
 public class FeedApplication {
 
     @GetMapping("/feed/hello")
-    public String hello(@RequestHeader("x-forwarded-for-nickname") String nickname) {
-        //Base64 로 nickname 디코딩하기
-        String userNickname = new String(Base64.getDecoder().decode(nickname));
+    public String hello() {
         
-        return userNickname;
+        return "hello";
     }
 
     public static void main(String[] args) {
