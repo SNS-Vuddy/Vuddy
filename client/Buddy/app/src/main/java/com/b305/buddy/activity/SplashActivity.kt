@@ -57,7 +57,7 @@ class SplashActivity : AppCompatActivity() {
             override fun run() {
                 Log.d("SplashActivity", "send location")
                 sendLocationToSocket()
-                handler.postDelayed(this, 3000)
+                handler.postDelayed(this, 1000)
             }
         }
 

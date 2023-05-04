@@ -2,6 +2,7 @@ package com.b305.buddy.util
 
 import android.content.Context
 import android.util.Log
+import com.b305.buddy.model.FriendLocation
 import com.b305.buddy.model.LocationEvent
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -31,9 +32,17 @@ class LocationSocket(context: Context) {
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
-                // 서버에서 텍스트 메시지를 수신했을 때 실행되는 코드를 작성합니다.
-//                Log.d("onMessage", text)
-                EventBus.getDefault().post(LocationEvent(text))
+                val jsonObject = JSONObject(text)
+                val nickname = jsonObject.getString("nickname")
+                val latitude = jsonObject.getString("latitude")
+                val longitude = jsonObject.getString("longitude")
+
+                val friendLocation = FriendLocation()
+                friendLocation.nickname = nickname
+                friendLocation.lat = latitude.toDouble()
+                friendLocation.lng = longitude.toDouble()
+
+                EventBus.getDefault().post(LocationEvent(friendLocation))
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -47,7 +56,7 @@ class LocationSocket(context: Context) {
     }
 
     fun sendLocation(latitude: String, longitude: String) {
-        var jsonObject = JSONObject()
+        val jsonObject = JSONObject()
             .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
             .put("nickname", sharedManager.getCurrentUser().nickname.toString())
             .put("latitude", latitude)
