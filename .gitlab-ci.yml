@@ -60,4 +60,3 @@ deploy-job:      # This job runs in the deploy stage.
     - echo "Deploying application..."
     - docker run --name ${SERVICE_NAME}-service -p 9012:8080 -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_URL=$MYSQL_URL -e MYSQL_USERNAME=$MYSQL_USERNAME -d itmagician/b305-vuddy:$SERVICE_NAME
     - echo "Application successfully deployed."
-
