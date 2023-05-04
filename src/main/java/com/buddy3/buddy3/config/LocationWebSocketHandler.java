@@ -106,38 +106,40 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         locationMessage.setLongitude(locationMessageReceive.getLongitude());
         locationMessage.setTime(formatDateTime(localDateTime));
 
-        if(currentSessionIdsUsersMap.get(session.getId()) == null) {
-            currentSessionIdsUsersMap.put(session.getId(), locationMessage.getNickname());
-            CurrentFriends currentFriends = currentUsersCurrentFriendsMap.get(locationMessage.getNickname());
-            if (currentFriends == null) {
-                currentFriends = CurrentFriends.builder().nickname(locationMessage.getNickname()).session(session).build();
-                currentUsersCurrentFriendsMap.put(locationMessage.getNickname(), currentFriends);
-            }
-
-            List<String> friendsNicknameList = currentUsersFriendsListMap.get(locationMessage.getNickname());
-            if (friendsNicknameList == null){
-                User user = userRepository.findByNickname(locationMessage.getNickname());
-                if (user != null) {
-                    friendsNicknameList = userRepository.findFriends(user.getUserId());
-                    currentUsersFriendsListMap.put(locationMessage.getNickname(), friendsNicknameList);
+        if (locationMessage.getNickname().equals("")) {
+            if(currentSessionIdsUsersMap.get(session.getId()) == null) {
+                currentSessionIdsUsersMap.put(session.getId(), locationMessage.getNickname());
+                CurrentFriends currentFriends = currentUsersCurrentFriendsMap.get(locationMessage.getNickname());
+                if (currentFriends == null) {
+                    currentFriends = CurrentFriends.builder().nickname(locationMessage.getNickname()).session(session).build();
+                    currentUsersCurrentFriendsMap.put(locationMessage.getNickname(), currentFriends);
                 }
-            }
 
-            for (String friendNickname : friendsNicknameList) {
-                CurrentFriends friendCurrentFriends = currentUsersCurrentFriendsMap.get(friendNickname);
-                if (friendCurrentFriends != null){
-                    currentFriends.addFriends(friendNickname, friendCurrentFriends.getSession());
-                    friendCurrentFriends.addFriends(locationMessage.getNickname(), session);
-                    currentUsersCurrentFriendsMap.replace(friendNickname, friendCurrentFriends);
+                List<String> friendsNicknameList = currentUsersFriendsListMap.get(locationMessage.getNickname());
+                if (friendsNicknameList == null){
+                    User user = userRepository.findByNickname(locationMessage.getNickname());
+                    if (user != null) {
+                        friendsNicknameList = userRepository.findFriends(user.getUserId());
+                        currentUsersFriendsListMap.put(locationMessage.getNickname(), friendsNicknameList);
+                    }
+                }
 
-                    List<String> friendFriendsList =  currentUsersFriendsListMap.get(friendNickname);
-                    friendFriendsList.add(locationMessage.getNickname());
-                    currentUsersFriendsListMap.replace(friendNickname, friendFriendsList);
+                for (String friendNickname : friendsNicknameList) {
+                    CurrentFriends friendCurrentFriends = currentUsersCurrentFriendsMap.get(friendNickname);
+                    if (friendCurrentFriends != null){
+                        currentFriends.addFriends(friendNickname, friendCurrentFriends.getSession());
+                        friendCurrentFriends.addFriends(locationMessage.getNickname(), session);
+                        currentUsersCurrentFriendsMap.replace(friendNickname, friendCurrentFriends);
+
+                        List<String> friendFriendsList =  currentUsersFriendsListMap.get(friendNickname);
+                        friendFriendsList.add(locationMessage.getNickname());
+                        currentUsersFriendsListMap.replace(friendNickname, friendFriendsList);
 //                friendSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(locationMessage)));
+                    }
                 }
             }
+            locationService.sendMessage(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
         }
-        locationService.sendMessage(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
     }
 
     @KafkaListener(topics = "location-message")
