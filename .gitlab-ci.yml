@@ -25,6 +25,9 @@ build-job:       # This job runs in the build stage, which runs first.
   #   - devops/cicd-script/backend
   # rules:
   #   - if: '$CI_COMMIT_REF_NAME =~ /^dev\/backend/'
+  before_script:
+    - echo $CI_COMMIT_BRANCH
+    - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
   script:
     - echo "Compiling the code..."
     - chmod +x gradlew
