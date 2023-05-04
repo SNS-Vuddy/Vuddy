@@ -2,7 +2,7 @@ package com.buddy.model.service;
 
 import com.buddy.exception.FriendRequestNotFoundException;
 import com.buddy.model.dto.AllFriendDto;
-import com.buddy.model.dto.FriendAndNoFriendDto;
+import com.buddy.model.dto.response.FriendAndNoFriendRes;
 import com.buddy.model.entity.User;
 import com.buddy.model.entity.UserFriends;
 import com.buddy.model.entity.enums.UserFriendStatus;
@@ -69,7 +69,7 @@ public class FriendService {
         return allFriendDtoList;
     }
 
-    public FriendAndNoFriendDto searchFriend(String myNickname, String nickname) {
+    public FriendAndNoFriendRes searchFriend(String myNickname, String nickname) {
         return friendRepository.findMyFriendAndNoFriend(myNickname, nickname);
     }
 }

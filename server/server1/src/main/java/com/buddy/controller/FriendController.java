@@ -2,7 +2,7 @@ package com.buddy.controller;
 
 import com.buddy.jwt.TokenProvider;
 import com.buddy.model.dto.AllFriendDto;
-import com.buddy.model.dto.FriendAndNoFriendDto;
+import com.buddy.model.dto.response.FriendAndNoFriendRes;
 import com.buddy.model.dto.common.CommonRes;
 import com.buddy.model.dto.common.ListRes;
 import com.buddy.model.dto.common.SingleRes;
@@ -29,7 +29,6 @@ public class FriendController {
     private final UserService userService;
     private final FriendService friendService;
     private final TokenProvider tokenProvider;
-
 
     //친구 추가 요청
     @PostMapping("/add")
@@ -122,7 +121,7 @@ public class FriendController {
 
         String myNickname = tokenProvider.getUserNicknameFromToken(token);
 
-        FriendAndNoFriendDto friendAndNoFriendDto = friendService.searchFriend(myNickname, nickname);
+        FriendAndNoFriendRes friendAndNoFriendDto = friendService.searchFriend(myNickname, nickname);
 
         return ResponseEntity.ok(new SingleRes<>(200, "친구 검색 성공", friendAndNoFriendDto));
     }

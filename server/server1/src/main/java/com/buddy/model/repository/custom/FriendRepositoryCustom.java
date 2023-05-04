@@ -1,8 +1,8 @@
 package com.buddy.model.repository.custom;
 
-import com.buddy.model.dto.FriendAndNoFriendDto;
+import com.buddy.model.dto.response.FriendAndNoFriendRes;
 
 public interface FriendRepositoryCustom {
 
-    FriendAndNoFriendDto findMyFriendAndNoFriend(String myNickname, String nickname);
+    FriendAndNoFriendRes findMyFriendAndNoFriend(String myNickname, String nickname);
 }
