@@ -1,6 +1,9 @@
 package com.b305.buddy.fragment
 
+import android.media.metrics.Event
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.b305.buddy.R
 import com.b305.buddy.databinding.FragmentMapBinding
+import com.b305.buddy.model.LocationEvent
 import com.b305.buddy.util.LocationProvider
 import com.b305.buddy.util.SharedManager
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -17,138 +21,179 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.Runnable
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class MapFragment : Fragment(), OnMapReadyCallback {
-    
+
     private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
     lateinit var binding: FragmentMapBinding
     lateinit var mMap: GoogleMap
     private var currentLat: Double = 37.4979769 // default: 강남역
     private var currentLng: Double = 127.027729
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-    
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe
+    fun onLocationEvent(locationEvent: LocationEvent) {
+        val message = locationEvent.message
+        Log.d("MapFragment", "onLocationEvent: $message")
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        
+
         binding = FragmentMapBinding.inflate(layoutInflater, container, false)
-        
+
         binding.ivFriend.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_friendFragment)
         }
-        
+
         binding.ivWrite.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_writeFeedFragment)
         }
-        
+
         binding.ivMessage.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_messageFragment)
         }
-        
+
         binding.ivProfile.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_profileFragment)
         }
-        
+
         setButton()
         return binding.root
     }
-    
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(runnable)
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         val supportMapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         supportMapFragment.getMapAsync(this)
+
     }
-    
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        
+        handler.postDelayed(runnable, 3000)
         getLocation()
     }
-    
+
+    private val handler = Handler()
+    private val runnable = object : Runnable {
+        override fun run() {
+            getLocation()
+            handler.postDelayed(this, 3000)
+            Log.d("MapFragment", "runnable")
+        }
+    }
+
     private fun setButton() {
         binding.fabCurrentLocation.setOnClickListener {
-            getLocation()
+//            getLocation()
+            //Todo 이거 용도로 다시 만드셈
         }
         binding.fabLogout.setOnClickListener {
             logout()
         }
     }
-    
+
     private fun logout() {
         sharedManager.removeCurrentToken()
         sharedManager.removeCurrentUser()
-        
+
         this.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
     }
-    
+
+
     private fun getLocation() {
         val locationProvider = LocationProvider(requireActivity())
-        
+
         currentLat = locationProvider.getLocationLatitude()!!
         currentLng = locationProvider.getLocationLongitude()!!
-        
+
         setMarker()
-        
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(currentLat, currentLng), 16f))
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(currentLat, currentLng), 14f))
     }
-    
+
     private fun setMarker() { // 친구 테스트용
-        val f1Lat: Double = 36.3507133
-        val f1Lng: Double = 127.2986109
-        val f2Lat: Double = 36.3599459
-        val f2Lng: Double = 127.3051566
-        val f3Lat: Double = 36.3616414
-        val f3Lng: Double = 127.3575561
-        val friend1 = Friend()
-        friend1.nickname = 1
-        friend1.lat = f1Lat
-        friend1.lng = f1Lng
-        val friend2 = Friend()
-        friend2.nickname = 2
-        friend2.lat = f2Lat
-        friend2.lng = f2Lng
-        val friend3 = Friend()
-        friend3.nickname = 3
-        friend3.lat = f3Lat
-        friend3.lng = f3Lng
-        
-        val friendList: ArrayList<Friend> = ArrayList()
-        friendList.add(friend1)
-        friendList.add(friend2)
-        friendList.add(friend3)
-        
+//        {"nickname":"admin2","latitude":"36.36086","longitude":"127.290515","time":"2023-05-04 14:08:34"}
+
+//        val f1Lat: Double = 36.3507133
+//        val f1Lng: Double = 127.2986109
+//        val f2Lat: Double = 36.3599459
+//        val f2Lng: Double = 127.3051566
+//        val f3Lat: Double = 36.3616414
+//        val f3Lng: Double = 127.3575561
+//        val friend1 = Friend()
+//        friend1.nickname = 1
+//        friend1.lat = f1Lat
+//        friend1.lng = f1Lng
+//        val friend2 = Friend()
+//        friend2.nickname = 2
+//        friend2.lat = f2Lat
+//        friend2.lng = f2Lng
+//        val friend3 = Friend()
+//        friend3.nickname = 3
+//        friend3.lat = f3Lat
+//        friend3.lng = f3Lng
+//
+//        val friendList: ArrayList<Friend> = ArrayList()
+//        friendList.add(friend1)
+//        friendList.add(friend2)
+//        friendList.add(friend3)
+
         mMap.let {
             it.clear()
             val markerOption = MarkerOptions()
             markerOption.position(LatLng(currentLat, currentLng))
-            val marker = it.addMarker(markerOption)
-            
-            // 친구 테스트용
-            for (friend in friendList) {
-                val friendMarkerOption = MarkerOptions()
-                friendMarkerOption.position(friend.getLocation())
-                val friendMarker = it.addMarker(friendMarkerOption)
-            }
+            it.addMarker(markerOption)
+//            val marker = it.addMarker(markerOption)
+
+//            // 친구 테스트용
+//            for (friend in friendList) {
+//                val friendMarkerOption = MarkerOptions()
+//                friendMarkerOption.position(friend.getLocation())
+//                val friendMarker = it.addMarker(friendMarkerOption)
+//            }
         }
     }
-    
-    inner class Friend {
-        var nickname: Long? = null
-        var lat: Double? = null
-        var lng: Double? = null
-        
-        fun getLatitude(): Double { // 수정된 이름
-            return lat ?: 0.0
-        }
-        
-        fun getLongitude(): Double {
-            return lng ?: 0.0
-        }
-        
-        fun getLocation(): LatLng {
-            return LatLng(lat!!, lng!!)
-        }
-    }
+
+//    inner class Friend {
+//        var nickname: Long? = null
+//        var lat: Double? = null
+//        var lng: Double? = null
+//
+//        fun getLatitude(): Double { // 수정된 이름
+//            return lat ?: 0.0
+//        }
+//
+//        fun getLongitude(): Double {
+//            return lng ?: 0.0
+//        }
+//
+//        fun getLocation(): LatLng {
+//            return LatLng(lat!!, lng!!)
+//        }
+//    }
 }

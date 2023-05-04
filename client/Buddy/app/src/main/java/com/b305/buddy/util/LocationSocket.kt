@@ -2,12 +2,14 @@ package com.b305.buddy.util
 
 import android.content.Context
 import android.util.Log
+import com.b305.buddy.model.LocationEvent
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okio.ByteString
+import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 import java.time.LocalDateTime
 
@@ -19,8 +21,8 @@ class LocationSocket(context: Context) {
 
     fun connection() {
         val request = Request.Builder()
-                .url(url)
-                .build()
+            .url(url)
+            .build()
 
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
@@ -30,7 +32,8 @@ class LocationSocket(context: Context) {
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 // 서버에서 텍스트 메시지를 수신했을 때 실행되는 코드를 작성합니다.
-                Log.d("onMessage", text)
+//                Log.d("onMessage", text)
+                EventBus.getDefault().post(LocationEvent(text))
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -45,12 +48,12 @@ class LocationSocket(context: Context) {
 
     fun sendLocation(latitude: String, longitude: String) {
         var jsonObject = JSONObject()
-                .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
-                .put("nickname", sharedManager.getCurrentUser().nickname.toString())
-                .put("latitude", latitude)
-                .put("longitude", longitude)
-                .put("localDateTime", LocalDateTime.now().toString())
-
+            .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
+            .put("nickname", sharedManager.getCurrentUser().nickname.toString())
+            .put("latitude", latitude)
+            .put("longitude", longitude)
+            .put("localDateTime", LocalDateTime.now().toString())
+        Log.d("LocationSocket", sharedManager.getCurrentUser().toString())
         webSocket.send(jsonObject.toString())
     }
 }
