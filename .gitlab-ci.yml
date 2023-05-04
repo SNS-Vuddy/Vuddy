@@ -53,3 +53,4 @@ deploy-job/deploy:      # This job runs in the deploy stage.
     - echo "Deploying application..."
     - docker run --name api-gateway --add-host=host.docker.internal:host-gateway -p 80:80 -d itmagician/b305-vuddy:api-gateway 
     - echo "Application successfully deployed."
+
