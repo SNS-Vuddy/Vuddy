@@ -62,7 +62,7 @@ public class AuthController {
         return new ResponseEntity<>(new SignupRes(200, "로그인 성공", accessToken, refreshToken), HttpStatus.OK);
     }
 
-    @PostMapping("/validate")
+    @GetMapping("/validate")
     public ResponseEntity<?> validate(@RequestHeader("Authorization") String token) {
         if (token == null) {
             return new ResponseEntity<>(new CommonRes(400, "토큰이 존재하지 않습니다."), HttpStatus.BAD_REQUEST);
