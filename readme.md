@@ -14,6 +14,11 @@
         * backend
     - function name / service name : 개발자가 담당하는 기능이나 서비스의 이름
 
+- group name을 정의하게된 계기 :
+git repository 이름은 하위 폴더가 생성이 안됨. 즉, dev가 미리 생성되었다면, dev/android, dev/backend/auth 등을 생성할 수가 없음
+-> https://code-anthropoid.tistory.com/223
+
+
 ## commit 메세지
 
 ```sh
