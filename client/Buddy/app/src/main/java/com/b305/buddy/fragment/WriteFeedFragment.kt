@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -30,36 +31,42 @@ import java.util.Locale
 
 class WriteFeedFragment : Fragment() {
 
+    val deviceSdkVersion = android.os.Build.VERSION.SDK_INT
+
     lateinit var binding: FragmentWriteFeedBinding
     var photoList = ArrayList<Uri>()
 //    val adapter = PhotoAdapter(photoList, requireContext()) // adapter 초기화
 
     // 요청하고자 하는 권한들
+    private val permissionList33 = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.READ_MEDIA_IMAGES,
+    )
     private val permissionList = arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
+        Manifest.permission.CAMERA,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
     // 권한을 허용하도록 요청
     private val requestMultiplePermission =
-            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
-                results.forEach {
-                    if (!it.value) {
-                        Toast.makeText(requireContext(), "권한 허용 필요", Toast.LENGTH_SHORT).show()
-                        requireActivity().finish()
-                    }
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            results.forEach {
+                if (!it.value) {
+                    Toast.makeText(requireContext(), "권한 허용 필요", Toast.LENGTH_SHORT).show()
+                    requireActivity().finish()
                 }
             }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
 
         binding = FragmentWriteFeedBinding.inflate(layoutInflater, container, false)
@@ -94,7 +101,11 @@ class WriteFeedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (deviceSdkVersion >= 33) {
+            requestMultiplePermission.launch(permissionList33)
+        } else {
         requestMultiplePermission.launch(permissionList)
+        }
 
         // 리사이클러뷰
         val layoutManager = LinearLayoutManager(requireContext())
@@ -141,9 +152,9 @@ class WriteFeedFragment : Fragment() {
                     // Continue only if the File was successfully created
                     photoFile?.also {
                         val photoURI: Uri = FileProvider.getUriForFile(
-                                context,
-                                "com.example.android.fileprovider",
-                                it
+                            context,
+                            "com.example.android.fileprovider",
+                            it
                         )
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                         activityResultCamera.launch(takePictureIntent)
@@ -156,57 +167,57 @@ class WriteFeedFragment : Fragment() {
     }
 
     private val activityResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == RESULT_OK) {
-                    photoList.clear()
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                photoList.clear()
 
-                    if (result.data?.clipData != null) { // 사진 여러개 선택한 경우
-                        val count = result.data?.clipData!!.itemCount
-                        if (count > 10) {
-                            Toast.makeText(requireContext(), "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG)
-                                    .show()
+                if (result.data?.clipData != null) { // 사진 여러개 선택한 경우
+                    val count = result.data?.clipData!!.itemCount
+                    if (count > 10) {
+                        Toast.makeText(requireContext(), "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG)
+                            .show()
 
-                        }
-                        for (i in 0 until count) {
-                            val imageUri = result.data?.clipData!!.getItemAt(i).uri
+                    }
+                    for (i in 0 until count) {
+                        val imageUri = result.data?.clipData!!.getItemAt(i).uri
+                        photoList.add(imageUri)
+                    }
+
+                } else { // 단일 선택
+                    result.data?.data?.let { uri ->
+                        val imageUri: Uri? = result.data?.data
+                        if (imageUri != null) {
                             photoList.add(imageUri)
                         }
-
-                    } else { // 단일 선택
-                        result.data?.data?.let { uri ->
-                            val imageUri: Uri? = result.data?.data
-                            if (imageUri != null) {
-                                photoList.add(imageUri)
-                            }
-                        }
                     }
+                }
 //                adapter.notifyDataSetChanged()
+                // 어댑터 생성
+                val adapter = PhotoAdapter(photoList, requireContext())
+                binding.rvPhoto.adapter = adapter
+
+            }
+        }
+    private val activityResultCamera =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val photoFile = currentPhotoPath?.let { File(it) }
+                photoFile?.let {
+                    photoList.add(Uri.fromFile(it))
+                    // adapter.notifyDataSetChanged()
                     // 어댑터 생성
                     val adapter = PhotoAdapter(photoList, requireContext())
                     binding.rvPhoto.adapter = adapter
-
                 }
-            }
-    private val activityResultCamera =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == RESULT_OK) {
-                    val photoFile = currentPhotoPath?.let { File(it) }
-                    photoFile?.let {
-                        photoList.add(Uri.fromFile(it))
-                        // adapter.notifyDataSetChanged()
-                        // 어댑터 생성
-                        val adapter = PhotoAdapter(photoList, requireContext())
-                        binding.rvPhoto.adapter = adapter
-                    }
-                } else {
-                    currentPhotoPath?.let {
-                        val file = File(it)
-                        if (file.exists()) {
-                            file.delete()
-                        }
+            } else {
+                currentPhotoPath?.let {
+                    val file = File(it)
+                    if (file.exists()) {
+                        file.delete()
                     }
                 }
             }
+        }
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
@@ -214,9 +225,9 @@ class WriteFeedFragment : Fragment() {
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
-                "JPEG_${timeStamp}_", /* prefix */
-                ".jpg", /* suffix */
-                storageDir /* directory */
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
         ).apply {
             // Save a file: path for use with ACTION_VIEW intents
             currentPhotoPath = absolutePath
