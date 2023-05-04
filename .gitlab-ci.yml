@@ -1,11 +1,25 @@
 stages:          # List of stages for jobs, and their order of execution
   - build
+#   - test
+  - deploy
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   only:
-      - dev/backend/test
-      - devops/cicd-script/backend
+    
+  # only:
+  #   - devops/cicd-script/backend
+  # rules:
+  #   - if: '$CI_COMMIT_REF_NAME =~ /^dev\/backend/'
   script:
     - echo "Compiling the code..."
+    - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/backend\/dev\///')
+    - echo "SERVICE NAME is $SERVICE_NAME"
     - echo "Compile complete."
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."
