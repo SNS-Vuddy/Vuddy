@@ -106,7 +106,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         locationMessage.setLongitude(locationMessageReceive.getLongitude());
         locationMessage.setTime(formatDateTime(localDateTime));
 
-        if (locationMessage.getNickname().equals("")) {
+        if (!locationMessage.getNickname().equals("")) {
             if(currentSessionIdsUsersMap.get(session.getId()) == null) {
                 currentSessionIdsUsersMap.put(session.getId(), locationMessage.getNickname());
                 CurrentFriends currentFriends = currentUsersCurrentFriendsMap.get(locationMessage.getNickname());
