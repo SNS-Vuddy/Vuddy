@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 
 class LocationSocket(context: Context) {
     private var client = OkHttpClient()
-    private var url = "ws://192.168.31.14:8080/location"
+    private var url = "ws://k8b305.p.ssafy.io:9016/location"
     private val sharedManager: SharedManager by lazy { SharedManager(context) }
     private lateinit var webSocket: WebSocket
 
@@ -42,6 +42,7 @@ class LocationSocket(context: Context) {
                 friendLocation.lat = latitude.toDouble()
                 friendLocation.lng = longitude.toDouble()
 
+                Log.d("LocationSocket: onMessage", friendLocation.toString())
                 EventBus.getDefault().post(LocationEvent(friendLocation))
             }
 
