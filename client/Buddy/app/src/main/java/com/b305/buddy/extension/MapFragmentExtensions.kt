@@ -24,13 +24,6 @@ fun MapFragment.moveCameraToCurrentLocation(googleMap: GoogleMap, friendLocation
 }
 
 fun setMarker(myLocation: LatLng, googleMap: GoogleMap, friendLocationList: MutableList<FriendLocation>) {
-    // temp
-    val friendLocation = FriendLocation()
-    friendLocation.nickname = "test"
-    friendLocation.lat = 37.56
-    friendLocation.lng = 126.97
-    friendLocationList.add(friendLocation)
-
     googleMap.let {
         it.clear()
         val markerOption = MarkerOptions()
