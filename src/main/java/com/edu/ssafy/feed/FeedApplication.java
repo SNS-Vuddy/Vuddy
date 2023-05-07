@@ -1,4 +1,4 @@
-package com.edu.ssafy.feed.feed;
+package com.edu.ssafy.feed;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FeedApplication {
 
-    @GetMapping("/feed/hello")
+    @GetMapping("/opened/hello")
     public String hello() {
-        
         return "hello";
     }
+
 
     public static void main(String[] args) {
         SpringApplication.run(FeedApplication.class, args);
