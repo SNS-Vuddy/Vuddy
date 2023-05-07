@@ -1,6 +1,7 @@
 package com.edu.ssafy.user.model.service;
 
 import com.edu.ssafy.user.model.dto.BriefFeedIngoDto;
+import com.edu.ssafy.user.model.dto.UserWithFriendDto;
 import com.edu.ssafy.user.model.dto.response.UserFeedsSummaryRes;
 import com.edu.ssafy.user.model.dto.response.UserProfileWithFeedsRes;
 import com.edu.ssafy.user.model.entity.User;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,10 @@ public class UserService {
 
     public User findById(String nickname) {
         return userRepository.findByNickname(nickname);
+    }
+
+    public List<User> findAllByNicknameIn(List<String> nicknames) {
+        return userRepository.findAllByNicknameIn(nicknames);
     }
 
     public UserFeedsSummaryRes findUserAndFeeds(User user) {
@@ -42,17 +48,27 @@ public class UserService {
 
         String friendStatus = userRepository.existsByMyUserNicknameAndTargetUserNickname(myNickname, userNickname);
 
-        UserFriendshipStatusDto userFriendshipStatusDto = new UserFriendshipStatusDto(myUser, targetUser, friendStatus);
+        UserWithFriendDto userWithFriendDto = new UserWithFriendDto(myUser, targetUser, friendStatus);
 
         List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(myUser.getId());
 
         return UserProfileWithFeedsRes.builder()
-                .nickname(userFriendshipStatusDto.getMyUser().getNickname())
-                .profileImage(userFriendshipStatusDto.getMyUser().getProfileImage())
-                .statusMessage(userFriendshipStatusDto.getMyUser().getStatusMessage())
+                .nickname(userWithFriendDto.getMyUser().getNickname())
+                .profileImage(userWithFriendDto.getMyUser().getProfileImage())
+                .statusMessage(userWithFriendDto.getMyUser().getStatusMessage())
                 .feeds(briefFeedIngoDtoList)
                 .canISeeFeeds(true)
                 .isFriend(friendStatus)
                 .build();
+    }
+
+    public User findByNickname(String nickname) {
+        return userRepository.findByNickname(nickname);
+    }
+
+    @Transactional
+    public void changeUserStatusMessage(Long userID, String statusMessage) {
+        User user = userRepository.findById(userID).orElse(null);
+        Objects.requireNonNull(user).updateStatusMessage(statusMessage);
     }
 }

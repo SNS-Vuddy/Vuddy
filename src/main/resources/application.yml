@@ -51,5 +51,4 @@ server:
     connection-timeout: -1
   servlet:
     context-path: /user
-  port: 8081
 
