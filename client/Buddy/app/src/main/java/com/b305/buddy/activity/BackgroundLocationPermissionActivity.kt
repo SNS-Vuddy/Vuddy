@@ -75,7 +75,6 @@ class BackgroundLocationPermissionActivity : AppCompatActivity() {
     }
 
     private fun moveAuth() {
-        Log.d("moveAuth", "moveAuth")
         val intent = Intent(this, AuthActivity::class.java)
         startActivity(intent)
         finish()
