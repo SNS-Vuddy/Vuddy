@@ -138,11 +138,14 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
             LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
             chatMessage.setTime(formatDateTime(timeNow));
+            chatMessage.setChatroomTitle(clientMessageData.getChatroomTitle());
+            chatMessage.setType(clientMessageData.getType());
 
             Chatroom chatroom = Chatroom.builder()
                     .lastChat(chatMessage.getMessage())
                     .nickname(chatMessage.getNickname())
                     .time(chatMessage.getTime())
+                    .title(chatMessage.getChatroomTitle())
                     .build();
             chatroomRepository.save(chatroom);
         }
