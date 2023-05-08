@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,7 +29,17 @@ public class FeedController {
     private final FeedService feedService;
     private final TaggedFriendsService taggedFriendsService;
 
-    @GetMapping("/test")
+    @GetMapping("/test/header")
+    public String test(@RequestHeader Map<String, String> map) {
+
+        map.forEach((key, value) -> {
+            System.out.println(key + " : " + value);
+        });
+
+        return "test";
+    }
+
+    @GetMapping("/test/nickname")
     public String test(@RequestHeader("x-forwarded-for-nickname") String encodedNickname) {
 
         return NicknameUtil.decodeNickname(encodedNickname);
