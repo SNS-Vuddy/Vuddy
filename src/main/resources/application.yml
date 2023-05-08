@@ -22,3 +22,4 @@ spring:
         min-idle: 2
     port: 6379
     host: ${REDIS_HOST_NAME:127.0.0.1}
+    password: ${REDIS_PASSWORD:abcd1234}
