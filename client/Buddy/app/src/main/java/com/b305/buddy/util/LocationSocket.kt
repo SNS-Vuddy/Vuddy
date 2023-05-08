@@ -42,7 +42,10 @@ class LocationSocket(context: Context) {
                 friendLocation.lat = latitude.toDouble()
                 friendLocation.lng = longitude.toDouble()
 
-                Log.d("LocationSocket: onMessage", friendLocation.toString())
+                Log.d(
+                    "LocationSocket: onMessage",
+                    friendLocation.nickname.toString() + " " + friendLocation.lat.toString() + " " + friendLocation.lng.toString()
+                )
                 EventBus.getDefault().post(LocationEvent(friendLocation))
             }
 
@@ -63,7 +66,10 @@ class LocationSocket(context: Context) {
             .put("latitude", latitude)
             .put("longitude", longitude)
             .put("localDateTime", LocalDateTime.now().toString())
-        Log.d("LocationSocket", sharedManager.getCurrentUser().toString())
+        Log.d(
+            "LocationSocket: sendLocation",
+            sharedManager.getCurrentUser().nickname.toString() + " " + latitude + " " + longitude
+        )
         webSocket.send(jsonObject.toString())
     }
 }

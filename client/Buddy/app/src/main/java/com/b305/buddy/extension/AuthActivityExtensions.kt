@@ -5,8 +5,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.b305.buddy.R
 import com.b305.buddy.activity.AuthActivity
-import com.b305.buddy.activity.MainActivity
-import com.b305.buddy.activity.SplashActivity
+import com.b305.buddy.activity.ConnectSocketMainActivity
 import com.b305.buddy.model.AuthRequest
 import com.b305.buddy.model.AuthResponse
 import com.b305.buddy.model.Token
@@ -99,7 +98,7 @@ fun AuthActivity.signupService(authRequest: AuthRequest) {
                 val message: String = result?.message.toString()
                 Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
 
-                val intent = Intent(applicationContext, MainActivity::class.java)
+                val intent = Intent(applicationContext, ConnectSocketMainActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
@@ -134,7 +133,7 @@ fun AuthActivity.loginService(authRequest: AuthRequest) {
                 val message: String = result?.message.toString()
                 Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
 
-                val intent = Intent(applicationContext, SplashActivity::class.java)
+                val intent = Intent(applicationContext, ConnectSocketMainActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
