@@ -68,7 +68,7 @@ class LocationSocket(context: Context) {
             .put("localDateTime", LocalDateTime.now().toString())
         Log.d(
             "LocationSocket: sendLocation",
-            sharedManager.getCurrentUser().toString() + " " + latitude + " " + longitude
+            sharedManager.getCurrentUser().nickname.toString() + " " + latitude + " " + longitude
         )
         webSocket.send(jsonObject.toString())
     }
