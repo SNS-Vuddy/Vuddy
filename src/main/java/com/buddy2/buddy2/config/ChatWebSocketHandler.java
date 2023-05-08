@@ -2,8 +2,11 @@ package com.buddy2.buddy2.config;
 
 import com.buddy2.buddy2.data.ChatMessageData;
 import com.buddy2.buddy2.domain.CurrentChatrooms;
+import com.buddy2.buddy2.dto.RedisMessageDTO;
 import com.buddy2.buddy2.entity.Chatroom;
+import com.buddy2.buddy2.entity.Message;
 import com.buddy2.buddy2.repository.ChatroomRepository;
+import com.buddy2.buddy2.repository.MessageRepository;
 import com.buddy2.buddy2.service.ChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +49,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private ChatroomRepository chatroomRepository;
 
     @Autowired
+    private MessageRepository messageRepository;
+
+    @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private RedisTemplate<String, String> redisMessageTemplate;
 
 
     public void addValueToRedis (String key, String value) {
@@ -172,21 +181,28 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             }
             if (currentChatrooms == null) {
                 log.debug("없는 방에 JOIN 요청");
+                return;
             }
 
             chatMessage.setChatId(clientMessageData.getChatId());
             chatMessage.setMessage(clientMessageData.getMessage());
+            chatMessage.setNickname(clientMessageData.getNickname());
+
 
             LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
             chatMessage.setTime(formatDateTime(timeNow));
-
+            RedisMessageDTO messageNow = RedisMessageDTO.builder()
+                    .chatId(chatMessage.getChatId())
+                    .content(chatMessage.getMessage())
+                    .time(chatMessage.getTime())
+                    .nickname(chatMessage.getNickname())
+                    .build();
+            redisMessageTemplate.opsForList().rightPush("chatroomId-" + chatMessage.getChatId().toString(), objectMapper.writeValueAsString(messageNow));
         }
         else if (messageType.equals("LOAD")) {
             System.out.println(clientMessageData.getNickname());
-//            List<Chatroom> chatroomList = chatroomRepository.findWithNickname(clientMessageData.getNickname());
             List<Chatroom> chatroomList = chatroomRepository.findWithNickname(clientMessageData.getNickname());
             chatMessage.setChatId(clientMessageData.getChatId());
-//            chatMessage.setMessage(objectMapper.writeValueAsString(chatroomList));
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatroomList)));
         }
         else if (messageType.equals("EXIT")) {
@@ -200,11 +216,34 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             nowLocation = 0L;
         }
         else if (messageType.equals("CHAT")) {
-            chatMessage.setChatId(nowLocation);
+            chatMessage.setChatId(clientMessageData.getChatId());
             chatMessage.setMessage(clientMessageData.getMessage());
 
             LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
             chatMessage.setTime(formatDateTime(timeNow));
+            RedisMessageDTO messageNow = RedisMessageDTO.builder()
+                    .chatId(chatMessage.getChatId())
+                    .content(chatMessage.getMessage())
+                    .time(chatMessage.getTime())
+                    .nickname(chatMessage.getNickname())
+                    .build();
+            redisMessageTemplate.opsForList().rightPush("chatroom-" + chatMessage.getChatId(), objectMapper.writeValueAsString(messageNow));
+            List<String> chatroomMessageList = redisMessageTemplate.opsForList().range("chatroom-" + chatMessage.getChatId(), 0,-1);
+            if (chatroomMessageList.size() >= 50) {
+                List<Message> messageList = new ArrayList<>();
+                for (String i : chatroomMessageList) {
+                    RedisMessageDTO redisMessageDTO = objectMapper.readValue(i, RedisMessageDTO.class);
+                    Message messageI = Message.builder()
+                            .chatId(redisMessageDTO.getChatId())
+                            .content(redisMessageDTO.getContent())
+                            .nickname(redisMessageDTO.getNickname())
+                            .time(redisMessageDTO.getTime())
+                            .build();
+                    messageList.add(messageI);
+                }
+                messageRepository.saveAll(messageList);
+                redisMessageTemplate.delete("chatroom-" + chatMessage.getChatId());
+            }
         }
         if (!messageType.equals("LOAD")) {
             chatMessage.setNickname(clientMessageData.getNickname());
@@ -230,13 +269,5 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         CurrentChatrooms currentChatroom = currentChatroomsMap.get(chatMessage.getChatId());
         currentChatroom.chatroomSendMessage(message);
     }
-
-//    @Override
-//    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-//        String payload = message.getPayload();
-//        // handle payload
-//        System.out.println(payload);
-//        session.sendMessage(new TextMessage("Hello Client!"));
-//    }
 
 }
