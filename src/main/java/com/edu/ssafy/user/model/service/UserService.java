@@ -50,7 +50,7 @@ public class UserService {
 
         UserWithFriendDto userWithFriendDto = new UserWithFriendDto(myUser, targetUser, friendStatus);
 
-        List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(myUser.getId());
+        List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(targetUser.getId());
 
         return UserProfileWithFeedsRes.builder()
                 .nickname(userWithFriendDto.getTargetUser().getNickname())
