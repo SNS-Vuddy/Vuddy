@@ -9,6 +9,7 @@ import com.edu.ssafy.auth.model.dto.response.SignupRes;
 import com.edu.ssafy.auth.model.entity.User;
 import com.edu.ssafy.auth.model.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -66,6 +68,7 @@ public class AuthController {
 
     @GetMapping("/validate")
     public ResponseEntity<?> validate(@RequestHeader("Authorization") String token) {
+        log.info("validate 시작");
         if (token == null) {
             return new ResponseEntity<>(new CommonRes(400, "토큰이 존재하지 않습니다."), HttpStatus.BAD_REQUEST);
         }
@@ -79,6 +82,7 @@ public class AuthController {
 
         // 토큰에서 인코딩된 닉네임 추출
         String encodedNickname = tokenProvider.getUserNicknameFromToken(token);
+        log.info("validate 유저 검증 완료");
         
         return ResponseEntity.ok().header("nickname", encodedNickname).build();
     }
