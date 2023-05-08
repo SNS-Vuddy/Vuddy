@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/vuddy?serverTimezone=Asia/Seoul&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true
-    username: root
-    password: 1234
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/vuddy?serverTimezone=Asia/Seoul&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:1234}
 
   #  redis:
   #    lettuce:
@@ -37,10 +37,10 @@ logging.level:
 cloud:
   aws:
     credentials:
-      accessKey: AKIAUU76SCU7UFA32BQ4
-      secretKey: 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
+      accessKey: ${AWS_ACCESS_KEY:AKIAUU76SCU7UFA32BQ4}
+      secretKey: ${AWS_SECRET_KEY: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}
     s3:
-      bucket: vuddy-s3-bucket1
+      bucket: ${AWS_BUCKET_NAME:vuddy-s3-bucket1}
     region:
       static: us-east-1
     stack:
