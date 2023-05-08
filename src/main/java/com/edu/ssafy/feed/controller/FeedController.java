@@ -32,9 +32,11 @@ public class FeedController {
     @GetMapping("/test/header")
     public String test(@RequestHeader Map<String, String> map) {
 
+        System.out.println("=================================================================");
         map.forEach((key, value) -> {
             System.out.println(key + " : " + value);
         });
+        System.out.println("=================================================================");
 
         return "test";
     }
