@@ -53,9 +53,9 @@ public class UserService {
         List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(myUser.getId());
 
         return UserProfileWithFeedsRes.builder()
-                .nickname(userWithFriendDto.getMyUser().getNickname())
-                .profileImage(userWithFriendDto.getMyUser().getProfileImage())
-                .statusMessage(userWithFriendDto.getMyUser().getStatusMessage())
+                .nickname(userWithFriendDto.getTargetUser().getNickname())
+                .profileImage(userWithFriendDto.getTargetUser().getProfileImage())
+                .statusMessage(userWithFriendDto.getTargetUser().getStatusMessage())
                 .feeds(briefFeedIngoDtoList)
                 .canISeeFeeds(true)
                 .isFriend(friendStatus)
