@@ -17,7 +17,6 @@ public interface FriendRepository extends JpaRepository<UserFriends, Long>, Frie
 
     boolean existsByRequestUserAndReceiveUserAndStatusIs(User requester, User receiver, UserFriendStatus status);
 
-    boolean existsByRequestUserAndReceiveUserAndStatusIsOrReceiveUserAndRequestUserAndStatusIs(User requester, User receiver, UserFriendStatus status1, User receiver2, User requester2, UserFriendStatus status2);
 
     UserFriends findByRequestUserAndReceiveUser(User requester, User receiver);
 

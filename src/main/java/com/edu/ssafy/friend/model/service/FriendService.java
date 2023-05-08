@@ -51,11 +51,10 @@ public class FriendService {
 
     @Transactional
     public void deleteFriend(User requester, User receiver) {
-        boolean isExist = friendRepository.existsByRequestUserAndReceiveUserAndStatusIsOrReceiveUserAndRequestUserAndStatusIs(requester, receiver, UserFriendStatus.ACCEPTED, receiver, requester, UserFriendStatus.ACCEPTED);
+        UserFriends uf = friendRepository.findFriendRelation(requester, receiver, UserFriendStatus.ACCEPTED, receiver, requester, UserFriendStatus.ACCEPTED);
 
-        if (isExist) {
-            UserFriends userFriends = friendRepository.findByRequestUserAndReceiveUser(requester, receiver);
-            friendRepository.delete(userFriends);
+        if (uf != null) {
+            friendRepository.delete(uf);
         } else {
             throw new FriendRequestNotFoundException("친구가 아닙니다.");
         }
