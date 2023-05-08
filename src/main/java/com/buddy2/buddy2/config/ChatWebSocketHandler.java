@@ -162,7 +162,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             CurrentChatrooms currentChatrooms = currentChatroomsMap.get(clientMessageData.getChatId());
             if (currentChatrooms == null) {
                 for (Chatroom room : chatroomRepository.findByChatId(clientMessageData.getChatId())) {
-                    if (room.getChatId() == clientMessageData.getChatId()) {
+                    if (Objects.equals(room.getChatId(), clientMessageData.getChatId())) {
                         currentChatrooms = CurrentChatrooms.builder()
                                 .chatId(room.getChatId())
                                 .chatroomTitle(room.getTitle())
