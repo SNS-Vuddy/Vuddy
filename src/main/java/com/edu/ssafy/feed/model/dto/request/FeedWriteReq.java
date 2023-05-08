@@ -1,4 +1,4 @@
-package com.edu.ssafy.feed.model.dto;
+package com.edu.ssafy.feed.model.dto.request;
 
 import com.edu.ssafy.feed.model.entity.Feed;
 import com.edu.ssafy.feed.model.entity.TaggedFriends;

@@ -1,21 +1,20 @@
 package com.edu.ssafy.feed.model.service;
 
-import com.edu.ssafy.feed.model.dto.FeedWithTagsDto;
+import com.edu.ssafy.feed.model.dto.AllFeedInfoDto;
+import com.edu.ssafy.feed.model.dto.FeedWithTagsListDto;
+import com.edu.ssafy.feed.model.dto.request.FeedEditReq;
 import com.edu.ssafy.feed.model.dto.response.SingleFeedRes;
 import com.edu.ssafy.feed.model.dto.response.UserFeedsRes;
-import com.edu.ssafy.feed.model.entity.Comments;
-import com.edu.ssafy.feed.model.entity.Feed;
-import com.edu.ssafy.feed.model.entity.FeedLikes;
-import com.edu.ssafy.feed.model.entity.TaggedFriends;
+import com.edu.ssafy.feed.model.entity.*;
+import com.edu.ssafy.feed.model.repository.FeedLikesRepository;
 import com.edu.ssafy.feed.model.repository.FeedRepository;
+import com.edu.ssafy.feed.model.repository.TaggedFriendsRepository;
+import com.edu.ssafy.feed.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +23,9 @@ import java.util.stream.Collectors;
 public class FeedService {
 
     private final FeedRepository feedRepository;
+    private final TaggedFriendsRepository taggedFriendsRepository;
+    private final UserRepository userRepository;
+    private final FeedLikesRepository feedLikesRepository;
 
     @Transactional
     public void saveFeed(Feed feed) {
@@ -47,7 +49,7 @@ public class FeedService {
     }
 
     public SingleFeedRes findOneByFeedId(Long feedId, String nickname) {
-        List<FeedWithTagsDto> result = feedRepository.findOneWithTags(feedId);
+        List<AllFeedInfoDto> result = feedRepository.findOneWithTags(feedId);
         if (result.isEmpty()) {
             return null;
         }
@@ -55,27 +57,27 @@ public class FeedService {
         Feed feed = result.get(0).getFeed();
 
         List<String> taggedFriendsList = result.stream()
-                .map(FeedWithTagsDto::getTaggedFriend)
+                .map(AllFeedInfoDto::getTaggedFriend)
                 .filter(Objects::nonNull)
                 .map(TaggedFriends::getNickname)
                 .distinct()
                 .collect(Collectors.toList());
 
         boolean isLiked = result.stream()
-                .map(FeedWithTagsDto::getFeedLikes)
+                .map(AllFeedInfoDto::getFeedLikes)
                 .filter(Objects::nonNull)
                 .map(FeedLikes::getUser)
                 .filter(Objects::nonNull)
                 .anyMatch(user -> Objects.equals(user.getNickname(), nickname));
 
         Set<Long> likesCount = result.stream()
-                .map(FeedWithTagsDto::getFeedLikes)
+                .map(AllFeedInfoDto::getFeedLikes)
                 .filter(Objects::nonNull)
                 .map(FeedLikes::getId)
                 .collect(Collectors.toSet());
 
         Set<Long> commentsCount = result.stream()
-                .map(FeedWithTagsDto::getComments)
+                .map(AllFeedInfoDto::getComments)
                 .filter(Objects::nonNull)
                 .map(Comments::getId)
                 .collect(Collectors.toSet());
@@ -92,5 +94,53 @@ public class FeedService {
                 .likesCount((long) likesCount.size())
                 .commentsCount((long) commentsCount.size())
                 .build();
+    }
+
+    @Transactional
+    public void editFeed(Long feedId, FeedEditReq req) {
+        Feed feed = feedRepository.findFeedWithTagsListById(feedId)
+                .map(FeedWithTagsListDto::getFeed)
+                .orElseThrow(() -> new IllegalArgumentException("해당 피드가 존재하지 않습니다."));
+
+        feed.updateContentAndLocation(req.getContent(), req.getLocation());
+
+        taggedFriendsRepository.deleteByFeedId(feedId);
+
+        // 이미지는 구현 예정
+        // imagesRepository.deleteByFeedId(feedId);
+
+        List<String> userNicknames = req.getTags();
+
+        Map<String, User> userMap = userRepository.findAllByNicknameIn(userNicknames).stream()
+                .collect(Collectors.toMap(User::getNickname, user -> user));
+
+        List<TaggedFriends> newTaggedFriends = userNicknames.stream()
+                .map(tag -> {
+//                    User taggedUser = userRepository.findByNickname(tag);
+                    User taggedUser = userMap.get(tag);
+                    return req.toTagEntity(feed, taggedUser);
+                })
+                .collect(Collectors.toList());
+        taggedFriendsRepository.saveAll(newTaggedFriends);
+    }
+
+    @Transactional
+    public String likeFeed(Long feedId, String nickname) {
+
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 피드가 존재하지 않습니다."));
+
+        User user = userRepository.findByNickname(nickname);
+
+        Optional<FeedLikes> findFeedLike = feedLikesRepository.findByFeedAndUser(feed, user);
+
+        if (findFeedLike.isPresent()) {
+            feedLikesRepository.delete(findFeedLike.get());
+            return "좋아요 취소 성공";
+        } else {
+            FeedLikes feedLikes = FeedLikes.createLike(feed, user);
+            feedLikesRepository.save(feedLikes);
+            return "좋아요 성공";
+        }
     }
 }

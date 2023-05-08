@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FeedWithTagsDto {
+public class AllFeedInfoDto {
     private Feed feed;
     private TaggedFriends taggedFriend;
     private FeedLikes feedLikes;

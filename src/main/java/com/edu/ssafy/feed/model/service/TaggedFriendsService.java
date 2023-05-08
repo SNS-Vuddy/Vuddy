@@ -1,6 +1,6 @@
 package com.edu.ssafy.feed.model.service;
 
-import com.edu.ssafy.feed.model.dto.FeedWriteReq;
+import com.edu.ssafy.feed.model.dto.request.FeedWriteReq;
 import com.edu.ssafy.feed.model.entity.Feed;
 import com.edu.ssafy.feed.model.entity.TaggedFriends;
 import com.edu.ssafy.feed.model.entity.User;
