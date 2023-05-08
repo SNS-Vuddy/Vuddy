@@ -80,7 +80,7 @@ public class AuthController {
         // 토큰에서 인코딩된 닉네임 추출
         String encodedNickname = tokenProvider.getUserNicknameFromToken(token);
         
-        return ResponseEntity.ok().header("x-forwarded-for-nickname", encodedNickname).build();
+        return ResponseEntity.ok().header("nickname", encodedNickname).build();
     }
 
     // 더미 테스트 유저 토큰 발급용 API
