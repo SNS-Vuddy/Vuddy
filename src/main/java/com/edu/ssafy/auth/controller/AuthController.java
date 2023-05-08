@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -96,7 +95,6 @@ public class AuthController {
 
     // 리프레쉬 토큰으로 액세스 토큰 재발급
     @PostMapping("/refresh")
-    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
     public ResponseEntity<CommonRes> refreshAccessToken(@RequestHeader("Authorization") String refreshToken) {
 
         Long userId = tokenProvider.getUserIdFromRefreshToken(refreshToken);
