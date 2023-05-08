@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AllFeedInfoDto {
     private Feed feed;
-    private TaggedFriends taggedFriend;
     private FeedLikes feedLikes;
     private Comments comments;
 

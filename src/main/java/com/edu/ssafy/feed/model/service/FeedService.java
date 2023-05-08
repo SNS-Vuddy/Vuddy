@@ -1,6 +1,7 @@
 package com.edu.ssafy.feed.model.service;
 
 import com.edu.ssafy.feed.model.dto.AllFeedInfoDto;
+import com.edu.ssafy.feed.model.dto.CommentDto;
 import com.edu.ssafy.feed.model.dto.FeedWithTagsListDto;
 import com.edu.ssafy.feed.model.dto.request.FeedEditReq;
 import com.edu.ssafy.feed.model.dto.response.SingleFeedRes;
@@ -56,11 +57,10 @@ public class FeedService {
 
         Feed feed = result.get(0).getFeed();
 
-        List<String> taggedFriendsList = result.stream()
-                .map(AllFeedInfoDto::getTaggedFriend)
+        List<CommentDto> comments = result.stream()
+                .map(AllFeedInfoDto::getComments)
                 .filter(Objects::nonNull)
-                .map(TaggedFriends::getNickname)
-                .distinct()
+                .map(c -> new CommentDto(c.getNickname(), c.getContent(), c.getCreatedAt()))
                 .collect(Collectors.toList());
 
         boolean isLiked = result.stream()
@@ -90,9 +90,9 @@ public class FeedService {
                 .createdAt(feed.getCreatedAt().toString())
                 .updatedAt(feed.getUpdatedAt().toString())
                 .isLiked(isLiked)
-                .taggedFriends(taggedFriendsList)
                 .likesCount((long) likesCount.size())
                 .commentsCount((long) commentsCount.size())
+                .comments(comments)
                 .build();
     }
 
