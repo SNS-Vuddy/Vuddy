@@ -28,6 +28,12 @@ public class FeedController {
     private final FeedService feedService;
     private final TaggedFriendsService taggedFriendsService;
 
+    @GetMapping("/test")
+    public String test(@RequestHeader("x-forwarded-for-nickname") String encodedNickname) {
+
+        return NicknameUtil.decodeNickname(encodedNickname);
+    }
+
     //피드 작성
     @PostMapping("/write")
     public CommonRes writeFeed(@RequestHeader("x-forwarded-for-nickname") String encodedNickname, @RequestBody FeedWriteReq req) {
