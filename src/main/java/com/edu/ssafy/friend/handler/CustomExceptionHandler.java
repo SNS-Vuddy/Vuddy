@@ -1,5 +1,6 @@
 package com.edu.ssafy.friend.handler;
 
+import com.edu.ssafy.friend.exception.FriendRequestNotFoundException;
 import com.edu.ssafy.friend.model.dto.response.ErrorRes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -83,5 +84,16 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    // FriendRequestNotFoundException 예외 커스텀 처리
+    @ExceptionHandler(value = {FriendRequestNotFoundException.class})
+    @ResponseBody
+    protected ResponseEntity<ErrorRes> handleDuplicateNickname(FriendRequestNotFoundException e) {
+
+        String errorMessage = e.getMessage();
+
+        ErrorRes errorResponse = new ErrorRes(404, errorMessage);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 
 }
