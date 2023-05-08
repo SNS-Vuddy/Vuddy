@@ -36,6 +36,7 @@ public class UserController {
         return new SingleRes<>(200, "유저 정보 조회 성공", userProfileWithFeedsRes);
     }
 
+    // 상태메세지 수정
     @PutMapping("/profile/edit/status")
     public CommonRes editStatusMessage(@RequestHeader("x-forwarded-for-nickname") String encodedNickname, @RequestBody UserStatusChangeReq userStatusChangeReq) {
         String userNickname = NicknameUtil.decodeNickname(encodedNickname);
