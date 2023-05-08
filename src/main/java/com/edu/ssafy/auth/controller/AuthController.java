@@ -2,6 +2,7 @@ package com.edu.ssafy.auth.controller;
 
 import com.edu.ssafy.auth.jwt.TokenProvider;
 import com.edu.ssafy.auth.model.dto.common.CommonRes;
+import com.edu.ssafy.auth.model.dto.common.SingleRes;
 import com.edu.ssafy.auth.model.dto.request.LoginReq;
 import com.edu.ssafy.auth.model.dto.request.SignupReq;
 import com.edu.ssafy.auth.model.dto.response.SignupRes;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -90,6 +92,18 @@ public class AuthController {
         String refreshToken = userService.createRefreshToken(testUser);
         // "accessToken: "accessToken" 이런 형태의 JSON으로 리턴
         return new ResponseEntity<>(new SignupRes(200, "로그인 성공", accessToken, refreshToken), HttpStatus.OK);
+    }
+
+    // 리프레쉬 토큰으로 액세스 토큰 재발급
+    @PostMapping("/refresh")
+    @PreAuthorize("hasAuthority('NORMAL_USER') or hasAuthority('KAKAO_USER')")
+    public ResponseEntity<CommonRes> refreshAccessToken(@RequestHeader("Authorization") String refreshToken) {
+
+        Long userId = tokenProvider.getUserIdFromRefreshToken(refreshToken);
+        User user = userService.findById(userId);
+        String accessToken = userService.createAccessToken(user);
+
+        return new ResponseEntity<>(new SingleRes<>(200, "토큰 재발급 성공", accessToken), HttpStatus.OK);
     }
 
 

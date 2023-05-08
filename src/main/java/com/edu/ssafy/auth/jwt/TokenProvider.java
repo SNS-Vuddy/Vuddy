@@ -138,41 +138,6 @@ public class TokenProvider implements InitializingBean {
       }
    }
 
-   // 유저 아이디 레디스로 관리
-//   public Long getUserIdFromToken(String token) {
-//
-//      String accessToken = token.substring(7);
-//
-//      ValueOperations<String, String> vop = redisTemplate.opsForValue();
-//
-//
-//      String redisUserId = vop.get(accessToken);
-//      if (redisUserId == null) {
-//         System.out.println("=================================================================");
-//         System.out.println("레디스에 정보가 없다.");
-//         System.out.println("=================================================================");
-//
-//         String userNickname = Jwts
-//                 .parserBuilder()
-//                 .setSigningKey(key)
-//                 .build()
-//                 .parseClaimsJws(accessToken)
-//                 .getBody()
-//                 .getSubject();
-//
-//         Long userId = userRepository.findByNickname(userNickname).getId();
-//            vop.set(accessToken, userId.toString());
-//            return userId;
-//      } else {
-//         System.out.println("=================================================================");
-//         System.out.println("레디스에서 가져왔따.");
-//         System.out.println("=================================================================");
-//
-//         return Long.parseLong(redisUserId);
-//      }
-//
-//   }
-
    public String getUserNicknameFromToken(String token) {
 
       String assertToken = token.substring(7);

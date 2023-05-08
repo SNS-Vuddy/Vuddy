@@ -52,4 +52,8 @@ public class UserService {
         return userRepository.findByNickname(nickname);
     }
 
+    public User findById(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
 }
