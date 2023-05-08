@@ -1,16 +1,4 @@
 spring:
-  #  datasource:
-  #    driver-class-name: com.mysql.cj.jdbc.Driver
-  #    url: jdbc:mysql://localhost:3306/BUDDY_LOCAL?serverTimezone=UTC&characterEncoding=UTF-8
-  #    username: root
-  #    password: 1234
-  #  #    ?? ?
-  ##    url: jdbc:h2:tcp://localhost/~/jpashop
-  ##    #    jwt????
-  ##    #    url: jdbc:h2:mem:testdb
-  ##    username: sa
-  ##    password:
-  ##    driver-class-name: org.h2.Driver
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/vuddy?serverTimezone=Asia/Seoul&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true
@@ -37,16 +25,6 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
 
-jwt:
-  header: Authorization
-  #HS512 ????? ??? ??? ??? 512bit, ? 64byte ??? secret key? ???? ??.
-  #echo 'silvernine-tech-spring-boot-jwt-tutorial-secret-silvernine-tech-spring-boot-jwt-tutorial-secret'|base64
-  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10sdf324sdfsffd2223ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
-  # ??? ?? ????
-  token-validity-in-seconds: 315576000000
-  # ???? ?? ????
-  refresh-token-validity-in-seconds: 315576000000
-
 logging.level:
   org.hibernate.SQL: debug
   #  org.hibernate.type: trace
@@ -72,3 +50,5 @@ cloud:
 server:
   tomcat:
     connection-timeout: -1
+  servlet:
+    context-path: /feed
