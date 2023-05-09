@@ -4,14 +4,17 @@ import android.Manifest
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.b305.vuddy.databinding.ActivityBackgroundLocationPermissionBinding
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class BackgroundLocationPermissionActivity : AppCompatActivity() {
     lateinit var binding: ActivityBackgroundLocationPermissionBinding
     private var PERMISSIONS_REQUEST_CODE = 100
@@ -23,7 +26,6 @@ class BackgroundLocationPermissionActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         checkBackgroundLocationPermission()
-//        showBackgroundLocationPermissionDialog()
     }
 
     private fun showBackgroundLocationPermissionDialog() {
@@ -37,7 +39,10 @@ class BackgroundLocationPermissionActivity : AppCompatActivity() {
         }
         builder
             .setPositiveButton("설정", listener)
-            .setNegativeButton("취소", null)
+            .setNegativeButton("취소") { _, _ ->
+                Toast.makeText(this, "백그라운드 위치 권한을 항상 허용으로 설정해주세요", Toast.LENGTH_SHORT).show()
+                finish()
+            }
             .show()
     }
 
@@ -59,7 +64,7 @@ class BackgroundLocationPermissionActivity : AppCompatActivity() {
             }
         }
 
-        moveAuth()
+        moveNotificationPermission()
     }
 
     private fun checkBackgroundLocationPermission() {
@@ -70,11 +75,11 @@ class BackgroundLocationPermissionActivity : AppCompatActivity() {
             return
         }
 
-        moveAuth()
+        moveNotificationPermission()
     }
 
-    private fun moveAuth() {
-        val intent = Intent(this, AuthActivity::class.java)
+    private fun moveNotificationPermission() {
+        val intent = Intent(this, NotificationActivity::class.java)
         startActivity(intent)
         finish()
     }
