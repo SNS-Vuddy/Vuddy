@@ -49,14 +49,14 @@ public class FeedController {
     }
 
     @GetMapping("/test/nickname")
-    public String test(@RequestHeader("x-forwarded-for-nickname") String encodedNickname) {
+    public String test(@RequestHeader("x-nickname") String encodedNickname) {
 
         return NicknameUtil.decodeNickname(encodedNickname);
     }
 
     //피드 작성
     @PostMapping("/write")
-    public CommonRes writeFeed(@RequestHeader("x-forwarded-for-nickname") String encodedNickname, @RequestBody FeedWriteReq req) {
+    public CommonRes writeFeed(@RequestHeader("x-nickname") String encodedNickname, @RequestBody FeedWriteReq req) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
         // 유저 정보 가져오기
         User user = userService.findByNickname(nickname);
@@ -74,7 +74,7 @@ public class FeedController {
 
     // 내 피드 전체 조회
     @GetMapping("/feeds/mine")
-    public ResponseEntity<ListRes<UserFeedsRes>> getMyAllFeed(@RequestHeader("x-forwarded-for-nickname") String encodedNickname) {
+    public ResponseEntity<ListRes<UserFeedsRes>> getMyAllFeed(@RequestHeader("x-nickname") String encodedNickname) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
         User user = userService.findByNickname(nickname);
 
@@ -86,7 +86,7 @@ public class FeedController {
 
     // 특정 유저 피드 전체 조회
     @GetMapping("/feeds/nickname/{targetNickname}")
-    public ResponseEntity<ListRes<UserFeedsRes>> getUserAllFeed(@RequestHeader("x-forwarded-for-nickname") String encodedNickname, @PathVariable String targetNickname) {
+    public ResponseEntity<ListRes<UserFeedsRes>> getUserAllFeed(@RequestHeader("x-nickname") String encodedNickname, @PathVariable String targetNickname) {
         User targetUser = userService.findByNickname(targetNickname);
         List<Feed> allFeeds = feedService.findAllByUserId(targetUser.getId());
 
@@ -97,7 +97,7 @@ public class FeedController {
 
     // 피드 상세 조회
     @GetMapping("/{feedId}")
-    public SingleRes<SingleFeedRes> getFeedDetail(@RequestHeader("x-forwarded-for-nickname") String encodedNickname, @PathVariable Long feedId) {
+    public SingleRes<SingleFeedRes> getFeedDetail(@RequestHeader("x-nickname") String encodedNickname, @PathVariable Long feedId) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
         SingleFeedRes oneByFeedId = feedService.findOneByFeedId(feedId, nickname);
         return new SingleRes<>(200, "피드 상세 조회 성공", oneByFeedId);
@@ -105,14 +105,14 @@ public class FeedController {
 
     // 피드 수정
     @PutMapping("/edit/{feedId}")
-    public CommonRes editFeed(@PathVariable Long feedId, @RequestHeader("x-forwarded-for-nickname") String encodedNickname, @RequestBody FeedEditReq req) {
+    public CommonRes editFeed(@PathVariable Long feedId, @RequestHeader("x-nickname") String encodedNickname, @RequestBody FeedEditReq req) {
         feedService.editFeed(feedId, req);
         return new CommonRes(200, "피드 수정 성공");
     }
 
     // 피드 좋아요 / 좋아요 취소
     @PostMapping("/like/{feedId}")
-    public ResponseEntity<?> likeFeed(@PathVariable Long feedId, @RequestHeader("x-forwarded-for-nickname") String encodedNickname) {
+    public ResponseEntity<?> likeFeed(@PathVariable Long feedId, @RequestHeader("x-nickname") String encodedNickname) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
         String msg = feedService.likeFeed(feedId, nickname);
         return new ResponseEntity<>(new CommonRes(200, msg), HttpStatus.OK);
