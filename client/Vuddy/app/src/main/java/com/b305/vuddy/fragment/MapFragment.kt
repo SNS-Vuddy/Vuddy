@@ -1,5 +1,6 @@
 package com.b305.vuddy.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.b305.vuddy.extension.logout
 import com.b305.vuddy.extension.renewFriendList
 import com.b305.vuddy.model.FriendLocation
 import com.b305.vuddy.model.LocationEvent
+import com.b305.vuddy.service.TestService
 import com.b305.vuddy.util.SharedManager
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -63,6 +65,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
         binding.fabLogout.setOnClickListener {
+            requireActivity().stopService(Intent(requireContext(), TestService::class.java))
             logout(sharedManager)
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
         }

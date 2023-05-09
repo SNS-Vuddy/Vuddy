@@ -46,4 +46,6 @@ class SplashActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         onRequestPermissionsResultExtension(requestCode, permissions, grantResults)
     }
+
+
 }
