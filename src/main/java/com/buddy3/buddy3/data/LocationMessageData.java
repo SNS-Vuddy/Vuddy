@@ -1,13 +1,13 @@
 package com.buddy3.buddy3.data;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.socket.WebSocketSession;
 
 @Data
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class LocationMessageData {
     private String nickname;
     private String latitude;

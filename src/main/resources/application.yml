@@ -1,18 +1,20 @@
+
 server:
   port: 8080
   context-path: /location
 
 spring:
   datasource:
-    url: ${MYSQL_URL:-jdbc:mysql://localhost:3306/vuddy}
-    username: ${MYSQL_USERNAME:-root}
-    password: ${MYSQL_PASSWORD:-abcd1234}
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/vuddy}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:abcd1234}
+
   kafka:
     consumer:
-      bootstrap-servers: ${SERVER_HOST_NAME:-localhost}:9092
+      bootstrap-servers: ${KAFKA_HOST_NAME:localhost:9092}
       group-id: location
     producer:
-      bootstrap-servers: ${SERVER_HOST_NAME:-localhost}:9092
+      bootstrap-servers: ${KAFKA_HOST_NAME:localhost:9092}
   redis:
     lettuce:
       pool:
@@ -20,4 +22,4 @@ spring:
         max-idle: 10
         min-idle: 2
     port: 6379
-    host: ${REDIS_HOST_NAME:-127.0.0.1}
+    host: ${REDIS_HOST_NAME:127.0.0.1}

@@ -22,6 +22,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,8 +37,8 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
     @Autowired
     private UserRepository userRepository;
 
-//    @Autowired
-//    private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private RedisTemplate<String, String> redisLocationTemplate;
 
 
     private String formatDateTime(LocalDateTime dateTime) {
@@ -50,6 +51,8 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
     ConcurrentHashMap<String, CurrentFriends> currentUsersCurrentFriendsMap = new ConcurrentHashMap<>();
     ConcurrentHashMap<String, List<String>> currentUsersFriendsListMap = new ConcurrentHashMap<>();
     ConcurrentHashMap<String, String> currentSessionIdsUsersMap = new ConcurrentHashMap<>();
+
+
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -116,7 +119,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                 }
 
                 List<String> friendsNicknameList = currentUsersFriendsListMap.get(locationMessage.getNickname());
-                if (friendsNicknameList == null){
+                if (friendsNicknameList == null) {
                     User user = userRepository.findByNickname(locationMessage.getNickname());
                     if (user != null) {
                         friendsNicknameList = userRepository.findFriends(user.getUserId());
@@ -126,7 +129,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
                 for (String friendNickname : friendsNicknameList) {
                     CurrentFriends friendCurrentFriends = currentUsersCurrentFriendsMap.get(friendNickname);
-                    if (friendCurrentFriends != null){
+                    if (friendCurrentFriends != null) {
                         currentFriends.addFriends(friendNickname, friendCurrentFriends.getSession());
                         friendCurrentFriends.addFriends(locationMessage.getNickname(), session);
                         currentUsersCurrentFriendsMap.replace(friendNickname, friendCurrentFriends);
@@ -139,6 +142,16 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                 }
             }
             locationService.sendMessage(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
+            redisLocationTemplate.opsForList().rightPush(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
+            List<String> locationMessageStringList = redisLocationTemplate.opsForList().range(locationMessage.getNickname(), 0, -1);
+            List<LocationMessageData> locationMessageDataList = new ArrayList<>();
+            if (locationMessageStringList != null){
+                for (String i : locationMessageStringList) {
+                    locationMessageDataList.add(objectMapper.readValue(i, LocationMessageData.class));
+                }
+            }
+            System.out.println(objectMapper.writeValueAsString(locationMessageDataList));
+//            redisLocationTemplate.opsForList().rightPop(locationMessage.getNickname());
         }
     }
 
