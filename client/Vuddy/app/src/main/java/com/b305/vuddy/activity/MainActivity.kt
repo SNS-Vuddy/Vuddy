@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
         startService(Intent(this, ImmortalLocationService::class.java))
     }
-
+//
     companion object {
         class BootReceiver : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
