@@ -54,4 +54,8 @@ public class Feed {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void addMainImg(String mainImg) {
+        this.mainImg = mainImg;
+    }
+
 }
