@@ -17,10 +17,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.edu.ssafy.feed.model.entity.QComments.comments;
 import static com.edu.ssafy.feed.model.entity.QFeed.feed;
 import static com.edu.ssafy.feed.model.entity.QFeedLikes.feedLikes;
-import static com.edu.ssafy.feed.model.entity.QTaggedFriends.taggedFriends;
 
 @Repository
 @RequiredArgsConstructor
@@ -31,11 +29,9 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom{
     @Override
     public List<AllFeedInfoDto> findOneWithTags(Long id) {
         List<AllFeedInfoDto> results = queryFactory
-                .select(Projections.constructor(AllFeedInfoDto.class, feed, taggedFriends, feedLikes, comments))
+                .select(Projections.constructor(AllFeedInfoDto.class, feed, feedLikes))
                 .from(feed)
-                .leftJoin(taggedFriends).on(feed.id.eq(taggedFriends.feed.id))
                 .leftJoin(feedLikes).on(feed.id.eq(feedLikes.feed.id))
-                .leftJoin(comments).on(feed.id.eq(comments.feed.id))
                 .where(feed.id.eq(id).and(feed.isDeleted.eq(false)))
                 .fetch();
 

@@ -34,14 +34,4 @@ public class Comments {
     @Column(name = "c_is_deleted")
     private boolean isDeleted;
 
-    public static Comments createComment(User user, Feed feed, String content) {
-        Comments comments = new Comments();
-        comments.user = user;
-        comments.feed = feed;
-        comments.content = content;
-        comments.createdAt = LocalDateTime.now();
-        comments.updatedAt = LocalDateTime.now();
-        return comments;
-    }
-
 }
