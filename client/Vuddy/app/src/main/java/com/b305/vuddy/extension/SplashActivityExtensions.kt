@@ -1,17 +1,21 @@
 package com.b305.vuddy.extension
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
+import android.os.PowerManager
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.b305.vuddy.activity.AuthActivity
@@ -123,18 +127,42 @@ fun SplashActivity.isLocationServicesAvailable(): Boolean {
     return false
 }
 
+fun SplashActivity.isBatterIgnoreAvailable(): Boolean {
+    val powerManager = getSystemService(AppCompatActivity.POWER_SERVICE) as PowerManager
+    return powerManager.isIgnoringBatteryOptimizations(packageName)
+}
+
+@SuppressLint("BatteryLife")
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+fun SplashActivity.showDialogForBatterIgnoreSetting() {
+    val message = "앱의 정상적인 동작을 위해 배터리 최적화를 해제해주세요."
+    getBatteryIgnoreLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (isBatterIgnoreAvailable()) {
+                isRunTimePermissionsGranted()
+            } else {
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+                finish()
+            }
+        }
+
+    val batteryIgnoreSettingIntent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+    batteryIgnoreSettingIntent.data = Uri.parse("package:$packageName")
+    getBatteryIgnoreLauncher.launch(batteryIgnoreSettingIntent)
+}
+
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun SplashActivity.showDialogForLocationServiceSetting() {
+    val message = "앱의 정상적인 동작을 위해 위치 서비스를 사용해주세요"
     getGPSPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (isLocationServicesAvailable()) {
                 isRunTimePermissionsGranted()
             } else {
-                Toast.makeText(this, "위치 서비스를 사용할 수 없습니다.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
                 finish()
             }
         }
-
     val builder: AlertDialog.Builder = AlertDialog.Builder(this)
     builder.setTitle("위치 서비스 비활성화")
     builder.setMessage("위치 서비스가 꺼져있습니다. 설정해야 앱을 사용할 수 있습니다.")
