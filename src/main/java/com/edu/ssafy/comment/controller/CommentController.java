@@ -17,7 +17,7 @@ public class CommentController {
 
     // 댓글 작성
     @PostMapping("/write/{feedId}")
-    public ResponseEntity<CommonRes> writeComment(@RequestHeader("x-nickname") String encodedNickname, @PathVariable Long feedId, @RequestBody CommentWriteReq req) {
+    public ResponseEntity<CommonRes> writeComment(@RequestHeader("x_nickname") String encodedNickname, @PathVariable Long feedId, @RequestBody CommentWriteReq req) {
 
         String userNickname = NicknameUtil.decodeNickname(encodedNickname);
         commentService.createComment(userNickname, feedId, req.getComment());
