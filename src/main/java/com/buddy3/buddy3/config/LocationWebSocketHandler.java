@@ -4,8 +4,6 @@ import com.buddy3.buddy3.data.LocationMessageData;
 import com.buddy3.buddy3.domain.CurrentFriends;
 import com.buddy3.buddy3.dto.LocationMessageReceive;
 import com.buddy3.buddy3.entity.User;
-import com.buddy3.buddy3.model.UserLocation;
-import com.buddy3.buddy3.service.MongoUserLocationService;
 import com.buddy3.buddy3.repository.UserRepository;
 import com.buddy3.buddy3.service.LocationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,9 +38,6 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
     @Autowired
     private RedisTemplate<String, String> redisLocationTemplate;
-
-    @Autowired
-    private MongoUserLocationService mongoUserLocationService;
 
 
     private String formatDateTime(LocalDateTime dateTime) {
