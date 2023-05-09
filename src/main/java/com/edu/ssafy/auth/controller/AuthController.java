@@ -84,7 +84,12 @@ public class AuthController {
         String encodedNickname = tokenProvider.getUserNicknameFromToken(token);
         log.info("validate 유저 검증 완료");
         
-        return ResponseEntity.ok().header("nickname", encodedNickname).build();
+        return ResponseEntity.ok()
+                .header("nickname", encodedNickname)
+                .header("x-nickname", encodedNickname)
+                .header("X-nickname", encodedNickname)
+                .header("X_nickname", encodedNickname)
+                .build();
     }
 
     // 더미 테스트 유저 토큰 발급용 API
