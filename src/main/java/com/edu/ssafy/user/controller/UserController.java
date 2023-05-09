@@ -19,7 +19,7 @@ public class UserController {
 
 //     내 프로필, 피드들 조회
     @GetMapping("/profile")
-    public CommonRes getMyInfoAndFeeds(@RequestHeader("x-nickname") String encodedNickname) {
+    public CommonRes getMyInfoAndFeeds(@RequestHeader("x_nickname") String encodedNickname) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
         User user = userService.findById(nickname);
         UserFeedsSummaryRes myUserWithFeedsDto = userService.findUserAndFeeds(user);
@@ -28,7 +28,7 @@ public class UserController {
 
     // 특정 유저 프로필, 피드들 조회
     @GetMapping("/profile/{targetUserNickname}")
-    public CommonRes getUserInfoAndFeeds(@RequestHeader("x-nickname") String encodedNickname, @PathVariable String targetUserNickname) {
+    public CommonRes getUserInfoAndFeeds(@RequestHeader("x_nickname") String encodedNickname, @PathVariable String targetUserNickname) {
         String userNickname = NicknameUtil.decodeNickname(encodedNickname);
 
         UserProfileWithFeedsRes userProfileWithFeedsRes = userService.findUsersWithFriendStatus(userNickname, targetUserNickname);
@@ -38,7 +38,7 @@ public class UserController {
 
     // 상태메세지 수정
     @PutMapping("/profile/edit/status")
-    public CommonRes editStatusMessage(@RequestHeader("x-nickname") String encodedNickname, @RequestBody UserStatusChangeReq userStatusChangeReq) {
+    public CommonRes editStatusMessage(@RequestHeader("x_nickname") String encodedNickname, @RequestBody UserStatusChangeReq userStatusChangeReq) {
         String userNickname = NicknameUtil.decodeNickname(encodedNickname);
         Long userId = userService.findByNickname(userNickname).getId();
         userService.changeUserStatusMessage(userId, userStatusChangeReq.getStatusMessage());
