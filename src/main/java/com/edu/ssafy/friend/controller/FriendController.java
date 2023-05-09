@@ -50,7 +50,7 @@ public class FriendController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CommonRes> addFriend(@RequestHeader("x-nickname") String encodedNickname, @RequestBody AddFriendReq req) {
+    public ResponseEntity<CommonRes> addFriend(@RequestHeader("x_nickname") String encodedNickname, @RequestBody AddFriendReq req) {
         try {
             UserPair userPair = getRequesterAndReceiver(encodedNickname, req.getFriendNickname());
             User requester = userPair.getRequester();
@@ -65,7 +65,7 @@ public class FriendController {
     }
 
     @PostMapping("/accept")
-    public ResponseEntity<CommonRes> acceptFriend(@RequestHeader("x-nickname") String encodedNickname, @RequestBody AddFriendReq req) {
+    public ResponseEntity<CommonRes> acceptFriend(@RequestHeader("x_nickname") String encodedNickname, @RequestBody AddFriendReq req) {
         try {
             UserPair userPair = getRequesterAndReceiver(encodedNickname, req.getFriendNickname());
             User requester = userPair.getReceiver();
@@ -81,7 +81,7 @@ public class FriendController {
 
     // 친구 추가 요청 거절
     @PostMapping("/deny")
-    public ResponseEntity<CommonRes> denyFriend(@RequestHeader("x-nickname") String encodedNickname, @RequestBody AddFriendReq req) {
+    public ResponseEntity<CommonRes> denyFriend(@RequestHeader("x_nickname") String encodedNickname, @RequestBody AddFriendReq req) {
         try {
             UserPair userPair = getRequesterAndReceiver(encodedNickname, req.getFriendNickname());
             User requester = userPair.getReceiver();
@@ -97,7 +97,7 @@ public class FriendController {
 
     // 친구 삭제
     @PostMapping("/delete")
-    public ResponseEntity<CommonRes> deleteFriend(@RequestHeader("x-nickname") String encodedNickname, @RequestBody AddFriendReq req) {
+    public ResponseEntity<CommonRes> deleteFriend(@RequestHeader("x_nickname") String encodedNickname, @RequestBody AddFriendReq req) {
         try {
             UserPair userPair = getRequesterAndReceiver(encodedNickname, req.getFriendNickname());
             User requester = userPair.getReceiver();
@@ -113,7 +113,7 @@ public class FriendController {
 
     //     내 친구 전체 조회
     @GetMapping("/all")
-    public ResponseEntity<CommonRes> getAllFriend(@RequestHeader("x-nickname") String encodedNickname) {
+    public ResponseEntity<CommonRes> getAllFriend(@RequestHeader("x_nickname") String encodedNickname) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
         User user = userService.findByNickname(nickname);
         List<AllFriendDto> friends = friendService.findAllFriend(user);
@@ -122,7 +122,7 @@ public class FriendController {
 
     // 친구, 유저 검색
     @GetMapping("/search")
-    public ResponseEntity<CommonRes> searchFriend(@RequestHeader("x-nickname") String encodedNickname, @RequestParam("nickname") String nickname) {
+    public ResponseEntity<CommonRes> searchFriend(@RequestHeader("x_nickname") String encodedNickname, @RequestParam("nickname") String nickname) {
 
         String myNickname = NicknameUtil.decodeNickname(encodedNickname);
 
