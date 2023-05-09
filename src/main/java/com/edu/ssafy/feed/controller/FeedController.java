@@ -10,6 +10,7 @@ import com.edu.ssafy.feed.model.dto.response.UserFeedsRes;
 import com.edu.ssafy.feed.model.entity.Feed;
 import com.edu.ssafy.feed.model.entity.User;
 import com.edu.ssafy.feed.model.service.FeedService;
+import com.edu.ssafy.feed.model.service.S3UploaderService;
 import com.edu.ssafy.feed.model.service.TaggedFriendsService;
 import com.edu.ssafy.feed.model.service.UserService;
 import com.edu.ssafy.feed.util.NicknameUtil;
@@ -17,9 +18,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +34,7 @@ public class FeedController {
     private final UserService userService;
     private final FeedService feedService;
     private final TaggedFriendsService taggedFriendsService;
+    private final S3UploaderService s3UploaderService;
 
     @GetMapping("/test/header")
     public String test(@RequestHeader Map<String, String> map) {
@@ -109,5 +116,37 @@ public class FeedController {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
         String msg = feedService.likeFeed(feedId, nickname);
         return new ResponseEntity<>(new CommonRes(200, msg), HttpStatus.OK);
+    }
+
+    // 이미지 테스트 api
+    @PostMapping("/opened/image")
+    public List<String> testImage(@RequestPart(value = "images") List<MultipartFile> images) {
+
+        if (images.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        ExecutorService executorService = Executors.newFixedThreadPool(5); // 스레드 풀 생성
+        List<Future<String>> futures = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            // 이미지 업로드 작업을 스레드 풀에 제출
+            Future<String> future = executorService.submit(() -> s3UploaderService.upload(image, "images"));
+            futures.add(future);
+        }
+
+        List<String> storedFileNames = new ArrayList<>();
+        for (Future<String> future : futures) {
+            try {
+                storedFileNames.add(future.get()); // 업로드된 이미지의 URL을 가져옴
+            } catch (Exception e) {
+                throw new RuntimeException("이미지 업로드 중 에러 발생", e);
+            }
+        }
+
+        executorService.shutdown(); // 스레드 풀 종료
+
+        return storedFileNames;
+
     }
 }
