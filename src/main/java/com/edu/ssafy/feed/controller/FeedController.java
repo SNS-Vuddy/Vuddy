@@ -72,7 +72,6 @@ public class FeedController {
 
         List<MultipartFile> images = req.getImages();
 
-
         ExecutorService executorService = Executors.newFixedThreadPool(5); // 스레드 풀 생성
         List<Future<String>> futures = new ArrayList<>();
 

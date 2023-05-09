@@ -25,6 +25,7 @@ public class FeedService {
     private final UserRepository userRepository;
     private final FeedLikesRepository feedLikesRepository;
     private final CommentRepository commentRepository;
+    private final FeedPictureRepository feedPictureRepository;
 
     @Transactional
     public void saveFeed(Feed feed) {
@@ -70,11 +71,17 @@ public class FeedService {
 
         List<CommentDto> commentDtoList = commentRepository.findAllByFeed(feed);
 
+        List<String> images = feedPictureRepository.findAllByFeedId(feed.getId()).stream()
+                .map(FeedPictures::getImgUrl)
+                .collect(Collectors.toList());
+
         return SingleFeedRes.builder()
                 .feedId(feed.getId())
                 .nickname(feed.getNickname())
                 .content(feed.getContent())
                 .location(feed.getLocation())
+                .mainImg(feed.getMainImg())
+                .images(images)
                 .createdAt(feed.getCreatedAt().toString())
                 .updatedAt(feed.getUpdatedAt().toString())
                 .isLiked(isLiked)
