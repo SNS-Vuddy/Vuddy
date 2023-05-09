@@ -29,7 +29,7 @@ class AuthActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (checkIsSavedUser(sharedManager)) {
-            val intent = Intent(applicationContext, ConnectSocketMainActivity::class.java)
+            val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)
             finish()
         }
