@@ -1,9 +1,11 @@
 package com.b305.vuddy.activity
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
 import com.b305.vuddy.R
+import com.b305.vuddy.service.TestService
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.LocationSocket
 
@@ -13,6 +15,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         connectAndSendToLocationSocket()
+        startService(Intent(this, TestService::class.java))
     }
 
     private fun connectAndSendToLocationSocket() {

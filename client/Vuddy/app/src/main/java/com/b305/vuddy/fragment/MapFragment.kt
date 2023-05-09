@@ -24,19 +24,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-/**
- * 1. 실행 전
- * 10인 친구 자료구조 생성
- * 2. 실행
- * 내 위치 마커 추가
- * 카메라 위치 변경
- * 카메라 줌 변경
- * 3. 마커 수정해야 하는 상황
- * 인터벌 1초
- * 친구 위치 업데이트
- * 4. 마커 수정
- * 내 위치 + 10인 친구 자료구조 반영
- */
 class MapFragment : Fragment(), OnMapReadyCallback {
 
     private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
