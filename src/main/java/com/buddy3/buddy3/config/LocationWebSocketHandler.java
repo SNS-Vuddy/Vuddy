@@ -4,10 +4,11 @@ import com.buddy3.buddy3.data.LocationMessageData;
 import com.buddy3.buddy3.domain.CurrentFriends;
 import com.buddy3.buddy3.dto.LocationMessageReceive;
 import com.buddy3.buddy3.entity.User;
+import com.buddy3.buddy3.model.UserLocation;
+import com.buddy3.buddy3.service.MongoUserLocationService;
 import com.buddy3.buddy3.repository.UserRepository;
 import com.buddy3.buddy3.service.LocationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.istack.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
     @Autowired
     private RedisTemplate<String, String> redisLocationTemplate;
+
+    @Autowired
+    private MongoUserLocationService mongoUserLocationService;
 
 
     private String formatDateTime(LocalDateTime dateTime) {
@@ -101,13 +105,17 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
         LocationMessageReceive locationMessageReceive = objectMapper.readValue(message.getPayload(), LocationMessageReceive.class);
 
+        // 보내온 시간
         LocalDateTime localDateTime = LocalDateTime.parse(locationMessageReceive.getLocalDateTime());
+
+        // 서버 시간
+        LocalDateTime timeNow = LocalDateTime.now();
 
         LocationMessageData locationMessage = new LocationMessageData();
         locationMessage.setNickname(locationMessageReceive.getNickname());
         locationMessage.setLatitude(locationMessageReceive.getLatitude());
         locationMessage.setLongitude(locationMessageReceive.getLongitude());
-        locationMessage.setTime(formatDateTime(localDateTime));
+        locationMessage.setTime(formatDateTime(timeNow));
 
         if (!locationMessage.getNickname().equals("")) {
             if(currentSessionIdsUsersMap.get(session.getId()) == null) {
@@ -124,6 +132,9 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                     if (user != null) {
                         friendsNicknameList = userRepository.findFriends(user.getUserId());
                         currentUsersFriendsListMap.put(locationMessage.getNickname(), friendsNicknameList);
+                    }
+                    else {
+                        friendsNicknameList = new ArrayList<>();
                     }
                 }
 
@@ -142,16 +153,17 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                 }
             }
             locationService.sendMessage(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
-            redisLocationTemplate.opsForList().rightPush(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
-            List<String> locationMessageStringList = redisLocationTemplate.opsForList().range(locationMessage.getNickname(), 0, -1);
-            List<LocationMessageData> locationMessageDataList = new ArrayList<>();
-            if (locationMessageStringList != null){
-                for (String i : locationMessageStringList) {
-                    locationMessageDataList.add(objectMapper.readValue(i, LocationMessageData.class));
-                }
-            }
-            System.out.println(objectMapper.writeValueAsString(locationMessageDataList));
-//            redisLocationTemplate.opsForList().rightPop(locationMessage.getNickname());
+//            redisLocationTemplate.opsForList().rightPush(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
+//            List<String> locationMessageStringList = redisLocationTemplate.opsForList().range(locationMessage.getNickname(), 0, -1);
+//            if (locationMessageStringList!= null && locationMessageStringList.size() >= 2) {
+//                List<UserLocation> locationMessageDataList = new ArrayList<>();
+//                for (String i : locationMessageStringList) {
+//                    locationMessageDataList.add(objectMapper.readValue(i, UserLocation.class));
+//                }
+//                redisLocationTemplate.delete(locationMessage.getNickname());
+//                mongoUserLocationService.saveAllUserLocation(locationMessageDataList);
+//            }
+//            System.out.println(redisLocationTemplate.opsForList().range(locationMessage.getNickname(), 0, -1));
         }
     }
 
