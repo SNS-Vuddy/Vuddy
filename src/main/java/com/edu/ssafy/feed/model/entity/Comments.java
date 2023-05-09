@@ -34,7 +34,4 @@ public class Comments {
     @Column(name = "c_is_deleted")
     private boolean isDeleted;
 
-    @Column(name = "c_nickname")
-    private String nickname;
-
 }

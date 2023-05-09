@@ -32,8 +32,6 @@ public class QComments extends EntityPathBase<Comments> {
 
     public final BooleanPath isDeleted = createBoolean("isDeleted");
 
-    public final StringPath nickname = createString("nickname");
-
     public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt", java.time.LocalDateTime.class);
 
     public final QUser user;

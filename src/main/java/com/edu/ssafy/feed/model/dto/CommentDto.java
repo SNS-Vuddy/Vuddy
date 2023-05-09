@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommentDto {
     private String nickname;
+    private String profileImg;
     private String content;
     private LocalDateTime createdAt;
 }

@@ -7,10 +7,7 @@ import com.edu.ssafy.feed.model.dto.request.FeedEditReq;
 import com.edu.ssafy.feed.model.dto.response.SingleFeedRes;
 import com.edu.ssafy.feed.model.dto.response.UserFeedsRes;
 import com.edu.ssafy.feed.model.entity.*;
-import com.edu.ssafy.feed.model.repository.FeedLikesRepository;
-import com.edu.ssafy.feed.model.repository.FeedRepository;
-import com.edu.ssafy.feed.model.repository.TaggedFriendsRepository;
-import com.edu.ssafy.feed.model.repository.UserRepository;
+import com.edu.ssafy.feed.model.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +24,7 @@ public class FeedService {
     private final TaggedFriendsRepository taggedFriendsRepository;
     private final UserRepository userRepository;
     private final FeedLikesRepository feedLikesRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public void saveFeed(Feed feed) {
@@ -57,12 +55,6 @@ public class FeedService {
 
         Feed feed = result.get(0).getFeed();
 
-        List<CommentDto> comments = result.stream()
-                .map(AllFeedInfoDto::getComments)
-                .filter(Objects::nonNull)
-                .map(c -> new CommentDto(c.getNickname(), c.getContent(), c.getCreatedAt()))
-                .collect(Collectors.toList());
-
         boolean isLiked = result.stream()
                 .map(AllFeedInfoDto::getFeedLikes)
                 .filter(Objects::nonNull)
@@ -76,11 +68,7 @@ public class FeedService {
                 .map(FeedLikes::getId)
                 .collect(Collectors.toSet());
 
-        Set<Long> commentsCount = result.stream()
-                .map(AllFeedInfoDto::getComments)
-                .filter(Objects::nonNull)
-                .map(Comments::getId)
-                .collect(Collectors.toSet());
+        List<CommentDto> commentDtoList = commentRepository.findAllByFeed(feed);
 
         return SingleFeedRes.builder()
                 .feedId(feed.getId())
@@ -91,8 +79,8 @@ public class FeedService {
                 .updatedAt(feed.getUpdatedAt().toString())
                 .isLiked(isLiked)
                 .likesCount((long) likesCount.size())
-                .commentsCount((long) commentsCount.size())
-                .comments(comments)
+                .commentsCount((long) commentDtoList.size())
+                .comments(commentDtoList)
                 .build();
     }
 
