@@ -19,4 +19,11 @@ public class FeedPictures {
 
     @Column(name = "fp_img_url")
     private String imgUrl;
+
+    public static FeedPictures createFeedPictures(Feed feed, String imgUrl) {
+        FeedPictures feedPictures = new FeedPictures();
+        feedPictures.feed = feed;
+        feedPictures.imgUrl = imgUrl;
+        return feedPictures;
+    }
 }

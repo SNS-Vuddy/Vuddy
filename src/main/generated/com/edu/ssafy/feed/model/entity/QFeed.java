@@ -36,6 +36,8 @@ public class QFeed extends EntityPathBase<Feed> {
 
     public final StringPath nickname = createString("nickname");
 
+    public final StringPath title = createString("title");
+
     public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt", java.time.LocalDateTime.class);
 
     public final QUser user;

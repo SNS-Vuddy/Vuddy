@@ -27,6 +27,9 @@ public class Feed {
     @Column(name = "f_nickname")
     private String nickname;
 
+    @Column(name = "f_title")
+    private String title;
+
     @Column(name = "f_content")
     private String content;
 
