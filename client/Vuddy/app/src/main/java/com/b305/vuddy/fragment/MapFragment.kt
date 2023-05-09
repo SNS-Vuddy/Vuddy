@@ -1,7 +1,6 @@
 package com.b305.vuddy.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,18 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
-import com.b305.vuddy.extension.getMyLocation
 import com.b305.vuddy.extension.logout
-import com.b305.vuddy.extension.moveCameraToCurrentLocation
 import com.b305.vuddy.extension.renewFriendList
-import com.b305.vuddy.extension.setMarker
 import com.b305.vuddy.model.FriendLocation
 import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.util.SharedManager
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -83,21 +78,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        moveCameraToCurrentLocation(mMap, friendLocationList)
-
-        val fabMoveCurrentLocation = view?.findViewById<FloatingActionButton>(R.id.fab_move_current_location)
-        fabMoveCurrentLocation?.setOnClickListener {
-            moveCameraToCurrentLocation(mMap, friendLocationList)
-        }
-
-        val handler = Handler()
-        val runnable = object : Runnable {
-            override fun run() {
-                setMarker(getMyLocation(), mMap, friendLocationList)
-                handler.postDelayed(this, 1000)
-            }
-        }
-        handler.postDelayed(runnable, 1000)
+//        mMap = googleMap
+//        moveCameraToCurrentLocation(mMap, friendLocationList)
+//
+//        val fabMoveCurrentLocation = view?.findViewById<FloatingActionButton>(R.id.fab_move_current_location)
+//        fabMoveCurrentLocation?.setOnClickListener {
+//            moveCameraToCurrentLocation(mMap, friendLocationList)
+//        }
+//
+//        val handler = Handler()
+//        val runnable = object : Runnable {
+//            override fun run() {
+//                setMarker(getMyLocation(), mMap, friendLocationList)
+//                handler.postDelayed(this, 1000)
+//            }
+//        }
+//        handler.postDelayed(runnable, 1000)
     }
 }
