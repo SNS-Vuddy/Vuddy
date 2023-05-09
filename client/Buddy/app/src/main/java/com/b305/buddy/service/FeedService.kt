@@ -12,6 +12,5 @@ interface FeedService {
     @POST("/img")
     fun feedImg(
         @Part ("imageFile") imageFile: MultipartBody.Part,
-
     ) : Call<ResponseBody>
 }
