@@ -1,6 +1,8 @@
 package com.b305.buddy.util
 
 import com.b305.buddy.service.AuthService
+import com.b305.buddy.service.FeedService
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -28,4 +30,9 @@ object RetrofitAPI {
     val authService: AuthService by lazy {
         retrofit.create(AuthService::class.java)
     }
+
+    val feedServie : FeedService by lazy {
+        retrofit.create((FeedService::class.java))
+    }
+
 }

@@ -5,10 +5,10 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,19 +17,29 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.b305.buddy.R
 import com.b305.buddy.databinding.FragmentWriteFeedBinding
 import com.b305.buddy.util.PhotoAdapter
+import com.b305.buddy.util.RetrofitAPI.feedServie
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import okhttp3.MediaType
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.ResponseBody
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class WriteFeedFragment : Fragment() {
+class WriteFeedFragment : BottomSheetDialogFragment() {
 
     val deviceSdkVersion = android.os.Build.VERSION.SDK_INT
 
@@ -61,6 +71,7 @@ class WriteFeedFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(
@@ -76,9 +87,10 @@ class WriteFeedFragment : Fragment() {
         }
 
         binding.btnSaveFeed.setOnClickListener {
-            val feedLocation = binding.etFeedLocation.text.toString()
-            val feedTitle = binding.etFeedTitle.text.toString()
-            val feedContent = binding.etFeedContent.text.toString()
+//            val feedLocation = binding.etFeedLocation.text.toString()
+//            val feedTitle = binding.etFeedTitle.text.toString()
+//            val feedContent = binding.etFeedContent.text.toString()
+
         }
 
         binding.ivMap.setOnClickListener {
@@ -187,17 +199,55 @@ class WriteFeedFragment : Fragment() {
                     result.data?.data?.let { uri ->
                         val imageUri: Uri? = result.data?.data
                         if (imageUri != null) {
+                            Toast.makeText(requireContext(), "${imageUri::class.simpleName}", Toast.LENGTH_LONG).show()
                             photoList.add(imageUri)
                         }
                     }
                 }
-//                adapter.notifyDataSetChanged()
+                // adapter.notifyDataSetChanged()
                 // 어댑터 생성
                 val adapter = PhotoAdapter(photoList, requireContext())
                 binding.rvPhoto.adapter = adapter
+                sendImage()
 
             }
         }
+
+    fun sendImage() {
+        for (i in 0 until photoList.size) {
+            // val imageFile = File(getPathFromUri(photoList[i])) // Uri를 File로 변환하는 메소드
+            val imageUri = photoList[i]
+            val file = File(getPathFromUri(imageUri))
+//            val requestFile = RequestBody.create(MediaType.parse("image/*"), file)
+            val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val body = MultipartBody.Part.createFormData("imageFile", file.name, requestFile)
+
+            val call = feedServie.feedImg(body)
+
+            call.enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    if (response.isSuccessful) {
+                        val message = response.body()?.string()
+                        Log.d("Upload", "Image $i uploaded successfully. Response: $message")
+                    } else {
+                        Log.d("Upload", "Image $i upload failed. Response: ${response.message()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Log.e("Upload", "Image $i upload failed.", t)
+                }
+            })
+        }
+    }
+    private fun getPathFromUri(uri: Uri): String {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = requireContext().contentResolver.query(uri, projection, null, null, null)!!
+        val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        cursor.moveToFirst()
+        return cursor.getString(column_index)
+    }
+
     private val activityResultCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -236,5 +286,6 @@ class WriteFeedFragment : Fragment() {
 
     // 사진 경로 저장
     private var currentPhotoPath: String? = null
+
 
 }
