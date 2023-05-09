@@ -68,14 +68,10 @@ public class FeedController {
         // FeedWriteReq를 Feed 엔티티로 변환
         Feed feed = req.toFeedEntity(user);
 
-        // 변환된 엔티티를 저장
-        feedService.saveFeed(feed);
-
-        taggedFriendsService.saveAllTaggedFriends(req, feed);
+        System.out.println("이미지 저장 시작 시간" + LocalDateTime.now());
 
         List<MultipartFile> images = req.getImages();
 
-        System.out.println("이미지 저장 시작 시간" + LocalDateTime.now());
 
         ExecutorService executorService = Executors.newFixedThreadPool(5); // 스레드 풀 생성
         List<Future<String>> futures = new ArrayList<>();
@@ -97,9 +93,15 @@ public class FeedController {
 
         executorService.shutdown(); // 스레드 풀 종료
 
+        System.out.println("이미지 저장 종료 시간" + LocalDateTime.now());
+
+        feed.addMainImg(storedFileNames.get(0).getImgUrl());
+
+        feedService.saveFeed(feed);
+
         feedPictureService.saveAll(storedFileNames);
 
-        System.out.println("이미지 저장 종료 시간" + LocalDateTime.now());
+        taggedFriendsService.saveAllTaggedFriends(req, feed);
 
         return new CommonRes(201, "피드 작성 성공");
     }
