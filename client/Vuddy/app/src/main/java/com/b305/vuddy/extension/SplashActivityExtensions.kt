@@ -18,7 +18,11 @@ import com.b305.vuddy.activity.AuthActivity
 import com.b305.vuddy.activity.SplashActivity
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-fun SplashActivity.onRequestPermissionsResultExtension(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+fun SplashActivity.onRequestPermissionsResultExtension(
+    requestCode: Int,
+    permissions: Array<out String>,
+    grantResults: IntArray
+) {
     if (requestCode != LOCATION_PERMISSIONS_REQUEST_CODE && requestCode != BACKGROUND_LOCATION_PERMISSIONS_REQUEST_CODE && requestCode != NOTIFICATION_PERMISSIONS_REQUEST_CODE) {
         return
     }
@@ -79,16 +83,17 @@ fun SplashActivity.isRunTimePermissionsGranted() {
         ActivityCompat.requestPermissions(this, REQUIRED_LOCAION_PERMISSION, LOCATION_PERMISSIONS_REQUEST_CODE)
         return
     }
-
-    val hasBackgroundLocationPermission =
-        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-    if (hasBackgroundLocationPermission != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(
-            this,
-            REQUIRED_BACKGROUND_LOCATION_PERMISSION,
-            BACKGROUND_LOCATION_PERMISSIONS_REQUEST_CODE
-        )
-        return
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val hasBackgroundLocationPermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        if (hasBackgroundLocationPermission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                REQUIRED_BACKGROUND_LOCATION_PERMISSION,
+                BACKGROUND_LOCATION_PERMISSIONS_REQUEST_CODE
+            )
+            return
+        }
     }
 
     val hasNotificationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
