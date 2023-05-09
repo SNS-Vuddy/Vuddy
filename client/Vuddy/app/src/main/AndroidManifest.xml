@@ -42,7 +42,7 @@
             </intent-filter>
         </receiver>
         <service
-                android:name=".service.TestService"
+                android:name=".service.ImmortalLocationService"
                 android:enabled="true"
                 android:exported="true" />
         <activity

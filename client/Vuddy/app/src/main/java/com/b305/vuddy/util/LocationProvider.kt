@@ -23,7 +23,7 @@ class LocationProvider(val context: Context) {
         getLocation()
     }
     
-    private fun getLocation(): Location? {
+     private fun getLocation(): Location? {
         try {
             locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             

@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 
 class LocationSocket(context: Context) {
     private var client = OkHttpClient()
-    private var url = "ws://k8b305.p.ssafy.io:9016/location"
+    private var url = "ws://k8b305.p.ssafy.io/location"
     private val sharedManager: SharedManager by lazy { SharedManager(context) }
     private lateinit var webSocket: WebSocket
 
@@ -27,8 +27,7 @@ class LocationSocket(context: Context) {
 
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
-                // 연결이 성공적으로 열렸을 때 실행되는 코드를 작성합니다.
-                Log.d("onOpen", response.toString())
+                Log.d("LocationSocket", "****onOpen****")
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -42,11 +41,8 @@ class LocationSocket(context: Context) {
                 friendLocation.lat = latitude.toDouble()
                 friendLocation.lng = longitude.toDouble()
 
-                Log.d(
-                    "LocationSocket: onMessage",
-                    friendLocation.nickname.toString() + " " + friendLocation.lat.toString() + " " + friendLocation.lng.toString()
-                )
                 EventBus.getDefault().post(LocationEvent(friendLocation))
+                Log.d("LocationSocket", "****onMessage $nickname $latitude $longitude****")
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -66,10 +62,12 @@ class LocationSocket(context: Context) {
             .put("latitude", latitude)
             .put("longitude", longitude)
             .put("localDateTime", LocalDateTime.now().toString())
-        Log.d(
-            "LocationSocket: sendLocation",
-            sharedManager.getCurrentUser().nickname.toString() + " " + latitude + " " + longitude
-        )
         webSocket.send(jsonObject.toString())
+        Log.d("LocationSocket", "****sendLocation $latitude $longitude****")
+    }
+
+    fun disconnect() {
+        webSocket.close(1000, "disconnect")
+        Log.d("LocationSocket", "****disconnect****")
     }
 }
