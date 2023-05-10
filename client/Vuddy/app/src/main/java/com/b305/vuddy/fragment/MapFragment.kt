@@ -87,7 +87,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         refreshMarker(true)
     }
 
-    private fun refreshMarker(isFirst: Boolean) {
+    private fun refreshMarker(isMoveCamera: Boolean) {
         if (!::mMap.isInitialized) {
             return
         }
@@ -100,7 +100,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             markerOption.position(location)
             mMap.clear()
 
-            if (isFirst) {
+            if (isMoveCamera) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14f))
             }
             mMap.addMarker(markerOption)
