@@ -73,7 +73,5 @@
 //        binding.tvCount.text = count.toString()
 //        binding.tvLatitude.text = latitude
 //        binding.tvLongitude.text = longitude
-//
-//        mMap
 //    }
 //}

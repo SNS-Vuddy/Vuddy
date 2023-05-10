@@ -41,7 +41,7 @@ class LocationSocket(context: Context) {
                 userLocation.lat = latitude.toDouble().toString()
                 userLocation.lng = longitude.toDouble().toString()
 
-                EventBus.getDefault().post(LocationEvent(userLocation))
+                EventBus.getDefault().post(LocationEvent(false, userLocation))
                 Log.d("LocationSocket", "****onMessage $nickname $latitude $longitude****")
             }
 

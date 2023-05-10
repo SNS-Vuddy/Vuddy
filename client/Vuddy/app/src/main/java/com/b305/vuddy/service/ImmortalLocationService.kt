@@ -4,22 +4,30 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
-import android.os.Handler
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.IBinder
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.b305.vuddy.R
 import com.b305.vuddy.activity.MainActivity
+import com.b305.vuddy.fragment.MapFragment
+import com.b305.vuddy.model.LocationEvent
+import com.b305.vuddy.model.UserLocation
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.LocationSocket
+import org.greenrobot.eventbus.EventBus
 
-class ImmortalLocationService() : Service() {
-    var handler = Handler()
-    var runnable: Runnable? = null
-    var locationSocket: LocationSocket? = null
-    var isHandlerRunning = false
+class ImmortalLocationService() : Service(), LocationListener {
+    private lateinit var locationProvider: LocationProvider
+    private lateinit var locationSocket: LocationSocket
+    private lateinit var locationManager: LocationManager
 
     override fun onBind(intent: Intent): IBinder? {
         throw UnsupportedOperationException("Not yet implemented")
@@ -28,27 +36,72 @@ class ImmortalLocationService() : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotification()
+        initLocationManager(this)
+        setLocationListener(this)
+    }
+
+    private fun initLocationManager(context: Context) {
+        if (!::locationManager.isInitialized) {
+            locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        }
+    }
+
+    private fun setLocationListener(context: Context) {
+        val isGpsSelected: Boolean
+        val minTime = 100L
+        val minDistance = 10f
+        lateinit var locationListener: LocationListener
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            val gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            val networkLocation =
+                locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+
+            isGpsSelected = gpsLocation?.let { gps ->
+                networkLocation?.let { network ->
+                    gps.accuracy > network.accuracy
+                } ?: true
+            } ?: false
+
+            val provider = if (isGpsSelected) LocationManager.GPS_PROVIDER else LocationManager.NETWORK_PROVIDER
+            locationListener = this
+
+            locationManager.requestLocationUpdates(
+                provider,
+                minTime,
+                minDistance,
+                locationListener
+            )
+        }
+    }
+
+    override fun onLocationChanged(location: Location) {
+        Log.d("ImmortalLocationService", "****onLocationChanged****")
+        if (!::locationProvider.isInitialized) {
+            locationProvider = LocationProvider(this)
+        }
+        if (!::locationSocket.isInitialized) {
+            locationSocket = LocationSocket(this)
+            locationSocket.connection()
+        }
+        val latitude = locationProvider.getLocationLatitude().toString()
+        val longitude = locationProvider.getLocationLongitude().toString()
+        locationSocket.sendLocation(latitude, longitude)
+
+        val userLocation = UserLocation()
+        userLocation.lat = latitude
+        userLocation.lng = longitude
+        EventBus.getDefault().post(LocationEvent(true, userLocation))
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (isHandlerRunning) {
-            Log.d("ImmortalLocationService", "****isHandlerRunning****")
-            isHandlerRunning = false
-            handler.removeCallbacks(runnable as Runnable)
-        }
-        val locationProvider = LocationProvider(this)
-        locationSocket = LocationSocket(this)
-        locationSocket!!.connection()
-        runnable = object : Runnable {
-            override fun run() {
-                val latitude = locationProvider.getLocationLatitude().toString()
-                val longitude = locationProvider.getLocationLongitude().toString()
-                locationSocket!!.sendLocation(latitude, longitude)
-                handler.postDelayed(this, 5000)
-            }
-        }
-        isHandlerRunning = true
-        handler.post(runnable as Runnable)
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -79,13 +132,10 @@ class ImmortalLocationService() : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        isHandlerRunning = false
-        handler.removeCallbacks(runnable as Runnable)
-        locationSocket!!.disconnect()
+        locationSocket.disconnect()
     }
 
     companion object {
-        private const val TAG = "MyServiceTag"
         private const val NOTI_ID = 1
     }
 }

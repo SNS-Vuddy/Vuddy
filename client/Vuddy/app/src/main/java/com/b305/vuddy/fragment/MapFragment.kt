@@ -10,6 +10,7 @@ import androidx.navigation.findNavController
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
 import com.b305.vuddy.model.LocationEvent
+import com.b305.vuddy.model.UserLocation
 import com.b305.vuddy.service.ImmortalLocationService
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.SharedManager
@@ -21,6 +22,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     lateinit var binding: FragmentMapBinding
@@ -64,27 +68,35 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
-        // 친구 더미 데이터
-//        var friendNickname1 = "시간공원"
-//        var friendLatitude1 = 36.3577
-//        var friendLongitude1 = 127.3040
-//        val friendLocation1 = UserLocation()
-//        friendLocation1.nickname = friendNickname1
-//        friendLocation1.lat = friendLatitude1.toString()
-//        friendLocation1.lng = friendLongitude1.toString()
-//        sharedManager.addUserLocationList(friendLocation1)
-//
-//        var friendNickname2 = "수통골"
-//        var friendLatitude2 = 36.3459
-//        var friendLongitude2 = 127.2899
-//        val friendLocation2 = UserLocation()
-//        friendLocation2.nickname = friendNickname2
-//        friendLocation2.lat = friendLatitude2.toString()
-//        friendLocation2.lng = friendLongitude2.toString()
-//        sharedManager.addUserLocationList(friendLocation2)
-        //
         refreshMarker(true)
+    }
+
+    private fun refreshMarkerWithOutLocationProvider(userLocation: UserLocation) {
+        if (!::mMap.isInitialized) {
+            return
+        }
+        requireActivity().runOnUiThread {
+            val latitude = userLocation.lat!!.toDouble()
+            val longitude = userLocation.lng!!.toDouble()
+            val location = LatLng(latitude, longitude)
+            val markerOption = MarkerOptions()
+            markerOption.position(location)
+            mMap.clear()
+
+            mMap.addMarker(markerOption)
+            val userLocationList = sharedManager.getUserLocationList()
+            for (i in userLocationList.indices) {
+                val userLocation = userLocationList[i]
+                val nickname = userLocation.nickname
+                val latitude = userLocation.lat!!.toDouble()
+                val longitude = userLocation.lng!!.toDouble()
+                val location = LatLng(latitude, longitude)
+                val markerOption = MarkerOptions()
+                markerOption.position(location)
+                markerOption.title(nickname)
+                mMap.addMarker(markerOption)
+            }
+        }
     }
 
     private fun refreshMarker(isMoveCamera: Boolean) {
@@ -129,8 +141,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         EventBus.getDefault().unregister(this)
     }
 
+    var count = 0
+
     @Subscribe
     fun onLocationEvent(locationEvent: LocationEvent) {
+        if (locationEvent.isMe) {
+            // temp
+            binding.tvTime.text = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault()))
+            binding.tvLatitude.text = locationEvent.userLocation.lat
+            binding.tvLongitude.text = locationEvent.userLocation.lng
+            count++
+            binding.tvCount.text = count.toString()
+            refreshMarkerWithOutLocationProvider(locationEvent.userLocation)
+            return
+        }
         val friendLocation = locationEvent.userLocation
         sharedManager.addUserLocationList(friendLocation)
         refreshMarker(false)
