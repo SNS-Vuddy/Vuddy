@@ -32,12 +32,11 @@ class LocationListener(private val binding: FragmentMapBinding) : LocationListen
     fun setLocationListener(context: Context) {
         var isGpsSelected = false
         val minTime: Long = 100
-        val minDistance = 10f
+        val minDistance = 1f
         if (!::locationListener.isInitialized) {
             locationListener = this
         }
 
-        // Todo
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
             || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
