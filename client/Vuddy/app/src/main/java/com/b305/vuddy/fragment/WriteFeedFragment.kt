@@ -94,20 +94,21 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
             sendImage()
         }
 
-        binding.ivMap.setOnClickListener {
-            it.findNavController().navigate(R.id.action_writeFeedFragment_to_mapFragment)
-        }
 
-        binding.ivFriend.setOnClickListener {
-            it.findNavController().navigate(R.id.action_writeFeedFragment_to_friendFragment)
-        }
-
-        binding.ivMessage.setOnClickListener {
-            it.findNavController().navigate(R.id.action_writeFeedFragment_to_messageFragment)
-        }
-        binding.ivProfile.setOnClickListener {
-            it.findNavController().navigate(R.id.action_writeFeedFragment_to_profileFragment)
-        }
+//        binding.ivMap.setOnClickListener {
+//            it.findNavController().navigate(R.id.action_writeFeedFragment_to_mapFragment)
+//        }
+//
+//        binding.ivFriend.setOnClickListener {
+//            it.findNavController().navigate(R.id.action_writeFeedFragment_to_friendFragment)
+//        }
+//
+//        binding.ivMessage.setOnClickListener {
+//            it.findNavController().navigate(R.id.action_writeFeedFragment_to_messageFragment)
+//        }
+//        binding.ivProfile.setOnClickListener {
+//            it.findNavController().navigate(R.id.action_writeFeedFragment_to_profileFragment)
+//        }
 
         return binding.root
     }
@@ -330,7 +331,4 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
 
     // 사진 경로 저장
     private var currentPhotoPath: String? = null
-
-    // String을 Plain Text RequestBody로 바꿔주는 확장함수
-    private fun String?.toPlainRequestBody() = requireNotNull(this).toRequestBody("text/plain".toMediaTypeOrNull())
 }

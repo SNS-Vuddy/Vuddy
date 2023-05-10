@@ -33,7 +33,8 @@ class ProfileFragment : Fragment() {
         }
         
         view.findViewById<ImageView>(R.id.iv_write).setOnClickListener {
-            it.findNavController().navigate(R.id.action_profileFragment_to_writeFeedFragment)
+            val bottomSheetFragment = WriteFeedFragment()
+            bottomSheetFragment.show(parentFragmentManager, "bottomSheetTag")
         }
         
         return view
