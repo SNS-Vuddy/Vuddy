@@ -1,3 +1,3 @@
 package com.b305.vuddy.model
 
-class LocationEvent(val friendLocation: FriendLocation)
+class LocationEvent(val userLocation: UserLocation)
