@@ -43,7 +43,10 @@ public class S3UploaderService {
         String cleanedFileName = removeSpecialCharactersAndTranslateToEnglish(originalFileName);
         String randomFileName = UUID.randomUUID().toString() + "_" + cleanedFileName;
         String fileName = dirName + "/" + randomFileName;
+        System.out.println("실질적인 s3에 업로드 시작 시간: " + LocalDateTime.now());
         String uploadImageUrl = putS3(uploadFile, fileName);
+        System.out.println("실질적인 s3에 업로드 종료 시간: " + LocalDateTime.now());
+
 
         removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
 
