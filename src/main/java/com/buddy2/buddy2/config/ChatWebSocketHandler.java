@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
@@ -53,11 +52,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Autowired
     private MessageRepository messageRepository;
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
-
-    @Autowired
-    private RedisTemplate<String, String> redisMessageTemplate;
+//    @Autowired
+//    private RedisTemplate<String, Object> redisTemplate;
+//
+//    @Autowired
+//    private RedisTemplate<String, String> redisMessageTemplate;
 
     @Autowired
     private UserRepository userRepository;
@@ -66,9 +65,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private UserChatroomRepository userChatroomRepository;
 
 
-    public void addValueToRedis (String key, String value) {
-        redisTemplate.opsForValue().set(key, value);
-    }
+//    public void addValueToRedis (String key, String value) {
+//        redisTemplate.opsForValue().set(key, value);
+//    }
 
 
     Map<Long, CurrentChatrooms> currentChatroomsMap = new ConcurrentHashMap<>();
