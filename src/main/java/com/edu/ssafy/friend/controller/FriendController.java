@@ -24,6 +24,11 @@ public class FriendController {
     private final FriendService friendService;
     private final UserService userService;
 
+    @GetMapping("/opened/health")
+    public String health() {
+        return "hello world";
+    }
+
     private class UserPair {
         private User requester;
         private User receiver;
