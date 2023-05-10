@@ -97,7 +97,7 @@ public class FeedService {
                 .map(FeedWithTagsListDto::getFeed)
                 .orElseThrow(() -> new IllegalArgumentException("해당 피드가 존재하지 않습니다."));
 
-        feed.updateContentAndLocation(req.getContent(), req.getLocation());
+        feed.updateContentAndLocation(req.getTitle(), req.getContent(), req.getLocation());
 
         taggedFriendsRepository.deleteByFeedId(feedId);
 
