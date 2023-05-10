@@ -1,5 +1,6 @@
 package com.b305.vuddy.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
-import com.b305.vuddy.model.UserLocation
+import com.b305.vuddy.model.LocationEvent
+import com.b305.vuddy.service.ImmortalLocationService
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.SharedManager
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -17,6 +19,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     lateinit var binding: FragmentMapBinding
@@ -42,7 +46,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.ivProfile.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_profileFragment)
         }
-
+        binding.fabLogout.setOnClickListener {
+            sharedManager.removeCurrentToken()
+            sharedManager.removeCurrentUser()
+            sharedManager.removeUserLocationList()
+            requireActivity().stopService(Intent(requireContext(), ImmortalLocationService::class.java))
+            it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
+        }
         return binding.root
     }
 
@@ -54,47 +64,76 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        locationProvider = LocationProvider(requireContext())
-        var latitude = locationProvider!!.getLocationLatitude()!!
-        var longitude = locationProvider!!.getLocationLongitude()!!
-        var location = LatLng(latitude, longitude)
-        var markerOption = MarkerOptions()
-        markerOption.position(location)
-        mMap.clear()
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14f))
-        mMap.addMarker(markerOption)
 
         // 친구 더미 데이터
-        var friendNickname1 = "시간공원"
-        var friendLatitude1 = 36.3577
-        var friendLongitude1 = 127.3040
-        val friendLocation1 = UserLocation()
-        friendLocation1.nickname = friendNickname1
-        friendLocation1.lat = friendLatitude1.toString()
-        friendLocation1.lng = friendLongitude1.toString()
-        sharedManager.addUserLocationList(friendLocation1)
-
-        var friendNickname2 = "수통골"
-        var friendLatitude2 = 36.3459
-        var friendLongitude2 = 127.2899
-        val friendLocation2 = UserLocation()
-        friendLocation2.nickname = friendNickname2
-        friendLocation2.lat = friendLatitude2.toString()
-        friendLocation2.lng = friendLongitude2.toString()
-        sharedManager.addUserLocationList(friendLocation2)
+//        var friendNickname1 = "시간공원"
+//        var friendLatitude1 = 36.3577
+//        var friendLongitude1 = 127.3040
+//        val friendLocation1 = UserLocation()
+//        friendLocation1.nickname = friendNickname1
+//        friendLocation1.lat = friendLatitude1.toString()
+//        friendLocation1.lng = friendLongitude1.toString()
+//        sharedManager.addUserLocationList(friendLocation1)
+//
+//        var friendNickname2 = "수통골"
+//        var friendLatitude2 = 36.3459
+//        var friendLongitude2 = 127.2899
+//        val friendLocation2 = UserLocation()
+//        friendLocation2.nickname = friendNickname2
+//        friendLocation2.lat = friendLatitude2.toString()
+//        friendLocation2.lng = friendLongitude2.toString()
+//        sharedManager.addUserLocationList(friendLocation2)
         //
-        val userLocationList = sharedManager.getUserLocationList()
-        for (i in userLocationList.indices) {
-            val userLocation = userLocationList[i]
-            val nickname = userLocation.nickname
-            val latitude = userLocation.lat!!.toDouble()
-            val longitude = userLocation.lng!!.toDouble()
-            val location = LatLng(latitude, longitude)
-            val markerOption = MarkerOptions()
-            markerOption.position(location)
-            markerOption.title(nickname)
-            mMap.addMarker(markerOption)
+        refreshMarker(true)
+    }
+
+    private fun refreshMarker(isFirst: Boolean) {
+        if (!::mMap.isInitialized) {
+            return
         }
+        requireActivity().runOnUiThread {
+            locationProvider = LocationProvider(requireContext())
+            var latitude = locationProvider!!.getLocationLatitude()!!
+            var longitude = locationProvider!!.getLocationLongitude()!!
+            var location = LatLng(latitude, longitude)
+            var markerOption = MarkerOptions()
+            markerOption.position(location)
+            mMap.clear()
+
+            if (isFirst) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14f))
+            }
+            mMap.addMarker(markerOption)
+            val userLocationList = sharedManager.getUserLocationList()
+            for (i in userLocationList.indices) {
+                val userLocation = userLocationList[i]
+                val nickname = userLocation.nickname
+                val latitude = userLocation.lat!!.toDouble()
+                val longitude = userLocation.lng!!.toDouble()
+                val location = LatLng(latitude, longitude)
+                val markerOption = MarkerOptions()
+                markerOption.position(location)
+                markerOption.title(nickname)
+                mMap.addMarker(markerOption)
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe
+    fun onLocationEvent(locationEvent: LocationEvent) {
+        val friendLocation = locationEvent.userLocation
+        sharedManager.addUserLocationList(friendLocation)
+        refreshMarker(false)
     }
 }
 //    private var runnable = object : Runnable {
@@ -103,24 +142,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 //            Log.d("MapFragment", "****run: $latitude, $longitude****")
 //            handler.postDelayed(this, 5000)
 //        }
-//    }
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        EventBus.getDefault().register(this)
-//    }
-//
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        isHandlerRunning = false
-//        handler.removeCallbacks(runnable)
-//        EventBus.getDefault().unregister(this)
-//    }
-//
-//    @Subscribe
-//    fun onLocationEvent(locationEvent: LocationEvent) {
-//        val friendLocation = locationEvent.friendLocation
-//        friendLocationList = renewFriendList(friendLocationList, friendLocation)
 //    }
 
 
