@@ -2,11 +2,13 @@ package com.buddy2.buddy2.config;
 
 import com.buddy2.buddy2.data.ChatMessageData;
 import com.buddy2.buddy2.domain.CurrentChatrooms;
-import com.buddy2.buddy2.dto.RedisMessageDTO;
 import com.buddy2.buddy2.entity.Chatroom;
-import com.buddy2.buddy2.entity.Message;
+import com.buddy2.buddy2.entity.User;
+import com.buddy2.buddy2.entity.UserChatroom;
 import com.buddy2.buddy2.repository.ChatroomRepository;
 import com.buddy2.buddy2.repository.MessageRepository;
+import com.buddy2.buddy2.repository.UserChatroomRepository;
+import com.buddy2.buddy2.repository.UserRepository;
 import com.buddy2.buddy2.service.ChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +58,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Autowired
     private RedisTemplate<String, String> redisMessageTemplate;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserChatroomRepository userChatroomRepository;
 
 
     public void addValueToRedis (String key, String value) {
@@ -120,10 +128,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         ChatMessageData clientMessageData = objectMapper.readValue(message.getPayload(), ChatMessageData.class);
 
         ChatMessageData chatMessage = new ChatMessageData();
+        chatMessage.setNickname(clientMessageData.getNickname());
+        chatMessage.setType(clientMessageData.getType());
 
 
-
-        String messageType = clientMessageData.getType();
+        String messageType = chatMessage.getType();
         System.out.println(messageType);
         System.out.println(clientMessageData.getType());
         System.out.println(messageType == "OPEN");
@@ -159,7 +168,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                     .time(chatMessage.getTime())
                     .title(chatMessage.getChatroomTitle())
                     .build();
-            chatroomRepository.save(chatroom);
+            Chatroom savedChatroom = chatroomRepository.save(chatroom);
+            User user = userRepository.findByNickname(chatMessage.getNickname());
+            UserChatroom userChatroom = UserChatroom.builder()
+                    .chatId(savedChatroom.getChatId())
+                    .userId(user.getUserId())
+                    .build();
+            userChatroomRepository.save(userChatroom);
         }
         else if (messageType.equals("JOIN")) {
             CurrentChatrooms currentChatrooms = currentChatroomsMap.get(clientMessageData.getChatId());
@@ -172,6 +187,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                                 .nickname(clientMessageData.getNickname())
                                 .webSocketSession(session)
                                 .build();
+                        chatMessage.setChatroomTitle(currentChatrooms.getChatroomTitle());
                         currentChatroomsMap.put(room.getChatId(), currentChatrooms);
                         nowLocation = room.getChatId();
                         break;
@@ -179,6 +195,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 }
             } else {
                 currentChatrooms.addChatMember(clientMessageData.getNickname(), session);
+                chatMessage.setChatroomTitle(currentChatrooms.getChatroomTitle());
                 currentChatroomsMap.replace(clientMessageData.getChatId(), currentChatrooms);
                 nowLocation = clientMessageData.getChatId();
             }
@@ -189,18 +206,28 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
             chatMessage.setChatId(clientMessageData.getChatId());
             chatMessage.setMessage(clientMessageData.getMessage());
-            chatMessage.setNickname(clientMessageData.getNickname());
+
 
 
             LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
             chatMessage.setTime(formatDateTime(timeNow));
-            RedisMessageDTO messageNow = RedisMessageDTO.builder()
-                    .chatId(chatMessage.getChatId())
-                    .content(chatMessage.getMessage())
-                    .time(chatMessage.getTime())
-                    .nickname(chatMessage.getNickname())
+
+            User user = userRepository.findByNickname(chatMessage.getNickname());
+
+            UserChatroom userChatroom = UserChatroom.builder()
+                    .userId(user.getUserId())
+                    .chatId(currentChatrooms.getChatId())
                     .build();
-            redisMessageTemplate.opsForList().rightPush("chatroomId-" + chatMessage.getChatId().toString(), objectMapper.writeValueAsString(messageNow));
+
+            userChatroomRepository.save(userChatroom);
+
+//            RedisMessageDTO messageNow = RedisMessageDTO.builder()
+//                    .chatId(chatMessage.getChatId())
+//                    .content(chatMessage.getMessage())
+//                    .time(chatMessage.getTime())
+//                    .nickname(chatMessage.getNickname())
+//                    .build();
+//            redisMessageTemplate.opsForList().rightPush("chatroomId-" + chatMessage.getChatId().toString(), objectMapper.writeValueAsString(messageNow));
         }
         else if (messageType.equals("LOAD")) {
             System.out.println(clientMessageData.getNickname());
@@ -224,34 +251,31 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
             LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
             chatMessage.setTime(formatDateTime(timeNow));
-            RedisMessageDTO messageNow = RedisMessageDTO.builder()
-                    .chatId(chatMessage.getChatId())
-                    .content(chatMessage.getMessage())
-                    .time(chatMessage.getTime())
-                    .nickname(chatMessage.getNickname())
-                    .build();
-            redisMessageTemplate.opsForList().rightPush("chatroom-" + chatMessage.getChatId(), objectMapper.writeValueAsString(messageNow));
-            List<String> chatroomMessageList = redisMessageTemplate.opsForList().range("chatroom-" + chatMessage.getChatId(), 0,-1);
-            if (chatroomMessageList.size() >= 50) {
-                List<Message> messageList = new ArrayList<>();
-                for (String i : chatroomMessageList) {
-                    RedisMessageDTO redisMessageDTO = objectMapper.readValue(i, RedisMessageDTO.class);
-                    Message messageI = Message.builder()
-                            .chatId(redisMessageDTO.getChatId())
-                            .content(redisMessageDTO.getContent())
-                            .nickname(redisMessageDTO.getNickname())
-                            .time(redisMessageDTO.getTime())
-                            .build();
-                    messageList.add(messageI);
-                }
-                messageRepository.saveAll(messageList);
-                redisMessageTemplate.delete("chatroom-" + chatMessage.getChatId());
-            }
+//            RedisMessageDTO messageNow = RedisMessageDTO.builder()
+//                    .chatId(chatMessage.getChatId())
+//                    .content(chatMessage.getMessage())
+//                    .time(chatMessage.getTime())
+//                    .nickname(chatMessage.getNickname())
+//                    .build();
+//            redisMessageTemplate.opsForList().rightPush("chatroom-" + chatMessage.getChatId(), objectMapper.writeValueAsString(messageNow));
+//            List<String> chatroomMessageList = redisMessageTemplate.opsForList().range("chatroom-" + chatMessage.getChatId(), 0,-1);
+//            if (chatroomMessageList.size() >= 50) {
+//                List<Message> messageList = new ArrayList<>();
+//                for (String i : chatroomMessageList) {
+//                    RedisMessageDTO redisMessageDTO = objectMapper.readValue(i, RedisMessageDTO.class);
+//                    Message messageI = Message.builder()
+//                            .chatId(redisMessageDTO.getChatId())
+//                            .content(redisMessageDTO.getContent())
+//                            .nickname(redisMessageDTO.getNickname())
+//                            .time(redisMessageDTO.getTime())
+//                            .build();
+//                    messageList.add(messageI);
+//                }
+//                messageRepository.saveAll(messageList);
+//                redisMessageTemplate.delete("chatroom-" + chatMessage.getChatId());
+//            }
         }
         if (!messageType.equals("LOAD")) {
-            chatMessage.setNickname(clientMessageData.getNickname());
-            chatMessage.setType(clientMessageData.getType());
-            chatMessage.setChatroomTitle(clientMessageData.getChatroomTitle());
 
             // 현지 시각을 불러와서 형식에 맞게 집어넣는다.
 //            LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
