@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -67,8 +68,11 @@ public class AuthController {
 
 
     @GetMapping("/validate")
-    public ResponseEntity<?> validate(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> validate(@RequestHeader("Authorization") String token, @RequestHeader Map<String, String> map) {
         log.info("validate 시작");
+        map.forEach((key, value) -> {
+            log.info(String.format("Header '%s' = %s", key, value));
+        });
         if (token == null) {
             return new ResponseEntity<>(new CommonRes(400, "토큰이 존재하지 않습니다."), HttpStatus.BAD_REQUEST);
         }
