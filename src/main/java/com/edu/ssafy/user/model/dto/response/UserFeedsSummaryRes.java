@@ -17,6 +17,7 @@ public class UserFeedsSummaryRes {
     private String nickname;
     private String profileImage;
     private String statusMessage;
+    private boolean has_new_alarm;
     private List<BriefFeedIngoDto> feeds;
 
 }

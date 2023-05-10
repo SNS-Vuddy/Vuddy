@@ -35,7 +35,13 @@ public class UserService {
 
     public UserFeedsSummaryRes findUserAndFeeds(User user) {
         List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(user.getId());
-        return new UserFeedsSummaryRes(user.getNickname(), user.getProfileImage(), user.getStatusMessage(), briefFeedIngoDtoList);
+        return UserFeedsSummaryRes.builder()
+                .nickname(user.getNickname())
+                .profileImage(user.getProfileImage())
+                .statusMessage(user.getStatusMessage())
+                .has_new_alarm(false)
+                .feeds(briefFeedIngoDtoList)
+                .build();
     }
 
     public UserProfileWithFeedsRes findUsersWithFriendStatus(String myNickname, String userNickname) {
