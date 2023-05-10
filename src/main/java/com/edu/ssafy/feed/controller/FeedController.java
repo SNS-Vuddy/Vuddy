@@ -19,8 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -74,6 +76,8 @@ public class FeedController {
 
         ExecutorService executorService = Executors.newFixedThreadPool(5); // 스레드 풀 생성
         List<Future<String>> futures = new ArrayList<>();
+
+        List<File> tempFiles = Collections.synchronizedList(new ArrayList<>()); // 임시 파일 리스트 생성
 
         for (MultipartFile image : images) {
             // 이미지 업로드 작업을 스레드 풀에 제출

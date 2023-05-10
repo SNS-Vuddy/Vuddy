@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -75,15 +78,44 @@ public class S3UploaderService {
         }
     }
 
-    private Optional<File> convert(MultipartFile file) throws  IOException {
+    private Optional<File> convert(MultipartFile file) throws IOException {
         File convertFile = new File(file.getOriginalFilename());
-        if(convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
+        BufferedImage originalImage = ImageIO.read(file.getInputStream());
+        int width = originalImage.getWidth();
+
+//         Width가 1000 이상일 경우 리사이징
+        if (width > 500) {
+            int height = originalImage.getHeight();
+            double aspectRatio = (double) width / height;
+
+            // 새로운 크기 설정. 가로를 1000으로 맞추고, 세로는 비율에 맞게 조정
+            int newWidth = 500;
+            int newHeight = (int) (newWidth / aspectRatio);
+
+            // 리사이징
+            Image temp = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+            BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = resizedImage.createGraphics();
+            g2d.drawImage(temp, 0, 0, null);
+            g2d.dispose();
+
+            // 리사이징 된 이미지를 파일에 쓰기
+            ImageIO.write(resizedImage, "jpg", convertFile);
+        } else {
+            if(convertFile.createNewFile()) {
+                try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+                    fos.write(file.getBytes());
+                }
             }
-            return Optional.of(convertFile);
         }
-        return Optional.empty();
+
+//        if(convertFile.createNewFile()) {
+//            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+//                fos.write(file.getBytes());
+//            }
+//        }
+
+        return Optional.of(convertFile);
     }
 
 }
