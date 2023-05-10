@@ -1,9 +1,9 @@
 package com.buddy2.buddy2.repository;
 
 import com.buddy2.buddy2.entity.Message;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
