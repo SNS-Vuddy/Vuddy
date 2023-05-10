@@ -17,6 +17,11 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("/opened/health")
+    public String health() {
+        return "hello world";
+    }
+
 //     내 프로필, 피드들 조회
     @GetMapping("/profile")
     public CommonRes getMyInfoAndFeeds(@RequestHeader("x_nickname") String encodedNickname) {
