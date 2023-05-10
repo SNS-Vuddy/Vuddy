@@ -42,7 +42,6 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
     private String formatDateTime(LocalDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        redisTemplate.opsForValue();
         return dateTime.format(formatter);
     }
 
@@ -143,13 +142,14 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                         List<String> friendFriendsList =  currentUsersFriendsListMap.get(friendNickname);
                         friendFriendsList.add(locationMessage.getNickname());
                         currentUsersFriendsListMap.replace(friendNickname, friendFriendsList);
-//                friendSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(locationMessage)));
                     }
                 }
             }
             locationService.sendMessage(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
-//            redisLocationTemplate.opsForList().rightPush(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
+            redisLocationTemplate.opsForList().rightPush(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
 //            List<String> locationMessageStringList = redisLocationTemplate.opsForList().range(locationMessage.getNickname(), 0, -1);
+
+            // mongoDB 확인
 //            if (locationMessageStringList!= null && locationMessageStringList.size() >= 2) {
 //                List<UserLocation> locationMessageDataList = new ArrayList<>();
 //                for (String i : locationMessageStringList) {
@@ -159,6 +159,10 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 //                mongoUserLocationService.saveAllUserLocation(locationMessageDataList);
 //            }
 //            System.out.println(redisLocationTemplate.opsForList().range(locationMessage.getNickname(), 0, -1));
+
+            // redis에 추가된 내용 제거
+            redisLocationTemplate.opsForList().rightPop(locationMessage.getNickname());
+//            log.warn(redisLocationTemplate.opsForList().rightPop(locationMessage.getNickname()));
         }
     }
 
@@ -168,11 +172,9 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         System.out.println(message);
         System.out.println("------- 3 --------");
         LocationMessageData locationMessage = objectMapper.readValue(message, LocationMessageData.class);
-//        LocalDateTime messageTime = LocalDateTime.parse(locationMessage.getTime());
         LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
         locationMessage.setTime(formatDateTime(timeNow));
         CurrentFriends currentFriends = currentUsersCurrentFriendsMap.get(locationMessage.getNickname());
-//        System.out.println(locationMessage.getChatId());
         currentFriends.currentFriendsSendMessage(objectMapper.writeValueAsString(locationMessage));
     }
 }
