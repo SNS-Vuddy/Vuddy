@@ -81,6 +81,11 @@ public class S3UploaderService {
     }
 
     private Optional<File> convert(MultipartFile file) throws  IOException {
+//        File convertFile1 = new File(file.getOriginalFilename());
+//        BufferedImage originalImage = ImageIO.read(file.getInputStream());
+//        int width = originalImage.getWidth();
+
+
         File convertFile = new File(file.getOriginalFilename());
         if(convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
