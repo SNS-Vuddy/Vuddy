@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Normalizer;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -85,6 +86,7 @@ public class S3UploaderService {
 
 //         Width가 1000 이상일 경우 리사이징
         if (width > 500) {
+            System.out.println("이미지 리사이징 시작 시간: " + LocalDateTime.now());
             int height = originalImage.getHeight();
             double aspectRatio = (double) width / height;
 
@@ -101,6 +103,7 @@ public class S3UploaderService {
 
             // 리사이징 된 이미지를 파일에 쓰기
             ImageIO.write(resizedImage, "jpg", convertFile);
+            System.out.println("이미지 리사이징 종료 시간: " + LocalDateTime.now());
         } else {
             if(convertFile.createNewFile()) {
                 try (FileOutputStream fos = new FileOutputStream(convertFile)) {
