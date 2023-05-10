@@ -19,6 +19,7 @@ import com.b305.vuddy.extension.setMarker
 import com.b305.vuddy.model.FriendLocation
 import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.service.ImmortalLocationService
+import com.b305.vuddy.util.LocationListener
 import com.b305.vuddy.util.SharedManager
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -28,19 +29,23 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class MapFragment : Fragment(), OnMapReadyCallback {
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
+    var isHandlerRunning = false
     var handler = Handler()
-    var runnable = object : Runnable {
+    private var runnable = object : Runnable {
         override fun run() {
             setMarker(getMyLocation(), mMap, friendLocationList)
-            Log.d("MapFragment", "****run****")
-            handler.postDelayed(this, 1000)
+            Log.d("MapFragment", "****run: $latitude, $longitude****")
+            handler.postDelayed(this, 5000)
         }
     }
 
     private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
-    private lateinit var binding: FragmentMapBinding
+    lateinit var binding: FragmentMapBinding
     private lateinit var mMap: GoogleMap
     private var friendLocationList = mutableListOf<FriendLocation>()
+    var locationListener: LocationListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,8 +54,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onDestroy() {
         super.onDestroy()
+        isHandlerRunning = false
+        handler.removeCallbacks(runnable)
         EventBus.getDefault().unregister(this)
-
     }
 
     @Subscribe
@@ -61,6 +67,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMapBinding.inflate(layoutInflater, container, false)
+
 
         binding.ivFriend.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_friendFragment)
@@ -96,6 +103,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+//        locationListener = LocationListener(binding)
+//        locationListener!!.initLocationManager(requireContext())
+//        locationListener!!.setLocationListener(requireContext())
+
         moveCameraToCurrentLocation(mMap, friendLocationList)
 
         val fabMoveCurrentLocation = view?.findViewById<FloatingActionButton>(R.id.fab_move_current_location)
@@ -103,21 +114,33 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             moveCameraToCurrentLocation(mMap, friendLocationList)
         }
 
+        if (isHandlerRunning) {
+            isHandlerRunning = false
+            handler.removeCallbacks(runnable)
+        }
+        isHandlerRunning = true
         handler.postDelayed(runnable, 1000)
     }
 
     override fun onPause() {
         super.onPause()
+        isHandlerRunning = false
         handler.removeCallbacks(runnable)
     }
 
     override fun onResume() {
         super.onResume()
+        if (isHandlerRunning) {
+            isHandlerRunning = false
+            handler.removeCallbacks(runnable)
+        }
+        isHandlerRunning = true
         handler.postDelayed(runnable, 1000)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        isHandlerRunning = false
         handler.removeCallbacks(runnable)
     }
 }

@@ -44,7 +44,7 @@ class ImmortalLocationService() : Service() {
                 val latitude = locationProvider.getLocationLatitude().toString()
                 val longitude = locationProvider.getLocationLongitude().toString()
                 locationSocket!!.sendLocation(latitude, longitude)
-                handler.postDelayed(this, 1000)
+                handler.postDelayed(this, 5000)
             }
         }
         isHandlerRunning = true
