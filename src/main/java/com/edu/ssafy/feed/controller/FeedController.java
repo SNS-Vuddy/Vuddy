@@ -156,7 +156,11 @@ public class FeedController {
 
         feedPictureService.saveAll(storedFileNames);
 
-        taggedFriendsService.saveAllTaggedFriends(req, feed);
+        if (req.getTags().isEmpty()) {
+            return new CommonRes(201, "피드 작성 성공");
+        } else {
+            taggedFriendsService.saveAllTaggedFriends(req, feed);
+        }
 
         return new CommonRes(201, "피드 작성 성공");
     }
