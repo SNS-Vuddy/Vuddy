@@ -105,6 +105,56 @@ public class FeedController {
         return new CommonRes(201, "피드 작성 성공");
     }
 
+    //피드 작성 토큰 없이
+    @PostMapping(value = "/opened/write/{nickname}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CommonRes writeFeedTest(
+            @PathVariable String nickname,
+            @ModelAttribute FeedWriteReq req
+    ) {
+        // 유저 정보 가져오기
+        User user = userService.findByNickname(nickname);
+
+        // FeedWriteReq를 Feed 엔티티로 변환
+        Feed feed = req.toFeedEntity(user);
+
+        System.out.println("이미지 저장 시작 시간" + LocalDateTime.now());
+
+        List<MultipartFile> images = req.getImages();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(5); // 스레드 풀 생성
+        List<Future<String>> futures = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            // 이미지 업로드 작업을 스레드 풀에 제출
+            Future<String> future = executorService.submit(() -> s3UploaderService.upload(image, "images"));
+            futures.add(future);
+        }
+
+        List<FeedPictures> storedFileNames = new ArrayList<>();
+        for (Future<String> future : futures) {
+            try {
+                storedFileNames.add(FeedPictures.createFeedPictures(feed, future.get())); // 업로드된 이미지의 URL을 가져옴
+            } catch (Exception e) {
+                throw new RuntimeException("이미지 업로드 중 에러 발생", e);
+            }
+        }
+
+        executorService.shutdown(); // 스레드 풀 종료
+
+        System.out.println("이미지 저장 종료 시간" + LocalDateTime.now());
+
+        feed.addMainImg(storedFileNames.get(0).getImgUrl());
+
+        feedService.saveFeed(feed);
+
+        feedPictureService.saveAll(storedFileNames);
+
+        taggedFriendsService.saveAllTaggedFriends(req, feed);
+
+        return new CommonRes(201, "피드 작성 성공");
+    }
+
+
     // 내 피드 전체 조회
     @GetMapping("/feeds/mine")
     public ResponseEntity<ListRes<UserFeedsRes>> getMyAllFeed(@RequestHeader("x_nickname") String encodedNickname) {
