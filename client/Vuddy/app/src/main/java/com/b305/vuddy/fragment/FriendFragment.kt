@@ -42,7 +42,8 @@ class FriendFragment : Fragment() {
             it.findNavController().navigate(R.id.action_friendFragment_to_mapFragment)
         }
         binding.ivWrite.setOnClickListener {
-            it.findNavController().navigate(R.id.action_friendFragment_to_writeFeedFragment)
+            val bottomSheetFragment = WriteFeedFragment()
+            bottomSheetFragment.show(parentFragmentManager, "bottomSheetTag")
         }
         binding.ivMessage.setOnClickListener {
             it.findNavController().navigate(R.id.action_friendFragment_to_messageFragment)
