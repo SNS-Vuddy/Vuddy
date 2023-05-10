@@ -99,15 +99,12 @@ public class FeedController {
         feedService.saveFeed(feed);
 
         feedPictureService.saveAll(storedFileNames);
+        System.out.println("피드픽처저장완료");
 
-        if (req.getTags().isEmpty()) {
-            System.out.println("태그 없음");
-            return new CommonRes(201, "피드 작성 성공");
-        } else {
-            System.out.println("태그 있음");
-            System.out.println("req.getTags().get(0) = " + req.getTags().get(0));
+        try {
             taggedFriendsService.saveAllTaggedFriends(req, feed);
-
+            return new CommonRes(201, "피드 작성 성공");
+        } catch (Exception e) {
             return new CommonRes(201, "피드 작성 성공");
         }
 
