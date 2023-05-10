@@ -14,4 +14,9 @@ public class HelloController {
         return "Hello World!";
     }
 
+    @GetMapping("/auth/opened/health")
+    public String hello2() {
+        return "Hello World!";
+    }
+
 }
