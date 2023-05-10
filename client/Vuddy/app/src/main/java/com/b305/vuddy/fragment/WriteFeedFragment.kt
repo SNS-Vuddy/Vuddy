@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,25 +17,34 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentWriteFeedBinding
 import com.b305.vuddy.util.PhotoAdapter
+import com.b305.vuddy.util.RetrofitAPI.feedService
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class WriteFeedFragment : Fragment() {
+class WriteFeedFragment : BottomSheetDialogFragment() {
 
     val deviceSdkVersion = android.os.Build.VERSION.SDK_INT
 
     lateinit var binding: FragmentWriteFeedBinding
     var photoList = ArrayList<Uri>()
-//    val adapter = PhotoAdapter(photoList, requireContext()) // adapter 초기화
 
     // 요청하고자 하는 권한들
     private val permissionList33 = arrayOf(
@@ -60,6 +70,7 @@ class WriteFeedFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(
@@ -75,9 +86,7 @@ class WriteFeedFragment : Fragment() {
         }
 
         binding.btnSaveFeed.setOnClickListener {
-            val feedLocation = binding.etFeedLocation.text.toString()
-            val feedTitle = binding.etFeedTitle.text.toString()
-            val feedContent = binding.etFeedContent.text.toString()
+            sendImage()
         }
 
         binding.ivMap.setOnClickListener {
@@ -103,13 +112,12 @@ class WriteFeedFragment : Fragment() {
         if (deviceSdkVersion >= 33) {
             requestMultiplePermission.launch(permissionList33)
         } else {
-        requestMultiplePermission.launch(permissionList)
+            requestMultiplePermission.launch(permissionList)
         }
 
         // 리사이클러뷰
         val layoutManager = LinearLayoutManager(requireContext())
         binding.rvPhoto.layoutManager = layoutManager
-//        binding.rvPhoto.adapter = adapter
 
         photoList.clear() // photoList 초기화
 
@@ -186,17 +194,107 @@ class WriteFeedFragment : Fragment() {
                     result.data?.data?.let { uri ->
                         val imageUri: Uri? = result.data?.data
                         if (imageUri != null) {
+                            Toast.makeText(requireContext(), "${imageUri::class.simpleName}", Toast.LENGTH_LONG).show()
                             photoList.add(imageUri)
                         }
                     }
                 }
-//                adapter.notifyDataSetChanged()
+                // adapter.notifyDataSetChanged()
                 // 어댑터 생성
                 val adapter = PhotoAdapter(photoList, requireContext())
                 binding.rvPhoto.adapter = adapter
-
             }
         }
+
+    fun sendImage() {
+        // 이미지 보내는 코드
+        val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
+        for (i in 0 until photoList.size) {
+            // Uri를 File로 변환하는 메소드
+            val imageUri = photoList[i]
+            val file = File(getPathFromUri(imageUri))
+            val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+
+            builder.addFormDataPart("images", file.name, requestFile)
+        }
+        val body = builder.build().parts
+
+        // title, content, location, tags 등 보내는 코드
+        val location = binding.etFeedLocation.text.toString()
+        val title = binding.etFeedTitle.text.toString()
+        var content = binding.etFeedContent.text.toString() // content EditText에서 문자열을 가져옴
+        val tags = mutableListOf<RequestBody>() // 추출된 태그를 저장할 List
+
+        val RequestBodytitle = title.toRequestBody("text/plain".toMediaTypeOrNull())
+//        val content = RequestBody.create(MediaType.parse("text/plain"), "yourContent")
+        val RequestBodylocation = location.toRequestBody("text/plain".toMediaTypeOrNull())
+
+        // content 문자열에서 "@" 문자열이 있는지 확인하고, 있다면 추출하여 tags List에 추가
+//        while (content.contains("@")) {
+//            val index = content.indexOf("@") // "@" 문자열의 위치를 찾음
+//            val subString = content.substring(index + 1) // "@" 이후의 문자열을 추출
+//            val tag = subString.split(" ")[0] // 첫번째 단어를 추출하여 태그로 사용
+////            val RequestBodytag = tag.toRequestBody("text/plain".toMediaTypeOrNull())
+////            tags.add(RequestBodytag) // 태그를 List에 추가
+//            tags.add(MultipartBody.Part.createFormData("tag", tag))
+//            content = subString // 추출한 문자열을 제외한 나머지 문자열을 다시 처리하기 위해 content 변수를 업데이트
+//
+//            // 태그를 클릭했을 때 처리할 코드
+//            val tagSpan = object : ClickableSpan() {
+//                override fun onClick(view: View) {
+//                    // 태그 클릭 시 처리할 내용 입력
+//                    // 예를 들어 해당 태그의 페이지로 이동하도록 구현할 수 있음
+//                    val intent = Intent(context, TagActivity::class.java)
+//                    intent.putExtra("tag", tag)
+//                    context?.startActivity(intent)
+//                }
+//            }
+//            val startIndex = index // 태그의 시작 위치
+//            val endIndex = index + tag.length + 1 // 태그의 끝 위치
+//            val spannableString = SpannableString(content) // 태그를 클릭할 수 있는 SpannableString 생성
+//            spannableString.setSpan(tagSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+//            val editable = SpannableStringBuilder(spannableString)
+//            binding.etFeedContent.text =
+//                editable // 태그를 클릭할 수 있는 SpannableString으로 content EditText의 텍스트를 설정
+//        }
+        val RequestBodyContent = content.toRequestBody("text/plain".toMediaTypeOrNull())
+
+        //==================
+        val title2 = "yourTitle".toRequestBody("text/plain".toMediaTypeOrNull())
+        val content2 = "content2".toRequestBody("text/plain".toMediaTypeOrNull())
+        val location2 = "location2".toRequestBody("text/plain".toMediaTypeOrNull())
+        val tags2 = ArrayList<RequestBody>()
+        //==================
+
+//        val call = feedServie.feedWrite(requestMap, tags, body)
+        val call = feedService.feedWrite(title2, content2, location2, tags2, body)
+//        val call = feedServie.feedImg(body)
+
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    val message = response.body()?.string()
+                    Log.d("Upload", "All uploaded successfully. Response: $message")
+                } else {
+                    Log.d("Upload", "upload failed. Response: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("Upload", "upload failed.", t)
+            }
+        })
+    }
+
+    private fun getPathFromUri(uri: Uri): String {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = requireContext().contentResolver.query(uri, projection, null, null, null)!!
+        val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        cursor.moveToFirst()
+        return cursor.getString(column_index)
+    }
+
+
     private val activityResultCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -236,4 +334,6 @@ class WriteFeedFragment : Fragment() {
     // 사진 경로 저장
     private var currentPhotoPath: String? = null
 
+    // String을 Plain Text RequestBody로 바꿔주는 확장함수
+    private fun String?.toPlainRequestBody() = requireNotNull(this).toRequestBody("text/plain".toMediaTypeOrNull())
 }
