@@ -59,10 +59,10 @@ class LocationProvider(val context: Context) {
                     } else {
                         
                         //Todo 모바일 환경에서는 아래 주석 해제하고 사용
-//                        location = networkLocation
+                        location = networkLocation
                         
                         //Todo 에뮬레이터 환경에서는 아래 주석 해제하고 사용
-                        location = gpsLocation
+//                        location = gpsLocation
                     }
                 } else { // Case 2
                     location = gpsLocation ?: networkLocation

@@ -8,13 +8,19 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import java.time.LocalDateTime
 
 
 fun MapFragment.getMyLocation(): LatLng {
     val locationProvider = LocationProvider(requireActivity())
-    val currentLat = locationProvider.getLocationLatitude()!!
-    val currentLng = locationProvider.getLocationLongitude()!!
-    return LatLng(currentLat, currentLng)
+    latitude = locationProvider.getLocationLatitude()!!
+    longitude = locationProvider.getLocationLongitude()!!
+    //Todo: Listener
+    binding.tvTime.text = LocalDateTime.now().toString()
+    binding.tvLatitude.text = latitude.toString()
+    binding.tvLongitude.text = longitude.toString()
+
+    return LatLng(latitude, longitude)
 }
 
 fun MapFragment.moveCameraToCurrentLocation(googleMap: GoogleMap, friendLocationList: MutableList<FriendLocation>) {

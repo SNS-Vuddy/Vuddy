@@ -28,17 +28,19 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class MapFragment : Fragment(), OnMapReadyCallback {
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
     var handler = Handler()
     var runnable = object : Runnable {
         override fun run() {
             setMarker(getMyLocation(), mMap, friendLocationList)
-            Log.d("MapFragment", "****run****")
+            Log.d("MapFragment", "****run: $latitude, $longitude****")
             handler.postDelayed(this, 1000)
         }
     }
 
     private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
-    private lateinit var binding: FragmentMapBinding
+    lateinit var binding: FragmentMapBinding
     private lateinit var mMap: GoogleMap
     private var friendLocationList = mutableListOf<FriendLocation>()
 
