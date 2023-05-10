@@ -30,6 +30,16 @@
             android:theme="@style/Theme.Vuddy"
             android:usesCleartextTraffic="true"
             tools:targetApi="31">
+        <activity
+                android:name=".activity.TestActivity"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <receiver
                 android:name=".activity.MainActivity$Companion$BootReceiver"
                 android:enabled="true"
@@ -41,19 +51,15 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <service
                 android:name=".service.ImmortalLocationService"
                 android:enabled="true"
                 android:exported="true" />
+
         <activity
                 android:name=".activity.SplashActivity"
-                android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+                android:exported="false" />
 
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
@@ -64,7 +70,7 @@
                 android:exported="false" />
         <activity
                 android:name=".activity.MainActivity"
-                android:exported="true" />
+                android:exported="false" />
     </application>
 
 </manifest>
