@@ -129,8 +129,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         System.out.println(messageType == "OPEN");
         String roomTitle = clientMessageData.getChatroomTitle();
         if (messageType.equals("OPEN")) {
-            Long chatNumber = chatroomRepository.findFirstByOrderByChatIdDesc().getChatId();
-            if (chatNumber == null) chatNumber = 3L;
+            Long chatNumber = 0L;
+            Chatroom lastChatroom = chatroomRepository.findFirstByOrderByChatIdDesc();
+            if (lastChatroom != null) {
+                chatNumber = lastChatroom.getChatId();
+            }
             chatNumber++;
             CurrentChatrooms currentChatrooms = CurrentChatrooms.builder()
                     .chatroomTitle(clientMessageData.getChatroomTitle())
@@ -180,7 +183,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 nowLocation = clientMessageData.getChatId();
             }
             if (currentChatrooms == null) {
-                log.debug("없는 방에 JOIN 요청");
+//                log.debug("없는 방에 JOIN 요청");
                 return;
             }
 
