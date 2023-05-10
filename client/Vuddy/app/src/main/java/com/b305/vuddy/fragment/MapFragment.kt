@@ -19,6 +19,7 @@ import com.b305.vuddy.extension.setMarker
 import com.b305.vuddy.model.FriendLocation
 import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.service.ImmortalLocationService
+import com.b305.vuddy.util.RetrofitAPI.feedService
 import com.b305.vuddy.util.SharedManager
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -61,6 +62,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMapBinding.inflate(layoutInflater, container, false)
+
 
         binding.ivFriend.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_friendFragment)
