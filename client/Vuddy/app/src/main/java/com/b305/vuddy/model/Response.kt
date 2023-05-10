@@ -21,3 +21,16 @@ data class FriendsResponse(
     @SerializedName("data")
     val friendList: ArrayList<FriendProfile>?,
 )
+
+data class SearchResponse(
+    @SerializedName("data")
+    val data: SearchData?,
+)
+
+data class SearchData(
+    @SerializedName("friends")
+    val friends: List<FriendProfile>?,
+
+    @SerializedName("noFriends")
+    val noFriends: List<FriendProfile>?
+)
