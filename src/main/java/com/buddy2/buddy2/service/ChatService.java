@@ -1,6 +1,8 @@
 package com.buddy2.buddy2.service;
 
+import com.buddy2.buddy2.repository.UserChatroomRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,4 +24,5 @@ public class ChatService {
         System.out.println("------- 2 --------");
         kafkaTemplate.send("chat-message", key, value);
     }
+
 }
