@@ -87,4 +87,7 @@ dependencies {
 
     // Eventbus
     implementation 'org.greenrobot:eventbus:3.2.0'
+
+    // LifecycleService
+    implementation 'androidx.lifecycle:lifecycle-service:2.6.1'
 }

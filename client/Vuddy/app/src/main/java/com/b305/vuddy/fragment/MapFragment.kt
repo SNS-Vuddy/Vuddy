@@ -1,6 +1,5 @@
 package com.b305.vuddy.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
 import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.model.UserLocation
-import com.b305.vuddy.service.ImmortalLocationService
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.SharedManager
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -54,7 +52,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             sharedManager.removeCurrentToken()
             sharedManager.removeCurrentUser()
             sharedManager.removeUserLocationList()
-            requireActivity().stopService(Intent(requireContext(), ImmortalLocationService::class.java))
+//            requireActivity().stopService(Intent(requireContext(), ImmortalLocationService::class.java))
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
         }
         return binding.root
@@ -84,18 +82,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             mMap.clear()
 
             mMap.addMarker(markerOption)
-            val userLocationList = sharedManager.getUserLocationList()
-            for (i in userLocationList.indices) {
-                val userLocation = userLocationList[i]
-                val nickname = userLocation.nickname
-                val latitude = userLocation.lat!!.toDouble()
-                val longitude = userLocation.lng!!.toDouble()
-                val location = LatLng(latitude, longitude)
-                val markerOption = MarkerOptions()
-                markerOption.position(location)
-                markerOption.title(nickname)
-                mMap.addMarker(markerOption)
-            }
+//            val userLocationList = sharedManager.getUserLocationList()
+//            for (i in userLocationList.indices) {
+//                val userLocation = userLocationList[i]
+//                val nickname = userLocation.nickname
+//                val latitude = userLocation.lat!!.toDouble()
+//                val longitude = userLocation.lng!!.toDouble()
+//                val location = LatLng(latitude, longitude)
+//                val markerOption = MarkerOptions()
+//                markerOption.position(location)
+//                markerOption.title(nickname)
+//                mMap.addMarker(markerOption)
+//            }
         }
     }
 
@@ -113,21 +111,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             mMap.clear()
 
             if (isMoveCamera) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14f))
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 20f))
             }
             mMap.addMarker(markerOption)
-            val userLocationList = sharedManager.getUserLocationList()
-            for (i in userLocationList.indices) {
-                val userLocation = userLocationList[i]
-                val nickname = userLocation.nickname
-                val latitude = userLocation.lat!!.toDouble()
-                val longitude = userLocation.lng!!.toDouble()
-                val location = LatLng(latitude, longitude)
-                val markerOption = MarkerOptions()
-                markerOption.position(location)
-                markerOption.title(nickname)
-                mMap.addMarker(markerOption)
-            }
+//            val userLocationList = sharedManager.getUserLocationList()
+//            for (i in userLocationList.indices) {
+//                val userLocation = userLocationList[i]
+//                val nickname = userLocation.nickname
+//                val latitude = userLocation.lat!!.toDouble()
+//                val longitude = userLocation.lng!!.toDouble()
+//                val location = LatLng(latitude, longitude)
+//                val markerOption = MarkerOptions()
+//                markerOption.position(location)
+//                markerOption.title(nickname)
+//                mMap.addMarker(markerOption)
+//            }
         }
     }
 
