@@ -28,7 +28,7 @@ class FeedAdapter (val List : MutableList<String>) : BaseAdapter() {
             convertView = LayoutInflater.from(parent?.context).inflate(R.layout.feeds_item,parent, false)
         }
 
-        val title = convertView!!.findViewById<TextView>(R.id.iv_recycler_view_image)
+        val title = convertView!!.findViewById<TextView>(R.id.iv_recycler_view_feeds)
         title.text = List[position]
 
         return convertView!!

@@ -10,22 +10,14 @@ import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.buddy.R
+import com.b305.buddy.databinding.FragmentWriteFeedBinding
 
 class ProfileFragment : Fragment() {
+    lateinit var binding: ProfileFragment
+
+    val profileList = mutableListOf<String>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        val list_item = mutableListOf<String>()
-//
-//        list_item.add("A")
-//        list_item.add("B")
-//        list_item.add("C")
-//
-//        val listview = findViewById<ListView>(R.id.mainListView)
-//
-//        val listviewadapter = listViewAdapter(list_item)
-//        listview.adapter = listviewadapter
-
 
     }
     

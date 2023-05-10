@@ -22,42 +22,49 @@
         android:layout_height="match_parent">
 
         <!-- 상단 프로필 부분 -->
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profile_top"
             android:layout_marginTop="40dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp">
 
             <!-- 프로필 이미지 -->
+
+            <!-- 프로필 정보 -->
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/man"
                 android:scaleType="centerCrop"
+                android:src="@drawable/man"
+                app:civ_border_color="#A286DB"
                 app:civ_border_overlay="true"
                 app:civ_border_width="5dp"
-                app:civ_border_color="#A286DB"/>
+                tools:layout_editor_absoluteX="27dp"
+                tools:layout_editor_absoluteY="16dp" />
 
-            <!-- 프로필 정보 -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_marginStart="16dp"
                 android:layout_toEndOf="@id/profile_image"
-                android:layout_marginStart="16dp">
-
-                <TextView
-                    android:id="@+id/username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="username"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
+                android:orientation="vertical">
 
             </LinearLayout>
 
-        </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="username"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.276"
+                app:layout_constraintStart_toEndOf="@+id/profile_image"
+                tools:layout_editor_absoluteY="32dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:layout_gravity="center"
