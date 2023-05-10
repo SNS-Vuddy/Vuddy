@@ -1,41 +1,51 @@
 package com.b305.vuddy.fragment
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
 import com.b305.vuddy.model.FriendLocation
-import com.b305.vuddy.service.ImmortalLocationService
-import com.b305.vuddy.util.LocationListener
 import com.b305.vuddy.util.SharedManager
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
-class MapFragment : Fragment(), OnMapReadyCallback {
+class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
     var latitude: Double = 0.0
     var longitude: Double = 0.0
     var isHandlerRunning = false
     var handler = Handler()
-//    private var runnable = object : Runnable {
+
+    //    private var runnable = object : Runnable {
 //        override fun run() {
 //            setMarker(getMyLocation(), mMap, friendLocationList)
 //            Log.d("MapFragment", "****run: $latitude, $longitude****")
 //            handler.postDelayed(this, 5000)
 //        }
 //    }
-
     private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
     lateinit var binding: FragmentMapBinding
     private lateinit var mMap: GoogleMap
     private var friendLocationList = mutableListOf<FriendLocation>()
-    var locationListener: LocationListener? = null
 
 //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
@@ -75,11 +85,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             it.findNavController().navigate(R.id.action_mapFragment_to_profileFragment)
         }
 
-        binding.fabLogout.setOnClickListener {
-            requireActivity().stopService(Intent(requireContext(), ImmortalLocationService::class.java))
-//            logout(sharedManager)
-            it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
-        }
+//        binding.fabLogout.setOnClickListener {
+////            requireActivity().stopService(Intent(requireContext(), ImmortalLocationService::class.java))
+////            logout(sharedManager)
+//            it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
+//        }
 
         return binding.root
     }
@@ -93,9 +103,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-//        locationListener = LocationListener(binding)
-//        locationListener!!.initLocationManager(requireContext())
-//        locationListener!!.setLocationListener(requireContext())
+        initLocationManager()
+        setLocationListener()
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 15f))
+
 //
 //        moveCameraToCurrentLocation(mMap, friendLocationList)
 //
@@ -110,6 +121,85 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 //        }
 //        isHandlerRunning = true
 //        handler.postDelayed(runnable, 1000)
+    }
+
+    lateinit var locationManager: LocationManager
+    lateinit var locationListener: LocationListener
+    var count = 0
+
+    private fun initLocationManager() {
+        if (!::locationManager.isInitialized) {
+            locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        }
+    }
+
+    private fun setLocationListener() {
+        val minTime = 100L
+        val minDistance = 1f
+//        lateinit var locationListener: LocationListener
+        var gpsLocation: Location? = null
+        var networkLocation: Location? = null
+        val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+        if (!isGpsEnabled && !isNetworkEnabled) {
+            return
+        }
+
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        if (isGpsEnabled) {
+            gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        }
+
+        if (isNetworkEnabled) {
+            networkLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+        }
+
+        val selectProvider: String
+        if (gpsLocation != null && networkLocation != null) {
+            if (gpsLocation.accuracy > networkLocation.accuracy) {
+                selectProvider = LocationManager.GPS_PROVIDER
+            } else {
+                selectProvider = LocationManager.NETWORK_PROVIDER
+            }
+        } else {
+            if (gpsLocation != null) {
+                selectProvider = LocationManager.GPS_PROVIDER
+            } else {
+                selectProvider = LocationManager.NETWORK_PROVIDER
+            }
+        }
+
+        locationListener = this
+        locationManager.requestLocationUpdates(selectProvider, minTime, minDistance, locationListener)
+    }
+
+    override fun onLocationChanged(location: Location): Unit {
+        latitude = location.latitude
+        longitude = location.longitude
+        val localDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+        binding.tvTime.text = localDateTime
+        count++
+        binding.tvCount.text = count.toString()
+        binding.tvLatitude.text = latitude.toString()
+        binding.tvLongitude.text = longitude.toString()
+
+        mMap.let {
+            it.clear()
+            val markerOption = MarkerOptions()
+            markerOption.position(LatLng(latitude.toDouble(), longitude.toDouble()))
+            it.addMarker(markerOption)
+            it.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude.toDouble(), longitude.toDouble()), 18f))
+        }
     }
 
 //    override fun onPause() {
