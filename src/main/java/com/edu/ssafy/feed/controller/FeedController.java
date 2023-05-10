@@ -109,8 +109,15 @@ public class FeedController {
     @PostMapping(value = "/opened/write/{nickname}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonRes writeFeedTest(
             @PathVariable String nickname,
-            @ModelAttribute FeedWriteReq req
+            @ModelAttribute FeedWriteReq req,
+            @RequestHeader Map<String, String> map
     ) {
+        System.out.println("============================헤더출력=====================================");
+        map.forEach((key, value) -> {
+            System.out.println(key + " : " + value);
+        });
+        System.out.println("=============================헤더출력끝====================================");
+        
         // 유저 정보 가져오기
         User user = userService.findByNickname(nickname);
 
