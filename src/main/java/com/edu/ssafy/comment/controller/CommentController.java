@@ -15,6 +15,11 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    @GetMapping("/opened/health")
+    public String healthCheck() {
+        return "hello world";
+    }
+
     // 댓글 작성
     @PostMapping("/write/{feedId}")
     public ResponseEntity<CommonRes> writeComment(@RequestHeader("x_nickname") String encodedNickname, @PathVariable Long feedId, @RequestBody CommentWriteReq req) {
