@@ -6,14 +6,8 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Bundle
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat.getSystemService
-import com.b305.vuddy.databinding.ActivityTestBinding
 import com.b305.vuddy.databinding.FragmentMapBinding
-import com.b305.vuddy.fragment.MapFragment
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -79,10 +73,11 @@ class LocationListener(private val binding: FragmentMapBinding) : LocationListen
         }
     }
 
-    override fun onLocationChanged(location: Location) {
+    override fun onLocationChanged(location: Location): Unit {
         val latitude = location.latitude.toString()
         val longitude = location.longitude.toString()
-        binding.tvTime.text = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        binding.tvTime.text =
+            LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         binding.tvLatitude.text = latitude
         binding.tvLongitude.text = longitude
         count++

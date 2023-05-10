@@ -11,13 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
-//import com.b305.vuddy.extension.getMyLocation
-//import com.b305.vuddy.extension.logout
-//import com.b305.vuddy.extension.moveCameraToCurrentLocation
-//import com.b305.vuddy.extension.renewFriendList
-//import com.b305.vuddy.extension.setMarker
+import com.b305.vuddy.extension.getMyLocation
+import com.b305.vuddy.extension.moveCameraToCurrentLocation
+import com.b305.vuddy.extension.renewFriendList
+import com.b305.vuddy.extension.setMarker
 import com.b305.vuddy.model.FriendLocation
-//import com.b305.vuddy.model.LocationEvent
+import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.service.ImmortalLocationService
 import com.b305.vuddy.util.LocationListener
 import com.b305.vuddy.util.SharedManager
@@ -29,17 +28,17 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 class MapFragment : Fragment(), OnMapReadyCallback {
-//    var latitude: Double = 0.0
-//    var longitude: Double = 0.0
-//    var isHandlerRunning = false
-//    var handler = Handler()
-//    private var runnable = object : Runnable {
-//        override fun run() {
-//            setMarker(getMyLocation(), mMap, friendLocationList)
-//            Log.d("MapFragment", "****run: $latitude, $longitude****")
-//            handler.postDelayed(this, 5000)
-//        }
-//    }
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
+    var isHandlerRunning = false
+    var handler = Handler()
+    private var runnable = object : Runnable {
+        override fun run() {
+            setMarker(getMyLocation(), mMap, friendLocationList)
+            Log.d("MapFragment", "****run: $latitude, $longitude****")
+            handler.postDelayed(this, 5000)
+        }
+    }
 
     private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
     lateinit var binding: FragmentMapBinding
@@ -49,29 +48,26 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        EventBus.getDefault().register(this)
+        EventBus.getDefault().register(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//        isHandlerRunning = false
-//        handler.removeCallbacks(runnable)
-//        EventBus.getDefault().unregister(this)
-
+        isHandlerRunning = false
+        handler.removeCallbacks(runnable)
+        EventBus.getDefault().unregister(this)
     }
 
-//    @Subscribe
-//    fun onLocationEvent(locationEvent: LocationEvent) {
-//        val friendLocation = locationEvent.friendLocation
-//        friendLocationList = renewFriendList(friendLocationList, friendLocation)
-//    }
+    @Subscribe
+    fun onLocationEvent(locationEvent: LocationEvent) {
+        val friendLocation = locationEvent.friendLocation
+        friendLocationList = renewFriendList(friendLocationList, friendLocation)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMapBinding.inflate(layoutInflater, container, false)
 
-        locationListener = LocationListener(binding)
-        locationListener!!.initLocationManager(requireContext())
-        locationListener!!.setLocationListener(requireContext())
+
         binding.ivFriend.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_friendFragment)
         }
@@ -106,40 +102,44 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-//        moveCameraToCurrentLocation(mMap, friendLocationList)
-//
-//        val fabMoveCurrentLocation = view?.findViewById<FloatingActionButton>(R.id.fab_move_current_location)
-//        fabMoveCurrentLocation?.setOnClickListener {
-//            moveCameraToCurrentLocation(mMap, friendLocationList)
-//        }
-//
-//        if (isHandlerRunning) {
-//            isHandlerRunning = false
-//            handler.removeCallbacks(runnable)
-//        }
-//        isHandlerRunning = true
-//        handler.postDelayed(runnable, 1000)
+//        locationListener = LocationListener(binding)
+//        locationListener!!.initLocationManager(requireContext())
+//        locationListener!!.setLocationListener(requireContext())
+
+        moveCameraToCurrentLocation(mMap, friendLocationList)
+
+        val fabMoveCurrentLocation = view?.findViewById<FloatingActionButton>(R.id.fab_move_current_location)
+        fabMoveCurrentLocation?.setOnClickListener {
+            moveCameraToCurrentLocation(mMap, friendLocationList)
+        }
+
+        if (isHandlerRunning) {
+            isHandlerRunning = false
+            handler.removeCallbacks(runnable)
+        }
+        isHandlerRunning = true
+        handler.postDelayed(runnable, 1000)
     }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        isHandlerRunning = false
-//        handler.removeCallbacks(runnable)
-//    }
-//
-//    override fun onResume() {
-//        super.onResume()
-//        if (isHandlerRunning) {
-//            isHandlerRunning = false
-//            handler.removeCallbacks(runnable)
-//        }
-//        isHandlerRunning = true
-//        handler.postDelayed(runnable, 1000)
-//    }
-//
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        isHandlerRunning = false
-//        handler.removeCallbacks(runnable)
-//    }
+
+    override fun onPause() {
+        super.onPause()
+        isHandlerRunning = false
+        handler.removeCallbacks(runnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isHandlerRunning) {
+            isHandlerRunning = false
+            handler.removeCallbacks(runnable)
+        }
+        isHandlerRunning = true
+        handler.postDelayed(runnable, 1000)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        isHandlerRunning = false
+        handler.removeCallbacks(runnable)
+    }
 }
