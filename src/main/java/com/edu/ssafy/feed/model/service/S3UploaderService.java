@@ -9,9 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,8 +30,10 @@ public class S3UploaderService {
 
     // MultipartFile을 전달받아 File로 전환한 후 S3에 업로드
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+        System.out.println("convert 전: " + LocalDateTime.now());
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
+        System.out.println("convert 후: " + LocalDateTime.now());
         return upload(uploadFile, dirName);
     }
 
@@ -46,7 +45,6 @@ public class S3UploaderService {
         System.out.println("실질적인 s3에 업로드 시작 시간: " + LocalDateTime.now());
         String uploadImageUrl = putS3(uploadFile, fileName);
         System.out.println("실질적인 s3에 업로드 종료 시간: " + LocalDateTime.now());
-
 
         removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
 
@@ -82,46 +80,16 @@ public class S3UploaderService {
         }
     }
 
-    private Optional<File> convert(MultipartFile file) throws IOException {
+    private Optional<File> convert(MultipartFile file) throws  IOException {
         File convertFile = new File(file.getOriginalFilename());
-        BufferedImage originalImage = ImageIO.read(file.getInputStream());
-        int width = originalImage.getWidth();
-
-//         Width가 1000 이상일 경우 리사이징
-        if (width > 500) {
-            System.out.println("이미지 리사이징 시작 시간: " + LocalDateTime.now());
-            int height = originalImage.getHeight();
-            double aspectRatio = (double) width / height;
-
-            // 새로운 크기 설정. 가로를 1000으로 맞추고, 세로는 비율에 맞게 조정
-            int newWidth = 500;
-            int newHeight = (int) (newWidth / aspectRatio);
-
-            // 리사이징
-            Image temp = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-            BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-            Graphics2D g2d = resizedImage.createGraphics();
-            g2d.drawImage(temp, 0, 0, null);
-            g2d.dispose();
-
-            // 리사이징 된 이미지를 파일에 쓰기
-            ImageIO.write(resizedImage, "jpg", convertFile);
-            System.out.println("이미지 리사이징 종료 시간: " + LocalDateTime.now());
-        } else {
-            if(convertFile.createNewFile()) {
-                try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                    fos.write(file.getBytes());
-                }
+        if(convertFile.createNewFile()) {
+            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+                fos.write(file.getBytes());
             }
+            return Optional.of(convertFile);
         }
-
-//        if(convertFile.createNewFile()) {
-//            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-//                fos.write(file.getBytes());
-//            }
-//        }
-
-        return Optional.of(convertFile);
+        return Optional.empty();
     }
+
 
 }
