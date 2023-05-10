@@ -30,12 +30,13 @@ import org.greenrobot.eventbus.Subscribe
 class MapFragment : Fragment(), OnMapReadyCallback {
     var latitude: Double = 0.0
     var longitude: Double = 0.0
+    var isHandlerRunning = false
     var handler = Handler()
-    var runnable = object : Runnable {
+    private var runnable = object : Runnable {
         override fun run() {
             setMarker(getMyLocation(), mMap, friendLocationList)
             Log.d("MapFragment", "****run: $latitude, $longitude****")
-            handler.postDelayed(this, 1000)
+            handler.postDelayed(this, 5000)
         }
     }
 
@@ -51,6 +52,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onDestroy() {
         super.onDestroy()
+        isHandlerRunning = false
+        handler.removeCallbacks(runnable)
         EventBus.getDefault().unregister(this)
 
     }
@@ -105,21 +108,33 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             moveCameraToCurrentLocation(mMap, friendLocationList)
         }
 
+        if (isHandlerRunning) {
+            isHandlerRunning = false
+            handler.removeCallbacks(runnable)
+        }
+        isHandlerRunning = true
         handler.postDelayed(runnable, 1000)
     }
 
     override fun onPause() {
         super.onPause()
+        isHandlerRunning = false
         handler.removeCallbacks(runnable)
     }
 
     override fun onResume() {
         super.onResume()
+        if (isHandlerRunning) {
+            isHandlerRunning = false
+            handler.removeCallbacks(runnable)
+        }
+        isHandlerRunning = true
         handler.postDelayed(runnable, 1000)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        isHandlerRunning = false
         handler.removeCallbacks(runnable)
     }
 }
