@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        startService(Intent(this, ImmortalLocationService::class.java))
+//        startService(Intent(this, ImmortalLocationService::class.java))
     }
 
     companion object {

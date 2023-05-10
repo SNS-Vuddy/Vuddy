@@ -15,33 +15,53 @@
             tools:layout_editor_absoluteX="-197dp"
             tools:layout_editor_absoluteY="96dp" />
 
-    <TextView
+    <LinearLayout
+            android:background="@color/grey"
             android:layout_width="match_parent"
+            android:layout_marginTop="30dp"
             android:layout_height="wrap_content"
-            android:text="Local Date Time"
-            android:textSize="30sp"
-            android:gravity="center"
-            android:id="@+id/tv_time"
-            tools:layout_editor_absoluteX="87dp"
-            app:layout_constraintTop_toTopOf="@+id/guideline3" />
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/fab_logout">
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Latitude"
-            android:textSize="30sp"
-            android:gravity="center"
-            android:id="@+id/tv_latitude"
-            app:layout_constraintTop_toBottomOf="@+id/tv_time" />
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Local Date Time"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:id="@+id/tv_time"
+                tools:layout_editor_absoluteX="87dp" />
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Longitude"
-            android:textSize="30sp"
-            android:gravity="center"
-            android:id="@+id/tv_longitude"
-            app:layout_constraintTop_toBottomOf="@+id/tv_latitude" />
+        <TextView
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Latitude"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:id="@+id/tv_latitude" />
+
+        <TextView
+                android:layout_width="match_parent"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content"
+                android:text="Longitude"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:id="@+id/tv_longitude" />
+
+        <TextView
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Count"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:id="@+id/tv_count" />
+
+    </LinearLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_logout"
