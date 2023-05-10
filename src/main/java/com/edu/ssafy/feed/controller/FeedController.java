@@ -39,6 +39,11 @@ public class FeedController {
     private final S3UploaderService s3UploaderService;
     private final FeedPictureService feedPictureService;
 
+    @GetMapping("/opened/health")
+    public String health() {
+        return "hello world";
+    }
+
     @GetMapping("/test/header")
     public String test(@RequestHeader Map<String, String> map) {
 
