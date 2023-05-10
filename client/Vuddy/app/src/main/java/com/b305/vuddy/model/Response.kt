@@ -16,3 +16,8 @@ data class AuthResponse(
     @SerializedName("refreshToken")
     val refreshToken: String?,
 )
+
+data class FriendsResponse(
+    @SerializedName("data")
+    val friendList: ArrayList<FriendProfile>?,
+)
