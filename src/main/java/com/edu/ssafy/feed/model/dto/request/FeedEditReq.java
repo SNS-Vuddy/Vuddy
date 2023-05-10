@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 public class FeedEditReq {
 
+    private String title;
     private String content;
     private List<String> images; // 이미지를 문자열 목록으로 받기 위해 리스트로 선언
     private String location;
@@ -20,6 +21,7 @@ public class FeedEditReq {
         return Feed.builder()
                 .user(user)
                 .nickname(user.getNickname())
+                .title(title)
                 .content(content)
                 .location(location)
                 // 태그와 이미지는 추후에 추가
