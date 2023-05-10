@@ -100,6 +100,10 @@ public class FeedController {
 
         feedPictureService.saveAll(storedFileNames);
 
+        if (req.getTags().isEmpty()) {
+            return new CommonRes(201, "피드 작성 성공");
+        }
+
         taggedFriendsService.saveAllTaggedFriends(req, feed);
 
         return new CommonRes(201, "피드 작성 성공");
@@ -156,9 +160,12 @@ public class FeedController {
 
         feedPictureService.saveAll(storedFileNames);
 
+
         if (req.getTags().isEmpty()) {
+            System.out.println("태그 없음");
             return new CommonRes(201, "피드 작성 성공");
         } else {
+            System.out.println("태그 있음");
             taggedFriendsService.saveAllTaggedFriends(req, feed);
         }
 
