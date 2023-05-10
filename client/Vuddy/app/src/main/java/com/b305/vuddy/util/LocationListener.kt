@@ -76,11 +76,5 @@ class LocationListener(private val binding: FragmentMapBinding) : LocationListen
     override fun onLocationChanged(location: Location): Unit {
         val latitude = location.latitude.toString()
         val longitude = location.longitude.toString()
-        binding.tvTime.text =
-            LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-        binding.tvLatitude.text = latitude
-        binding.tvLongitude.text = longitude
-        count++
-        binding.tvCount.text = count.toString()
     }
 }

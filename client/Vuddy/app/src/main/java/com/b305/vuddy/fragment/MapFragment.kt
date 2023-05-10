@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
 import com.b305.vuddy.extension.getMyLocation
+import com.b305.vuddy.extension.logout
 import com.b305.vuddy.extension.moveCameraToCurrentLocation
 import com.b305.vuddy.extension.renewFriendList
 import com.b305.vuddy.extension.setMarker
@@ -86,7 +87,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         binding.fabLogout.setOnClickListener {
             requireActivity().stopService(Intent(requireContext(), ImmortalLocationService::class.java))
-//            logout(sharedManager)
+            logout(sharedManager)
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
         }
 
