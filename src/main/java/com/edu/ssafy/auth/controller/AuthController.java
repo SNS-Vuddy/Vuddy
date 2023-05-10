@@ -77,7 +77,8 @@ public class AuthController {
         }
         String accessToken = token.substring(7);
         if (!tokenProvider.validateToken(accessToken)) {
-            return new ResponseEntity<>(new CommonRes(400, "유효하지 않은 토큰입니다."), HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+//            return new ResponseEntity<>(new CommonRes(400, "유효하지 않은 토큰입니다."), HttpStatus.BAD_REQUEST);
         }
 
         // 토큰에서 인코딩된 닉네임 추출
