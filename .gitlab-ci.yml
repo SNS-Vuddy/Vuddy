@@ -59,7 +59,7 @@ deploy-job:      # This job runs in the deploy stage.
     - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
   script:
     - echo "Deploying application..."
-    - echo $KAFKA_HOST_NAME
+    - echo "KAFKA_HOST_NAME : $KAFKA_HOST_NAME"
     - docker run --name ${SERVICE_NAME}-service -p 9017:8080 -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_URL=$MYSQL_URL -e MYSQL_USERNAME=$MYSQL_USERNAME -e SERVER_HOST_NAME=$SERVER_HOST_NAME -e SERVER_HOST_NAME=$SERVER_HOST_NAME -e REDIS_HOST_NAME=$REDIS_HOST_NAME -e REDIS_PASSWORD=$REDIS_PASSWORD -e KAFKA_HOST_NAME=$KAFKA_HOST_NAME -d itmagician/b305-vuddy:$SERVICE_NAME
     - echo "Application successfully deployed."
 
