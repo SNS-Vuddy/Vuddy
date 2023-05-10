@@ -12,9 +12,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 fun MapFragment.getMyLocation(): LatLng {
     val locationProvider = LocationProvider(requireActivity())
-    val currentLat = locationProvider.getLocationLatitude()!!
-    val currentLng = locationProvider.getLocationLongitude()!!
-    return LatLng(currentLat, currentLng)
+    latitude = locationProvider.getLocationLatitude()!!
+    longitude = locationProvider.getLocationLongitude()!!
+    return LatLng(latitude, longitude)
 }
 
 fun MapFragment.moveCameraToCurrentLocation(googleMap: GoogleMap, friendLocationList: MutableList<FriendLocation>) {
