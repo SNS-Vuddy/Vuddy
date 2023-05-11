@@ -1,9 +1,11 @@
 package com.b305.vuddy.fragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.vuddy.R
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -29,6 +32,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
     var locationProvider: LocationProvider? = null
     private lateinit var mMap: GoogleMap
+    private var marker: Marker? = null
+    private val markerMap = mutableMapOf<String, Marker>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMapBinding.inflate(layoutInflater, container, false)
@@ -76,24 +81,33 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         requireActivity().runOnUiThread {
             val latitude = userLocation.lat!!.toDouble()
             val longitude = userLocation.lng!!.toDouble()
-            val location = LatLng(latitude, longitude)
-            val markerOption = MarkerOptions()
-            markerOption.position(location)
-            mMap.clear()
+            val newLocation = LatLng(latitude, longitude)
 
-            mMap.addMarker(markerOption)
-//            val userLocationList = sharedManager.getUserLocationList()
-//            for (i in userLocationList.indices) {
-//                val userLocation = userLocationList[i]
-//                val nickname = userLocation.nickname
-//                val latitude = userLocation.lat!!.toDouble()
-//                val longitude = userLocation.lng!!.toDouble()
-//                val location = LatLng(latitude, longitude)
-//                val markerOption = MarkerOptions()
-//                markerOption.position(location)
-//                markerOption.title(nickname)
-//                mMap.addMarker(markerOption)
-//            }
+            if (marker == null) {
+                val markerOption = MarkerOptions().position(newLocation)
+                marker = mMap.addMarker(markerOption)
+            } else {
+                animateMarkerTo(marker!!, newLocation)
+            }
+
+            val userLocationList = sharedManager.getUserLocationList()
+            for (userLocation in userLocationList) {
+                val nickname = userLocation.nickname
+                if (nickname != null) {
+                    val latitude = userLocation.lat!!.toDouble()
+                    val longitude = userLocation.lng!!.toDouble()
+                    val newLocation = LatLng(latitude, longitude)
+                    val existingMarker = markerMap[nickname]
+
+                    if (existingMarker == null) {
+                        val markerOption = MarkerOptions().position(newLocation).title(nickname)
+                        val newMarker = mMap.addMarker(markerOption)!!
+                        markerMap[nickname] = newMarker
+                    } else {
+                        animateMarkerTo(existingMarker, newLocation)
+                    }
+                }
+            }
         }
     }
 
@@ -106,27 +120,53 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             var latitude = locationProvider!!.getLocationLatitude()!!
             var longitude = locationProvider!!.getLocationLongitude()!!
             var location = LatLng(latitude, longitude)
-            var markerOption = MarkerOptions()
-            markerOption.position(location)
+
             mMap.clear()
 
             if (isMoveCamera) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 20f))
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14f))
             }
-            mMap.addMarker(markerOption)
-//            val userLocationList = sharedManager.getUserLocationList()
-//            for (i in userLocationList.indices) {
-//                val userLocation = userLocationList[i]
-//                val nickname = userLocation.nickname
-//                val latitude = userLocation.lat!!.toDouble()
-//                val longitude = userLocation.lng!!.toDouble()
-//                val location = LatLng(latitude, longitude)
-//                val markerOption = MarkerOptions()
-//                markerOption.position(location)
-//                markerOption.title(nickname)
-//                mMap.addMarker(markerOption)
-//            }
+
+            if (marker == null) {
+                val markerOption = MarkerOptions().position(location)
+                marker = mMap.addMarker(markerOption)
+            } else {
+                animateMarkerTo(marker!!, location)
+            }
+
+            val userLocationList = sharedManager.getUserLocationList()
+            for (userLocation in userLocationList) {
+                val nickname = userLocation.nickname
+                if (nickname != null) {
+                    val latitude = userLocation.lat!!.toDouble()
+                    val longitude = userLocation.lng!!.toDouble()
+                    val newLocation = LatLng(latitude, longitude)
+                    val existingMarker = markerMap[nickname]
+
+                    if (existingMarker == null) {
+                        val markerOption = MarkerOptions().position(newLocation).title(nickname)
+                        val newMarker = mMap.addMarker(markerOption)
+                        markerMap[nickname] = newMarker!!
+                    } else {
+                        animateMarkerTo(existingMarker, newLocation)
+                    }
+                }
+            }
         }
+    }
+
+    private fun animateMarkerTo(marker: Marker, targetPosition: LatLng) {
+        val startPosition = marker.position
+        val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
+        valueAnimator.duration = 300
+        valueAnimator.interpolator = LinearInterpolator()
+        valueAnimator.addUpdateListener { animation ->
+            val fraction = animation.animatedFraction
+            val lat = startPosition.latitude + (targetPosition.latitude - startPosition.latitude) * fraction
+            val lng = startPosition.longitude + (targetPosition.longitude - startPosition.longitude) * fraction
+            marker.position = LatLng(lat, lng)
+        }
+        valueAnimator.start()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,130 +196,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
         val friendLocation = locationEvent.userLocation
         sharedManager.addUserLocationList(friendLocation)
-        refreshMarker(false)
+        refreshMarkerWithOutLocationProvider(friendLocation)
     }
 }
-//    private var runnable = object : Runnable {
-//        override fun run() {
-//            setMarker(getMyLocation(), mMap, friendLocationList)
-//            Log.d("MapFragment", "****run: $latitude, $longitude****")
-//            handler.postDelayed(this, 5000)
-//        }
-//    }
-
-
-//
-//        moveCameraToCurrentLocation(mMap, friendLocationList)
-//
-//        val fabMoveCurrentLocation = view?.findViewById<FloatingActionButton>(R.id.fab_move_current_location)
-//        fabMoveCurrentLocation?.setOnClickListener {
-//            moveCameraToCurrentLocation(mMap, friendLocationList)
-//        }
-//
-//        if (isHandlerRunning) {
-//            isHandlerRunning = false
-//            handler.removeCallbacks(runnable)
-//        }
-//        isHandlerRunning = true
-//        handler.postDelayed(runnable, 1000)
-
-//    lateinit var locationManager: LocationManager
-//    lateinit var locationListener: LocationListener
-//    var count = 0
-//
-//    private fun initLocationManager() {
-//        if (!::locationManager.isInitialized) {
-//            locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-//        }
-//    }
-//
-//    private fun setLocationListener() {
-//        val minTime = 100L
-//        val minDistance = 1f
-////        lateinit var locationListener: LocationListener
-//        var gpsLocation: Location? = null
-//        var networkLocation: Location? = null
-//        val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-//        val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-//
-//        if (!isGpsEnabled && !isNetworkEnabled) {
-//            return
-//        }
-//
-//        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-//            != PackageManager.PERMISSION_GRANTED
-//            && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
-//            != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            return
-//        }
-//
-//        if (isGpsEnabled) {
-//            gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-//        }
-//
-//        if (isNetworkEnabled) {
-//            networkLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-//        }
-//
-//        val selectProvider: String
-//        if (gpsLocation != null && networkLocation != null) {
-//            if (gpsLocation.accuracy > networkLocation.accuracy) {
-//                selectProvider = LocationManager.GPS_PROVIDER
-//            } else {
-//                selectProvider = LocationManager.NETWORK_PROVIDER
-//            }
-//        } else {
-//            if (gpsLocation != null) {
-//                selectProvider = LocationManager.GPS_PROVIDER
-//            } else {
-//                selectProvider = LocationManager.NETWORK_PROVIDER
-//            }
-//        }
-//
-//        locationListener = this
-//        locationManager.requestLocationUpdates(selectProvider, minTime, minDistance, locationListener)
-//    }
-
-//    override fun onLocationChanged(location: Location): Unit {
-//        latitude = location.latitude
-//        longitude = location.longitude
-//        val localDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
-//            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-//
-//        binding.tvTime.text = localDateTime
-//        count++
-//        binding.tvCount.text = count.toString()
-//        binding.tvLatitude.text = latitude.toString()
-//        binding.tvLongitude.text = longitude.toString()
-//
-//        mMap.let {
-//            it.clear()
-//            val markerOption = MarkerOptions()
-//            markerOption.position(LatLng(latitude.toDouble(), longitude.toDouble()))
-//            it.addMarker(markerOption)
-//            it.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude.toDouble(), longitude.toDouble()), 18f))
-//        }
-//    }
-
-//    override fun onPause() {
-//        super.onPause()
-//        isHandlerRunning = false
-//        handler.removeCallbacks(runnable)
-//    }
-//
-//    override fun onResume() {
-//        super.onResume()
-//        if (isHandlerRunning) {
-//            isHandlerRunning = false
-//            handler.removeCallbacks(runnable)
-//        }
-//        isHandlerRunning = true
-//        handler.postDelayed(runnable, 1000)
-//    }
-//
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        isHandlerRunning = false
-//        handler.removeCallbacks(runnable)
-//    }
