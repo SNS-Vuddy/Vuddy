@@ -30,6 +30,7 @@ build-job:       # This job runs in the build stage, which runs first.
     - ./gradlew clean bootJar
     - docker build -t itmagician/b305-vuddy-$SERVICE_NAME:$CI_COMMIT_SHA .
     - docker push itmagician/b305-vuddy-$SERVICE_NAME:$CI_COMMIT_SHA
+    - docker push itmagician/b305-vuddy-$SERVICE_NAME:latest
     - echo "Compile complete."
 
 deploy-job/clean:      # This job runs in the deploy stage.
