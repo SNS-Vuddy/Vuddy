@@ -1,4 +1,4 @@
-package com.b305.vuddy.extension
+package com.b305.vuddy.fragment.extension
 
 import android.Manifest
 import android.annotation.SuppressLint

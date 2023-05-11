@@ -11,11 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
-import com.b305.vuddy.extension.getMyLocation
-import com.b305.vuddy.extension.logout
-import com.b305.vuddy.extension.moveCameraToCurrentLocation
-import com.b305.vuddy.extension.renewFriendList
-import com.b305.vuddy.extension.setMarker
+import com.b305.vuddy.fragment.extension.getMyLocation
+import com.b305.vuddy.fragment.extension.logout
+import com.b305.vuddy.fragment.extension.moveCameraToCurrentLocation
+import com.b305.vuddy.fragment.extension.renewFriendList
+import com.b305.vuddy.fragment.extension.setMarker
 import com.b305.vuddy.model.FriendLocation
 import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.service.ImmortalLocationService

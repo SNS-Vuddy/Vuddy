@@ -9,7 +9,7 @@
         android:id="@+id/iv_recycler_view_feeds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        tools:ignore="MissingConstraints" />
+        android:scaleType="center"
+        android:layout_margin="2dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

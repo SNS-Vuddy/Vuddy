@@ -76,7 +76,7 @@
         <!-- 하단 포스트 부분 -->
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/post_list"
+                android:id="@+id/feeds_mine_list"
                 android:layout_width="match_parent"
                 android:layout_height="472dp"
                 android:layout_margin="10dp"
