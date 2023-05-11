@@ -15,6 +15,7 @@ import com.b305.vuddy.R
 import com.b305.vuddy.activity.MainActivity
 import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.model.UserLocation
+import com.b305.vuddy.util.ChatSocket
 import com.b305.vuddy.util.FASTEST_LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LocationSocket
@@ -27,10 +28,11 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import org.greenrobot.eventbus.EventBus
 
-class TestService : LifecycleService() {
+class ImmortalService : LifecycleService() {
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationSocket: LocationSocket
+    private lateinit var chatSocket: ChatSocket
 
     // 선언
     companion object {
@@ -56,7 +58,13 @@ class TestService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         isTracking.postValue(true)
-        Log.d("TestService", "****onStartCommand****")
+        Log.d("ImmortalService", "****onStartCommand****")
+        
+        if (!::chatSocket.isInitialized) {
+            chatSocket = ChatSocket(applicationContext)
+            chatSocket.connection()
+        }
+        
         return START_NOT_STICKY
     }
 
@@ -64,7 +72,7 @@ class TestService : LifecycleService() {
     // 요청
     @SuppressLint("MissingPermission")
     private fun updateLocation(isTracking: Boolean) {
-        Log.d("TestService", "****updateLocation****")
+        Log.d("ImmortalService", "****updateLocation****")
         if (!::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         }
@@ -87,10 +95,11 @@ class TestService : LifecycleService() {
             if (!::locationSocket.isInitialized) {
                 locationSocket = LocationSocket(applicationContext)
                 locationSocket.connection()
+                Log.d("ImmortalService", "****locationSocket****")
             }
 
             val location = result.locations.last()
-            Log.d("TestService", "****${location.latitude}, ${location.longitude}****")
+            Log.d("ImmortalService", "****${location.latitude}, ${location.longitude}****")
             val userLocation = UserLocation()
             val latitude = location.latitude.toString()
             val longitude = location.longitude.toString()
@@ -130,13 +139,14 @@ class TestService : LifecycleService() {
         super.onDestroy()
         stopLocationUpdates()
         locationSocket.disconnect()
+        chatSocket.disconnect()
     }
 
     private fun stopLocationUpdates() {
         if (::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                 .addOnCompleteListener {
-                    Log.d("TestService", "****stopLocationUpdates****")
+                    Log.d("ImmortalService", "****stopLocationUpdates****")
                 }
         }
     }

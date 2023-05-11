@@ -47,10 +47,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <service
-                android:name=".service.ImmortalLocationService"
-                android:enabled="true"
-                android:exported="true" />
+
         <activity
                 android:name=".activity.SplashActivity"
                 android:exported="true">
@@ -61,7 +58,7 @@
             </intent-filter>
         </activity>
         <service
-                android:name=".service.TestService" />
+                android:name=".service.ImmortalService" />
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
                 android:value="AIzaSyDwSH5JWpAKR4nw2CxVqxWiYuP0kcQJofM" />

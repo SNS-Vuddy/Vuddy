@@ -13,13 +13,14 @@ import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
 import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.model.UserLocation
-import com.b305.vuddy.service.TestService
+import com.b305.vuddy.service.ImmortalService
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.SharedManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -60,7 +61,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             sharedManager.removeCurrentToken()
             sharedManager.removeCurrentUser()
             sharedManager.removeUserLocationList()
-            requireActivity().stopService(Intent(requireContext(), TestService::class.java))
+            requireActivity().stopService(Intent(requireContext(), ImmortalService::class.java))
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
         }
         return binding.root
@@ -196,7 +197,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 val existingMarker = markerMap[nickname]
 
                 if (existingMarker == null) {
-                    val markerOption = MarkerOptions().position(newLocation).title(nickname)
+                    val markerOption = MarkerOptions()
+                        .position(newLocation)
+                        .title(nickname)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+
                     val newMarker = mMap.addMarker(markerOption)
                     markerMap[nickname] = newMarker!!
                 } else {
