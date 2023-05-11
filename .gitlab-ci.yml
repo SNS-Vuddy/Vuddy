@@ -15,6 +15,10 @@ build-job/getting-branch-name:
     - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
     - echo "SERVICE NAME is $SERVICE_NAME"
     - export SERVICE_NAME
+    - echo "CI_COMMIT_SHA is $CI_COMMIT_SHA"
+    - echo "CI_COMMIT_SHORT_SHA is $CI_COMMIT_SHORT_SHA"
+    - echo "CI_BUILD_TAG is $CI_BUILD_TAG"
+    - echo "CI_PIPELINE_IID is $CI_PIPELINE_IID"
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
