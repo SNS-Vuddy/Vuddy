@@ -35,9 +35,9 @@ class FriendFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentFriendBinding.inflate(layoutInflater, container, false)
 
-//        binding.searchBox.setOnClickListener {
-//            it.findNavController().navigate(R.id.action_friendFragment_to_searchFragment)
-//        }
+        binding.searchBox.setOnClickListener {
+            it.findNavController().navigate(R.id.action_friendFragment_to_searchFragment)
+        }
         binding.ivMap.setOnClickListener {
             it.findNavController().navigate(R.id.action_friendFragment_to_mapFragment)
         }

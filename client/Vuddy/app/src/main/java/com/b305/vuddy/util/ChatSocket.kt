@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 
 class ChatSocket(context: Context) {
     private var client = OkHttpClient()
-    private var url = "ws://192.168.31.14:8080/chat"
+    private var url = "ws://k8b305.p.ssafy.io/chat"
     private val sharedManager: SharedManager by lazy { SharedManager(context) }
     private lateinit var webSocket: WebSocket
 
@@ -43,14 +43,19 @@ class ChatSocket(context: Context) {
         })
     }
 
-    fun sendLocation(latitude: String, longitude: String) {
+    fun sendMessage(chatId: Int, message: String) {
         var jsonObject = JSONObject()
                 .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
                 .put("nickname", sharedManager.getCurrentUser().nickname.toString())
-                .put("latitude", latitude)
-                .put("longitude", longitude)
-                .put("localDateTime", LocalDateTime.now().toString())
+                .put("chatId", chatId)
+                .put("message", message)
+                .put("time", LocalDateTime.now().toString())
 
         webSocket.send(jsonObject.toString())
+    }
+
+    fun disconnect() {
+        webSocket.close(1000, "disconnect")
+        Log.d("ChatSocket", "****disconnect****")
     }
 }

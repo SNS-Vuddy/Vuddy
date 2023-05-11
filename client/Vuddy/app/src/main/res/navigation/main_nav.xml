@@ -35,6 +35,9 @@
             android:id="@+id/action_friendFragment_to_messageFragment"
             app:destination="@id/messageFragment" />
         <action
+            android:id="@+id/action_friendFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
             android:id="@+id/action_friendFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
         <action
@@ -43,8 +46,26 @@
         <action
             android:id="@+id/action_friendFragment_to_writeFeedFragment"
             app:destination="@id/writeFeedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.b305.vuddy.fragment.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
         <action
-            android:id="@+id/action_friendFragment_to_writeFeedFragment2"
+            android:id="@+id/action_searchFragment_to_messageFragment"
+            app:destination="@id/messageFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_friendFragment"
+            app:destination="@id/friendFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_writeFeedFragment"
             app:destination="@id/writeFeedFragment" />
     </fragment>
     <fragment
