@@ -149,7 +149,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     @Subscribe
     fun onLocationEvent(event: LocationEvent) {
         if (event.isMyLocation) {
-            // 내 마커를 추가하거나 업데이트하는 코드
             val userLocation = event.userLocation
             binding.tvTime.text = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault()))
@@ -158,13 +157,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             count++
             binding.tvCount.text = count.toString()
             updateMyMarker(userLocation)
-//            refreshMarkerWithOutLocationProvider(userLocation)
         } else {
-            // 친구의 마커를 추가하거나 업데이트하는 코드
             val friendLocation = event.userLocation
             sharedManager.addUserLocationList(friendLocation)
             updateFriendMarkers(friendLocation)
-//            refreshMarkerWithOutLocationProvider(friendLocation)
         }
     }
 

@@ -28,6 +28,7 @@ import com.google.android.gms.location.LocationServices
 import org.greenrobot.eventbus.EventBus
 
 class TestService : LifecycleService() {
+
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationSocket: LocationSocket
 
@@ -43,6 +44,7 @@ class TestService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
+
         createNotification()
         postInitialValues()
 
