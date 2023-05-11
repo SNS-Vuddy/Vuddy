@@ -5,6 +5,7 @@ import com.edu.ssafy.feed.model.dto.common.ListRes;
 import com.edu.ssafy.feed.model.dto.common.SingleRes;
 import com.edu.ssafy.feed.model.dto.request.FeedEditReq;
 import com.edu.ssafy.feed.model.dto.request.FeedWriteReq;
+import com.edu.ssafy.feed.model.dto.response.FriendsFeedsRes;
 import com.edu.ssafy.feed.model.dto.response.SingleFeedRes;
 import com.edu.ssafy.feed.model.dto.response.UserFeedsRes;
 import com.edu.ssafy.feed.model.entity.Feed;
@@ -38,6 +39,7 @@ public class FeedController {
     private final TaggedFriendsService taggedFriendsService;
     private final S3UploaderService s3UploaderService;
     private final FeedPictureService feedPictureService;
+    private final FriendService friendService;
 
     @GetMapping("/opened/health")
     public String health() {
@@ -205,6 +207,18 @@ public class FeedController {
         List<UserFeedsRes> allUserFeedsRes = feedService.changeAllFeedsToDto(allFeeds);
         ListRes<UserFeedsRes> listRes = new ListRes<>(200, "피드 조회 성공", allUserFeedsRes);
         return new ResponseEntity<>(listRes, HttpStatus.OK);
+    }
+
+    // 내 친구들의 모든 피드 조회
+    @GetMapping("/feeds/friends")
+    public ResponseEntity<?> getMyFriendsAllFeed(@RequestHeader("x_nickname") String encodedNickname) {
+        String nickname = NicknameUtil.decodeNickname(encodedNickname);
+        User user = userService.findByNickname(nickname);
+
+        List<Long> friends = friendService.findAllFriendsId(user.getId());
+        List<FriendsFeedsRes> friendsFeedsRes = feedService.findAllByUserIdIn(friends);
+
+        return new ResponseEntity<>(new ListRes<>(200, "피드 조회 성공", friendsFeedsRes), HttpStatus.OK);
     }
 
     // 피드 상세 조회

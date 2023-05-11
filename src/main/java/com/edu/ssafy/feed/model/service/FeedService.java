@@ -4,6 +4,7 @@ import com.edu.ssafy.feed.model.dto.AllFeedInfoDto;
 import com.edu.ssafy.feed.model.dto.CommentDto;
 import com.edu.ssafy.feed.model.dto.FeedWithTagsListDto;
 import com.edu.ssafy.feed.model.dto.request.FeedEditReq;
+import com.edu.ssafy.feed.model.dto.response.FriendsFeedsRes;
 import com.edu.ssafy.feed.model.dto.response.SingleFeedRes;
 import com.edu.ssafy.feed.model.dto.response.UserFeedsRes;
 import com.edu.ssafy.feed.model.entity.*;
@@ -137,5 +138,9 @@ public class FeedService {
             feedLikesRepository.save(feedLikes);
             return "좋아요 성공";
         }
+    }
+
+    public List<FriendsFeedsRes> findAllByUserIdIn(List<Long> friends) {
+        return feedRepository.findAllByUserIdIn(friends);
     }
 }

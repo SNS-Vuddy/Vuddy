@@ -2,6 +2,7 @@ package com.edu.ssafy.feed.model.repository.custom;
 
 import com.edu.ssafy.feed.model.dto.AllFeedInfoDto;
 import com.edu.ssafy.feed.model.dto.FeedWithTagsListDto;
+import com.edu.ssafy.feed.model.dto.response.FriendsFeedsRes;
 import com.edu.ssafy.feed.model.entity.Feed;
 import com.edu.ssafy.feed.model.entity.QFeed;
 import com.edu.ssafy.feed.model.entity.QTaggedFriends;
@@ -12,6 +13,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -66,4 +68,18 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom{
         return Optional.of(feedWithTagsListDto);
     }
 
+    @Override
+    public List<FriendsFeedsRes> findAllByUserIdIn(List<Long> friends) {
+        List<FriendsFeedsRes> results = queryFactory
+                .select(Projections.constructor(FriendsFeedsRes.class, feed.id, feed.mainImg, feed.location))
+                .from(feed)
+                .where(feed.user.id.in(friends).and(feed.isDeleted.eq(false)))
+                .fetch();
+
+        if (results.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return results;
+    }
 }
