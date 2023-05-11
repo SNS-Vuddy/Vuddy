@@ -20,9 +20,4 @@ public class WebSocketConfig implements WebSocketConfigurer {
         registry.addHandler(chatWebSocketHandler, "/chat").setAllowedOrigins("*");
     }
 
-//    @Bean
-//    public WebSocketHandler chatWebSocketHandler() {
-//        return new ChatWebSocketHandler();
-//    }
-
 }
