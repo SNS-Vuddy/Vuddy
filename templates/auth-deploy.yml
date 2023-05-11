@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: auth
+spec:
+  selector:
+    matchLabels:
+      app: auth
+  replicas: {{ .Values.replicaCount }}
+  # strategy:
+  #   rollingUpdate:
+  #     maxSurge: 25%
+  #     maxUnavailable: 25%
+  #   type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      # initContainers:
+      # Init containers are exactly like regular containers, except:
+      # - Init containers always run to completion.
+      # - Each init container must complete successfully before the next one starts.
+      containers:
+        - name: auth
+          image: itmagician/b305-vuddy:auth
+          # resources:
+          #   requests:
+          #     cpu: 100m
+          #     memory: 100Mi
+          #   limits:
+          #     cpu: 100m
+          #     memory: 100Mi
+          # livenessProbe:
+          #   tcpSocket:
+          #     port: 80
+          #   initialDelaySeconds: 5
+          #   timeoutSeconds: 5
+          #   successThreshold: 1
+          #   failureThreshold: 3
+          #   periodSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /_status/healthz
+          #     port: 80
+          #   initialDelaySeconds: 5
+          #   timeoutSeconds: 2
+          #   successThreshold: 1
+          #   failureThreshold: 3
+          #   periodSeconds: 10
+          env:
+            - name: MYSQL_URL
+              value: {{ .Values.mysql.url }}
+            - name: MYSQL_USERNAME
+              value: {{ .Values.mysql.username }}
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.mysql.password }}
+          ports:
+            - containerPort: 8080
+      restartPolicy: {{ .Values.image.pullPolicy }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-svc
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: auth
+  type: "ClusterIP"
+  # sessionAffinity: None
+  # sessionAffinityConfig:
+  #   clientIP:
+  #     timeoutSeconds: 10800
+  ports:
+    - name: auth-svc
+      protocol: TCP
+      port: {{ .Values.ingress.port }}
+      targetPort: 8080
+      # If you set the `spec.type` field to `NodePort` and you want a specific port number,
+      # you can specify a value in the `spec.ports[*].nodePort` field.
