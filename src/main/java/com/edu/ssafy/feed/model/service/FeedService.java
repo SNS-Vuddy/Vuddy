@@ -131,14 +131,19 @@ public class FeedService {
 
         Optional<FeedLikes> findFeedLike = feedLikesRepository.findByFeedAndUser(feed, user);
 
-        if (findFeedLike.isPresent()) {
-            feedLikesRepository.delete(findFeedLike.get());
-            return "좋아요 취소 성공";
-        } else {
-            FeedLikes feedLikes = FeedLikes.createLike(feed, user);
-            feedLikesRepository.save(feedLikes);
-            return "좋아요 성공";
-        }
+        return findFeedLike.map(this::unlikeFeed)
+                .orElseGet(() -> likeFeed(feed, user));
+    }
+
+    private String unlikeFeed(FeedLikes feedLike) {
+        feedLikesRepository.delete(feedLike);
+        return "좋아요 취소 성공";
+    }
+
+    private String likeFeed(Feed feed, User user) {
+        FeedLikes feedLikes = FeedLikes.createLike(feed, user);
+        feedLikesRepository.save(feedLikes);
+        return "좋아요 성공";
     }
 
     public List<FriendsFeedsRes> findAllByUserIdIn(List<Long> friends) {
