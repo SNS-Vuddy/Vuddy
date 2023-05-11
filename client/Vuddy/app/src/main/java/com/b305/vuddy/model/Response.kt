@@ -24,7 +24,9 @@ data class FriendsResponse(
 
 data class FeedsResponse(
     @SerializedName("data")
-    val FeedList: ArrayList<Feeds>?,)
+    val FeedList: ArrayList<Feeds>?,
+)
+
 data class SearchResponse(
     @SerializedName("data")
     val data: SearchData?,
