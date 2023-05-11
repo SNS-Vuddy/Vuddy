@@ -1,7 +1,8 @@
 
 server:
   port: 8080
-  context-path: /chatting
+  servlet:
+    context-path: /chatting
 
 spring:
   datasource:
@@ -14,6 +15,15 @@ spring:
       group-id: chatting
     producer:
       bootstrap-servers: ${KAFKA_HOST_NAME:localhost:9092}
+  redis:
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 2
+    port: 6379
+    host: ${REDIS_HOST_NAME:127.0.0.1}
+    password: ${REDIS_PASSWORD:}
 logging:
   file:
     name: /log/spring/chat/chat.log  # 로깅 파일 위치이다.
