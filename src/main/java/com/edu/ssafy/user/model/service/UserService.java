@@ -1,6 +1,7 @@
 package com.edu.ssafy.user.model.service;
 
 import com.edu.ssafy.user.model.dto.BriefFeedIngoDto;
+import com.edu.ssafy.user.model.dto.UserAlarmDto;
 import com.edu.ssafy.user.model.dto.UserWithFriendDto;
 import com.edu.ssafy.user.model.dto.response.UserFeedsSummaryRes;
 import com.edu.ssafy.user.model.dto.response.UserProfileWithFeedsRes;
@@ -33,13 +34,13 @@ public class UserService {
         return userRepository.findAllByNicknameIn(nicknames);
     }
 
-    public UserFeedsSummaryRes findUserAndFeeds(User user) {
+    public UserFeedsSummaryRes findUserAndFeeds(User user, boolean hasNewAlarm) {
         List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(user.getId());
         return UserFeedsSummaryRes.builder()
                 .nickname(user.getNickname())
                 .profileImage(user.getProfileImage())
                 .statusMessage(user.getStatusMessage())
-                .has_new_alarm(false)
+                .has_new_alarm(hasNewAlarm)
                 .feeds(briefFeedIngoDtoList)
                 .build();
     }
@@ -76,5 +77,9 @@ public class UserService {
     public void changeUserStatusMessage(Long userID, String statusMessage) {
         User user = userRepository.findById(userID).orElse(null);
         Objects.requireNonNull(user).updateStatusMessage(statusMessage);
+    }
+
+    public UserAlarmDto findByIdAndAlarm(String nickname) {
+        return userRepository.findUserAndAlarm(nickname);
     }
 }
