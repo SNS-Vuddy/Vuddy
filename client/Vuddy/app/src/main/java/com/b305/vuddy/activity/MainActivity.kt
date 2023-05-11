@@ -7,11 +7,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.b305.vuddy.R
-<<<<<<< HEAD
 import com.b305.vuddy.service.ImmortalLocationService
-=======
 import com.b305.vuddy.service.ImmortalService
->>>>>>> 7e4f989f626a33e991f65d605051bce5049ba4c0
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
