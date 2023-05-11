@@ -11,10 +11,10 @@ import com.edu.ssafy.friend.model.entity.enums.UserFriendStatus;
 import com.edu.ssafy.friend.model.service.FriendService;
 import com.edu.ssafy.friend.model.service.UserService;
 import com.edu.ssafy.friend.util.NicknameUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -134,5 +134,14 @@ public class FriendController {
         FriendAndNoFriendRes friendAndNoFriendDto = friendService.searchFriend(myNickname, nickname);
 
         return ResponseEntity.ok(new SingleRes<>(200, "친구 검색 성공", friendAndNoFriendDto));
+    }
+
+    // 내게 온 친구 요청 조회
+    @GetMapping("/request")
+    public ResponseEntity<CommonRes> getFriendRequest(@RequestHeader("x_nickname") String encodedNickname) {
+        String nickname = NicknameUtil.decodeNickname(encodedNickname);
+        User user = userService.findByNickname(nickname);
+        List<AllFriendDto> friends = friendService.findFriendRequest(user);
+        return ResponseEntity.ok(new ListRes<>(200, "친구 요청 조회 성공", friends));
     }
 }

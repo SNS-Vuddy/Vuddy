@@ -67,4 +67,9 @@ public class FriendService {
     public FriendAndNoFriendRes searchFriend(String myNickname, String nickname) {
         return friendRepository.findMyFriendAndNoFriend(myNickname, nickname);
     }
+
+    public List<AllFriendDto> findFriendRequest(User user) {
+
+        return friendRepository.findAllByReceiveUserAndStatusIs(user, UserFriendStatus.PENDING);
+    }
 }
