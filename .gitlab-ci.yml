@@ -28,8 +28,8 @@ build-job:       # This job runs in the build stage, which runs first.
     - echo "Compiling the code..."
     - chmod +x gradlew
     - ./gradlew clean bootJar
-    - docker build -t itmagician/b305-vuddy:$SERVICE_NAME .
-    - docker push itmagician/b305-vuddy:comment
+    - docker build -t itmagician/b305-vuddy-$SERVICE_NAME:$CI_COMMIT_SHA .
+    - docker push itmagician/b305-vuddy-$SERVICE_NAME:$CI_COMMIT_SHA
     - echo "Compile complete."
 
 deploy-job/clean:      # This job runs in the deploy stage.
@@ -59,5 +59,5 @@ deploy-job:      # This job runs in the deploy stage.
     - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
   script:
     - echo "Deploying application..."
-    - docker run --name ${SERVICE_NAME}-service -p 9015:8080 -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_URL=$MYSQL_URL -e MYSQL_USERNAME=$MYSQL_USERNAME -d itmagician/b305-vuddy:$SERVICE_NAME
+    - docker run --name ${SERVICE_NAME}-service -p 9015:8080 -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_URL=$MYSQL_URL -e MYSQL_USERNAME=$MYSQL_USERNAME -d itmagician/b305-vuddy-$SERVICE_NAME:$CI_COMMIT_SHA
     - echo "Application successfully deployed."
