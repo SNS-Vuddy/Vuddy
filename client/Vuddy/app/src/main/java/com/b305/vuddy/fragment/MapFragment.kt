@@ -91,7 +91,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             mMap.clear()
 
             if (isMoveCamera) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14f))
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12f))
             }
 
             if (marker == null) {
@@ -111,7 +111,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     val existingMarker = markerMap[nickname]
 
                     if (existingMarker == null) {
-                        val markerOption = MarkerOptions().position(newLocation).title(nickname)
+                        val markerOption = MarkerOptions()
+                            .position(newLocation)
+                            .title(nickname)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)) // 친구 마커의 색상을 지정
                         val newMarker = mMap.addMarker(markerOption)
                         markerMap[nickname] = newMarker!!
                     } else {
