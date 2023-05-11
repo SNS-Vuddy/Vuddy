@@ -7,15 +7,16 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.b305.vuddy.R
-import com.b305.vuddy.service.ImmortalLocationService
+import com.b305.vuddy.service.ImmortalService
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val isImmortalLocationServiceRunning = isServiceRunning(this, ImmortalLocationService::class.java)
-        if (!isImmortalLocationServiceRunning) {
-            startService(Intent(this, ImmortalLocationService::class.java))
+
+        val isImmortalServiceRunning = isServiceRunning(this, ImmortalService::class.java)
+        if (!isImmortalServiceRunning) {
+            startService(Intent(this, ImmortalService::class.java))
         }
     }
 
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         class BootReceiver : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if ("android.intent.action.BOOT_COMPLETED" == intent.action) {
-                    val serviceIntent = Intent(context, ImmortalLocationService::class.java)
+                    val serviceIntent = Intent(context, ImmortalService::class.java)
                     context.startService(serviceIntent)
                 }
             }
