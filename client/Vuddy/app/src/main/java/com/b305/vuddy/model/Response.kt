@@ -22,11 +22,9 @@ data class FriendsResponse(
     val friendList: ArrayList<FriendProfile>?,
 )
 
-<<<<<<< HEAD
 data class FeedsResponse(
     @SerializedName("data")
-    val FeedList: ArrayList<Feeds>?,
-=======
+    val FeedList: ArrayList<Feeds>?,)
 data class SearchResponse(
     @SerializedName("data")
     val data: SearchData?,
@@ -38,5 +36,4 @@ data class SearchData(
 
     @SerializedName("noFriends")
     val noFriends: List<FriendProfile>?
->>>>>>> c3efd17fca5b7defe6b343cc11ae923e9952d6ae
 )

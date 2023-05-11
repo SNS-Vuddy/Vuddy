@@ -59,5 +59,5 @@ interface FeedService {
     fun feedMineGet() : Call<FeedsResponse>
 
     @GET("/feed/feeds/nickname/test1")
-    fun feedUserGet() : Call<FeedsResponse>
+    fun feedUserGet() : Call<ResponseBody>
 }

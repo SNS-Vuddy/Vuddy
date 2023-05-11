@@ -127,4 +127,9 @@
             android:id="@+id/action_writeFeedFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/feedDetailFragment"
+        android:name="com.b305.vuddy.fragment.FeedDetailFragment"
+        android:label="fragment_feed_detail"
+        tools:layout="@layout/fragment_feed_detail" />
 </navigation>

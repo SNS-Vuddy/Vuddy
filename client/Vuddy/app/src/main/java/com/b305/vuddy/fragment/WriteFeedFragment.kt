@@ -219,11 +219,12 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
             }
         }
 
-    fun getMyLocation(): LatLng {
+    fun getMyLocation(): String {
         val locationProvider = LocationProvider(requireActivity())
         var latitude = locationProvider.getLocationLatitude()!!
         var longitude = locationProvider.getLocationLongitude()!!
-        return LatLng(latitude, longitude)
+//        return LatLng(latitude, longitude).toString() // lat/lng: (36.35528344545768,127.29783622867265)
+        return "$latitude, $longitude"  // 36.35528344545768,127.29783622867265
     }
     fun sendImage() {
         // 이미지 보내는 코드
@@ -242,7 +243,7 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
 
         val title = binding.etFeedTitle.text.toString()
         var content = binding.etFeedContent.text.toString() // content EditText에서 문자열을 가져옴
-        val location = getMyLocation().toString()
+        val location = getMyLocation()
         val tags = ArrayList<RequestBody>() // 추출된 태그를 저장할 List
 
         val RequestBodytitle = title.toRequestBody("text/plain".toMediaTypeOrNull())

@@ -78,10 +78,8 @@
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/feeds_mine_list"
                 android:layout_width="match_parent"
-                android:layout_height="472dp"
-                android:layout_margin="10dp"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="3" />
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp" />
 
     </LinearLayout>
 

@@ -6,8 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.b305.vuddy.R
-import com.b305.vuddy.fragment.BottomSheetFeedWriteFragment
-import com.b305.vuddy.fragment.WriteFeedFragment
 import com.b305.vuddy.service.ImmortalLocationService
 
 class MainActivity : AppCompatActivity() {

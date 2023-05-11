@@ -9,6 +9,7 @@ data class FeedResponse(
 
 data class FeedData(
     val feedId: Int,
+    val title : String,
     val nickname: String,
     val content: String,
     val location: String,

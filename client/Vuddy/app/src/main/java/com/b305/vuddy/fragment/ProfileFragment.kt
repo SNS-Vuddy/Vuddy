@@ -58,6 +58,11 @@ class ProfileFragment : Fragment() {
             bottomSheetFragment.show(parentFragmentManager, "bottomSheetTag")
         }
 
+//        binding.profileImage.setOnClickListener {
+//            val feedDetailBottom = FeedDetailFragment()
+//            feedDetailBottom.show(parentFragmentManager, "bottomSheetTag")
+//        }
+
         return binding.root
     }
 
@@ -83,8 +88,6 @@ class ProfileFragment : Fragment() {
 
                     feedMineAdapter = FeedMineAdapter(feedList)
                     recyclerView.adapter = feedMineAdapter
-
-
                 } else {
                     Log.d("GET All", "get failed. Response: ${response.message()}")
                 }
