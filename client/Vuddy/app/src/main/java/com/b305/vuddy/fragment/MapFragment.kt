@@ -13,7 +13,7 @@ import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
 import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.model.UserLocation
-import com.b305.vuddy.service.TestService
+import com.b305.vuddy.service.ImmortalLocationService
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.SharedManager
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -60,7 +60,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             sharedManager.removeCurrentToken()
             sharedManager.removeCurrentUser()
             sharedManager.removeUserLocationList()
-            requireActivity().stopService(Intent(requireContext(), TestService::class.java))
+            requireActivity().stopService(Intent(requireContext(), ImmortalLocationService::class.java))
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
         }
         return binding.root

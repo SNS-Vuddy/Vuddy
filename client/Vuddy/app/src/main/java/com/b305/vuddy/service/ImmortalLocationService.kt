@@ -27,7 +27,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import org.greenrobot.eventbus.EventBus
 
-class TestService : LifecycleService() {
+class ImmortalLocationService : LifecycleService() {
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationSocket: LocationSocket
@@ -56,7 +56,7 @@ class TestService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         isTracking.postValue(true)
-        Log.d("TestService", "****onStartCommand****")
+        Log.d("ImmortalLocationService", "****onStartCommand****")
         return START_NOT_STICKY
     }
 
@@ -64,7 +64,7 @@ class TestService : LifecycleService() {
     // 요청
     @SuppressLint("MissingPermission")
     private fun updateLocation(isTracking: Boolean) {
-        Log.d("TestService", "****updateLocation****")
+        Log.d("ImmortalLocationService", "****updateLocation****")
         if (!::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         }
@@ -90,7 +90,7 @@ class TestService : LifecycleService() {
             }
 
             val location = result.locations.last()
-            Log.d("TestService", "****${location.latitude}, ${location.longitude}****")
+            Log.d("ImmortalLocationService", "****${location.latitude}, ${location.longitude}****")
             val userLocation = UserLocation()
             val latitude = location.latitude.toString()
             val longitude = location.longitude.toString()
@@ -136,7 +136,7 @@ class TestService : LifecycleService() {
         if (::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                 .addOnCompleteListener {
-                    Log.d("TestService", "****stopLocationUpdates****")
+                    Log.d("ImmortalLocationService", "****stopLocationUpdates****")
                 }
         }
     }
