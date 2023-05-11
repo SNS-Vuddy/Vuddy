@@ -6,10 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.ActivityAuthBinding
-import com.b305.vuddy.extension.checkSignupByInput
-import com.b305.vuddy.extension.confirmSignupByInput
-import com.b305.vuddy.extension.loginService
-import com.b305.vuddy.extension.signupService
+import com.b305.vuddy.fragment.extension.checkSignupByInput
+import com.b305.vuddy.fragment.extension.confirmSignupByInput
+import com.b305.vuddy.fragment.extension.loginService
+import com.b305.vuddy.fragment.extension.signupService
 import com.b305.vuddy.model.AuthRequest
 import com.b305.vuddy.model.Token
 import com.b305.vuddy.model.User

@@ -21,3 +21,8 @@ data class FriendsResponse(
     @SerializedName("data")
     val friendList: ArrayList<FriendProfile>?,
 )
+
+data class FeedsResponse(
+    @SerializedName("data")
+    val FeedList: ArrayList<Feeds>?,
+)

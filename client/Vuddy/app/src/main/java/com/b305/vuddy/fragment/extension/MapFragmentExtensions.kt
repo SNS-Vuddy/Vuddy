@@ -1,4 +1,4 @@
-package com.b305.vuddy.extension
+package com.b305.vuddy.fragment.extension
 
 import com.b305.vuddy.fragment.MapFragment
 import com.b305.vuddy.model.FriendLocation

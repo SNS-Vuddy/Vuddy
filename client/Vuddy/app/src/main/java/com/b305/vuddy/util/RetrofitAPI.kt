@@ -1,5 +1,6 @@
 package com.b305.vuddy.util
 
+import com.b305.vuddy.App
 import com.b305.vuddy.service.AuthService
 import com.b305.vuddy.service.FeedService
 import com.b305.vuddy.service.FriendService
@@ -8,6 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitAPI {
@@ -16,9 +18,9 @@ object RetrofitAPI {
     class TokenInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
 //            val token  = SharedManager.getCurrentToken().accessToken
-//            val token = App.instance.getCurrentToken().accessToken
-            val token =
-                "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkR1Z6ZERFPSIsImF1dGgiOiJOT1JNQUxfVVNFUiIsImV4cCI6MzE3MjU5Njc5MDQzfQ.LJnIf8Twquxc26wRGALyPvU3vqnKrpexoEV8OaczKtPR8XIDtqOnC9h41p823K9kjmTE37Z2bfJulo02pp17QA"
+            val token = App.instance.getCurrentToken().accessToken
+//            val token =
+//                "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkR1Z6ZERFPSIsImF1dGgiOiJOT1JNQUxfVVNFUiIsImV4cCI6MzE3MjU5Njc5MDQzfQ.LJnIf8Twquxc26wRGALyPvU3vqnKrpexoEV8OaczKtPR8XIDtqOnC9h41p823K9kjmTE37Z2bfJulo02pp17QA"
             val request = chain.request().newBuilder()
                 .addHeader("Authorization", "Bearer $token") // API 요청 헤더에 토큰 추가
 //                .addHeader("Authorization", token)
@@ -39,10 +41,20 @@ object RetrofitAPI {
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
     }
+
+//    private val retrofitfeed: Retrofit by lazy {
+//        Retrofit.Builder()
+//            .baseUrl(BASE_URL)
+//            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .client(okHttpClient)
+//            .build()
+//    }
 
     val authService: AuthService by lazy {
         retrofit.create(AuthService::class.java)

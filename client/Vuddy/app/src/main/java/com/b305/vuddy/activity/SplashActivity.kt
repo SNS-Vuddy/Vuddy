@@ -8,12 +8,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.b305.vuddy.databinding.ActivitySplashBinding
-import com.b305.vuddy.extension.isBatterIgnoreAvailable
-import com.b305.vuddy.extension.isLocationServicesAvailable
-import com.b305.vuddy.extension.isRunTimePermissionsGranted
-import com.b305.vuddy.extension.onRequestPermissionsResultExtension
-import com.b305.vuddy.extension.showDialogForBatterIgnoreSetting
-import com.b305.vuddy.extension.showDialogForLocationServiceSetting
+import com.b305.vuddy.fragment.extension.isBatterIgnoreAvailable
+import com.b305.vuddy.fragment.extension.isLocationServicesAvailable
+import com.b305.vuddy.fragment.extension.isRunTimePermissionsGranted
+import com.b305.vuddy.fragment.extension.onRequestPermissionsResultExtension
+import com.b305.vuddy.fragment.extension.showDialogForBatterIgnoreSetting
+import com.b305.vuddy.fragment.extension.showDialogForLocationServiceSetting
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class SplashActivity : AppCompatActivity() {

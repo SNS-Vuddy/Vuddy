@@ -26,8 +26,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.b305.vuddy.R
 import com.b305.vuddy.activity.TagActivity
 import com.b305.vuddy.databinding.FragmentWriteFeedBinding
+import com.b305.vuddy.model.FeedResponse
+import com.b305.vuddy.fragment.extension.getMyLocation
+import com.b305.vuddy.model.FeedsResponse
+import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.PhotoAdapter
 import com.b305.vuddy.util.RetrofitAPI.feedService
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -93,6 +98,8 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
         binding.btnSaveFeed.setOnClickListener {
             sendImage()
         }
+
+        GetFeedDetail()
 
 
 //        binding.ivMap.setOnClickListener {
@@ -212,6 +219,12 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
             }
         }
 
+    fun getMyLocation(): LatLng {
+        val locationProvider = LocationProvider(requireActivity())
+        var latitude = locationProvider.getLocationLatitude()!!
+        var longitude = locationProvider.getLocationLongitude()!!
+        return LatLng(latitude, longitude)
+    }
     fun sendImage() {
         // 이미지 보내는 코드
         val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
@@ -226,9 +239,10 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
         val body = builder.build().parts
 
         // title, content, location, tags 등 보내는 코드
-        val location = binding.etFeedLocation.text.toString()
+
         val title = binding.etFeedTitle.text.toString()
         var content = binding.etFeedContent.text.toString() // content EditText에서 문자열을 가져옴
+        val location = getMyLocation().toString()
         val tags = ArrayList<RequestBody>() // 추출된 태그를 저장할 List
 
         val RequestBodytitle = title.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -292,6 +306,25 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
         return cursor.getString(column_index)
     }
 
+    fun GetFeedDetail() {
+        val call = feedService.feedDetailGet(26)
+        call.enqueue(object : Callback<FeedResponse> {
+            override fun onResponse(call: Call<FeedResponse>, response: Response<FeedResponse>) {
+                if (response.isSuccessful) {
+//                val user = response.body()
+                    val message = response.body()?.data
+                    Log.d("GET api", "get successfully. Response: $message")
+                    // 사용자 객체 사용
+                } else {
+                    Log.d("GET api", "get failed. Response: ${response.message()}")
+                }
+            }
+            override fun onFailure(call: Call<FeedResponse>, t: Throwable) {
+                // 요청 실패 처리
+                Log.e("GET api", "get failed.", t)
+            }
+        })
+    }
 
     private val activityResultCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
