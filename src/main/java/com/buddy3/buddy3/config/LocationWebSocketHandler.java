@@ -149,17 +149,6 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
             redisLocationTemplate.opsForList().rightPush(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
 //            List<String> locationMessageStringList = redisLocationTemplate.opsForList().range(locationMessage.getNickname(), 0, -1);
 
-            // mongoDB 확인
-//            if (locationMessageStringList!= null && locationMessageStringList.size() >= 2) {
-//                List<UserLocation> locationMessageDataList = new ArrayList<>();
-//                for (String i : locationMessageStringList) {
-//                    locationMessageDataList.add(objectMapper.readValue(i, UserLocation.class));
-//                }
-//                redisLocationTemplate.delete(locationMessage.getNickname());
-//                mongoUserLocationService.saveAllUserLocation(locationMessageDataList);
-//            }
-//            System.out.println(redisLocationTemplate.opsForList().range(locationMessage.getNickname(), 0, -1));
-
             // redis에 추가된 내용 제거
             redisLocationTemplate.opsForList().rightPop(locationMessage.getNickname());
 //            log.warn(redisLocationTemplate.opsForList().rightPop(locationMessage.getNickname()));
