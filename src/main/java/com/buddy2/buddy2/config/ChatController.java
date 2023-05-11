@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ChatController {
 
-    @GetMapping("/chat/opened/health")
+    @GetMapping("opened/health")
     public String health(){
         return "hello world";
     }
