@@ -103,7 +103,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         LocalDateTime localDateTime = LocalDateTime.parse(locationMessageReceive.getLocalDateTime());
 
         // 서버 시간
-        LocalDateTime timeNow = LocalDateTime.now();
+        LocalDateTime timeNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         LocationMessageData locationMessage = new LocationMessageData();
         locationMessage.setNickname(locationMessageReceive.getNickname());
