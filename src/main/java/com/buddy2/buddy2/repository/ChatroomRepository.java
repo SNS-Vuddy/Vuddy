@@ -15,6 +15,6 @@ public interface ChatroomRepository extends JpaRepository<Chatroom, Long> {
 //    @Query(value = "SELECT * FROM chatroom ORDER BY chat_id DESC LIMIT 1", nativeQuery = true)
     Chatroom findFirstByOrderByChatIdDesc();
 
-    @Query(value = "SELECT c.* FROM user u INNER JOIN user_chatroom uc ON u.user_id = uc.user_id INNER JOIN chatroom c ON uc.chat_id = c.chat_id WHERE u.u_nickname = :nickname", nativeQuery = true)
+    @Query(value = "SELECT c.* FROM user u INNER JOIN user_chatroom uc ON u.user_id = uc.user_id INNER JOIN chatroom c ON uc.chat_id = c.chat_id WHERE u.u_nickname = :nickname ORDER BY c.time DESC", nativeQuery = true)
     List<Chatroom> findWithNickname(@Param("nickname") String nickname);
 }
