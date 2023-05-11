@@ -10,6 +10,6 @@ public class LocationController {
 
     @GetMapping("location/opened/health")
     public String health() {
-        return "hello worlds";
+        return "hello world";
     }
 }
