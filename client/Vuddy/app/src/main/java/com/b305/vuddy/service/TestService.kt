@@ -19,7 +19,6 @@ import com.b305.vuddy.util.FASTEST_LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LocationSocket
 import com.b305.vuddy.util.NOTI_ID
-import com.b305.vuddy.util.SharedManager
 import com.b305.vuddy.util.TrackingUtility
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -30,7 +29,6 @@ import org.greenrobot.eventbus.EventBus
 
 class TestService : LifecycleService() {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private val sharedManager: SharedManager by lazy { SharedManager(this) }
     private lateinit var locationSocket: LocationSocket
 
     // 선언
@@ -55,14 +53,14 @@ class TestService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         isTracking.postValue(true)
-        Log.d("****", "onStartCommand")
+        Log.d("TestService", "****onStartCommand****")
         return super.onStartCommand(intent, flags, startId)
     }
 
     // 요청
     @SuppressLint("MissingPermission")
     private fun updateLocation(isTracking: Boolean) {
-        Log.d("****", "updateLocation")
+        Log.d("TestService", "****updateLocation****")
         if (!::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         }
@@ -88,7 +86,7 @@ class TestService : LifecycleService() {
             }
 
             val location = result.locations.last()
-            Log.d("****", "${location.latitude}, ${location.longitude}")
+            Log.d("TestService", "****${location.latitude}, ${location.longitude}****")
             val userLocation = UserLocation()
             val latitude = location.latitude.toString()
             val longitude = location.longitude.toString()

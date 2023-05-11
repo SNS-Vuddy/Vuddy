@@ -1,6 +1,7 @@
 package com.b305.vuddy.fragment
 
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
 import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.model.UserLocation
+import com.b305.vuddy.service.TestService
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.SharedManager
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -57,7 +59,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             sharedManager.removeCurrentToken()
             sharedManager.removeCurrentUser()
             sharedManager.removeUserLocationList()
-//            requireActivity().stopService(Intent(requireContext(), ImmortalLocationService::class.java))
+            requireActivity().stopService(Intent(requireContext(), TestService::class.java))
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
         }
         return binding.root
@@ -72,43 +74,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         refreshMarker(true)
-    }
-
-    private fun refreshMarkerWithOutLocationProvider(userLocation: UserLocation) {
-        if (!::mMap.isInitialized) {
-            return
-        }
-        requireActivity().runOnUiThread {
-            val latitude = userLocation.lat!!.toDouble()
-            val longitude = userLocation.lng!!.toDouble()
-            val newLocation = LatLng(latitude, longitude)
-
-            if (marker == null) {
-                val markerOption = MarkerOptions().position(newLocation)
-                marker = mMap.addMarker(markerOption)
-            } else {
-                animateMarkerTo(marker!!, newLocation)
-            }
-
-            val userLocationList = sharedManager.getUserLocationList()
-            for (userLocation in userLocationList) {
-                val nickname = userLocation.nickname
-                if (nickname != null) {
-                    val latitude = userLocation.lat!!.toDouble()
-                    val longitude = userLocation.lng!!.toDouble()
-                    val newLocation = LatLng(latitude, longitude)
-                    val existingMarker = markerMap[nickname]
-
-                    if (existingMarker == null) {
-                        val markerOption = MarkerOptions().position(newLocation).title(nickname)
-                        val newMarker = mMap.addMarker(markerOption)!!
-                        markerMap[nickname] = newMarker
-                    } else {
-                        animateMarkerTo(existingMarker, newLocation)
-                    }
-                }
-            }
-        }
     }
 
     private fun refreshMarker(isMoveCamera: Boolean) {
@@ -182,20 +147,65 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     var count = 0
 
     @Subscribe
-    fun onLocationEvent(locationEvent: LocationEvent) {
-        if (locationEvent.isMe) {
-            // temp
+    fun onLocationEvent(event: LocationEvent) {
+        if (event.isMyLocation) {
+            // 내 마커를 추가하거나 업데이트하는 코드
+            val userLocation = event.userLocation
             binding.tvTime.text = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault()))
-            binding.tvLatitude.text = locationEvent.userLocation.lat
-            binding.tvLongitude.text = locationEvent.userLocation.lng
+            binding.tvLatitude.text = userLocation.lat
+            binding.tvLongitude.text = userLocation.lng
             count++
             binding.tvCount.text = count.toString()
-            refreshMarkerWithOutLocationProvider(locationEvent.userLocation)
+            updateMyMarker(userLocation)
+//            refreshMarkerWithOutLocationProvider(userLocation)
+        } else {
+            // 친구의 마커를 추가하거나 업데이트하는 코드
+            val friendLocation = event.userLocation
+            sharedManager.addUserLocationList(friendLocation)
+            updateFriendMarkers(friendLocation)
+//            refreshMarkerWithOutLocationProvider(friendLocation)
+        }
+    }
+
+    private fun updateMyMarker(userLocation: UserLocation) {
+        if (!::mMap.isInitialized) {
             return
         }
-        val friendLocation = locationEvent.userLocation
-        sharedManager.addUserLocationList(friendLocation)
-        refreshMarkerWithOutLocationProvider(friendLocation)
+        requireActivity().runOnUiThread {
+            val latitude = userLocation.lat!!.toDouble()
+            val longitude = userLocation.lng!!.toDouble()
+            val newLocation = LatLng(latitude, longitude)
+
+            if (marker == null) {
+                val markerOption = MarkerOptions().position(newLocation)
+                marker = mMap.addMarker(markerOption)
+            } else {
+                animateMarkerTo(marker!!, newLocation)
+            }
+        }
+    }
+
+    private fun updateFriendMarkers(userLocation: UserLocation) {
+        if (!::mMap.isInitialized) {
+            return
+        }
+        requireActivity().runOnUiThread {
+            val nickname = userLocation.nickname
+            if (nickname != null) {
+                val latitude = userLocation.lat!!.toDouble()
+                val longitude = userLocation.lng!!.toDouble()
+                val newLocation = LatLng(latitude, longitude)
+                val existingMarker = markerMap[nickname]
+
+                if (existingMarker == null) {
+                    val markerOption = MarkerOptions().position(newLocation).title(nickname)
+                    val newMarker = mMap.addMarker(markerOption)
+                    markerMap[nickname] = newMarker!!
+                } else {
+                    animateMarkerTo(existingMarker, newLocation)
+                }
+            }
+        }
     }
 }

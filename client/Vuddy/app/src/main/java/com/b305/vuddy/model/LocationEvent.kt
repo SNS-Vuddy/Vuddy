@@ -1,3 +1,3 @@
 package com.b305.vuddy.model
 
-class LocationEvent(val isMe: Boolean, val userLocation: UserLocation)
+data class LocationEvent(val isMyLocation: Boolean, val userLocation: UserLocation)
