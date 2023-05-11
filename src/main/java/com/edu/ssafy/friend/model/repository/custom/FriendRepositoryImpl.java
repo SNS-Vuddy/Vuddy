@@ -1,5 +1,6 @@
 package com.edu.ssafy.friend.model.repository.custom;
 
+import com.edu.ssafy.friend.model.dto.AllFriendDto;
 import com.edu.ssafy.friend.model.dto.NicknameImgDto;
 import com.edu.ssafy.friend.model.dto.NicknameImgStatusDto;
 import com.edu.ssafy.friend.model.dto.response.FriendAndNoFriendRes;
@@ -76,5 +77,14 @@ public class FriendRepositoryImpl implements FriendRepositoryCustom {
                         .or(userFriends.requestUser.eq(receiver2).and(userFriends.receiveUser.eq(requester2)).and(userFriends.status.eq(status2))))
                 .limit(1)
                 .fetchOne();
+    }
+
+    @Override
+    public List<AllFriendDto> findAllByReceiveUserAndStatusIs(User user, UserFriendStatus userFriendStatus) {
+        return queryFactory
+                .select(Projections.constructor(AllFriendDto.class, userFriends.requestUser.nickname, userFriends.requestUser.profileImage))
+                .from(userFriends)
+                .where(userFriends.receiveUser.eq(user).and(userFriends.status.eq(userFriendStatus)))
+                .fetch();
     }
 }
