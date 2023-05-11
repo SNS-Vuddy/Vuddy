@@ -1,11 +1,11 @@
 package com.edu.ssafy.user.controller;
 
+import com.edu.ssafy.user.model.dto.UserAlarmDto;
 import com.edu.ssafy.user.model.dto.common.CommonRes;
 import com.edu.ssafy.user.model.dto.common.SingleRes;
 import com.edu.ssafy.user.model.dto.request.UserStatusChangeReq;
 import com.edu.ssafy.user.model.dto.response.UserFeedsSummaryRes;
 import com.edu.ssafy.user.model.dto.response.UserProfileWithFeedsRes;
-import com.edu.ssafy.user.model.entity.User;
 import com.edu.ssafy.user.model.service.UserService;
 import com.edu.ssafy.user.util.NicknameUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ public class UserController {
     @GetMapping("/profile")
     public CommonRes getMyInfoAndFeeds(@RequestHeader("x_nickname") String encodedNickname) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
-        User user = userService.findById(nickname);
-        UserFeedsSummaryRes myUserWithFeedsDto = userService.findUserAndFeeds(user);
+        UserAlarmDto userAlarmDto = userService.findByIdAndAlarm(nickname);
+        UserFeedsSummaryRes myUserWithFeedsDto = userService.findUserAndFeeds(userAlarmDto.getUser(), userAlarmDto.isHasNewAlarm());
         return new SingleRes<>(200, "유저 정보 조회 성공", myUserWithFeedsDto);
     }
 

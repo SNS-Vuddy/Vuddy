@@ -1,5 +1,6 @@
 package com.edu.ssafy.user.model.repository.custom;
 
+import com.edu.ssafy.user.model.dto.UserAlarmDto;
 import com.edu.ssafy.user.model.entity.enums.UserFriendStatus;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,7 +20,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
     @Override
     public String existsByMyUserNicknameAndTargetUserNickname(String myUserNickname, String targetUserNickname) {
 
-
         Tuple tuple = queryFactory
                 .select(user, userFriends.status)
                 .from(user)
@@ -31,13 +31,25 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
         // 없는경우 No를 리턴
         if (tuple == null) {
             return "No";
-        } else if (tuple.get(userFriends.status) == UserFriendStatus.ACCEPTED) {
-            return "Yes";
-        } else {
-            return "Pending";
         }
+
+        return (tuple.get(userFriends.status) == UserFriendStatus.ACCEPTED) ? "Yes" : "Pending";
+
 
     }
 
+    @Override
+    public UserAlarmDto findUserAndAlarm(String nickname) {
+
+        Tuple tuple = queryFactory
+                .select(user, userFriends.status)
+                .from(user)
+                .leftJoin(userFriends).on((userFriends.receiveUser.eq(user)).and(userFriends.status.eq(UserFriendStatus.PENDING)))
+                .where(user.nickname.eq(nickname))
+                .fetchFirst();
+
+        return new UserAlarmDto(tuple.get(user), tuple.get(userFriends.status) != null);
+
+    }
 
 }
