@@ -79,6 +79,7 @@ public class FeedService {
         return SingleFeedRes.builder()
                 .feedId(feed.getId())
                 .nickname(feed.getNickname())
+                .title(feed.getTitle())
                 .content(feed.getContent())
                 .location(feed.getLocation())
                 .mainImg(feed.getMainImg())

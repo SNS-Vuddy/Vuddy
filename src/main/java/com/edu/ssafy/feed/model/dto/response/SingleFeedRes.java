@@ -12,6 +12,7 @@ import java.util.List;
 public class SingleFeedRes {
     private Long feedId;
     private String nickname;
+    private String title;
     private String content;
     private String location;
     private String mainImg;
