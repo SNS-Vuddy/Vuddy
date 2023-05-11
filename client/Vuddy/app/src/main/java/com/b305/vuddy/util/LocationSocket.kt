@@ -2,8 +2,8 @@ package com.b305.vuddy.util
 
 import android.content.Context
 import android.util.Log
-import com.b305.vuddy.model.FriendLocation
 import com.b305.vuddy.model.LocationEvent
+import com.b305.vuddy.model.UserLocation
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -36,12 +36,12 @@ class LocationSocket(context: Context) {
                 val latitude = jsonObject.getString("latitude")
                 val longitude = jsonObject.getString("longitude")
 
-                val friendLocation = FriendLocation()
-                friendLocation.nickname = nickname
-                friendLocation.lat = latitude.toDouble()
-                friendLocation.lng = longitude.toDouble()
+                val userLocation = UserLocation()
+                userLocation.nickname = nickname
+                userLocation.lat = latitude.toDouble().toString()
+                userLocation.lng = longitude.toDouble().toString()
 
-                EventBus.getDefault().post(LocationEvent(friendLocation))
+                EventBus.getDefault().post(LocationEvent(false, userLocation))
                 Log.d("LocationSocket", "****onMessage $nickname $latitude $longitude****")
             }
 

@@ -21,14 +21,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.b305.vuddy.R
 import com.b305.vuddy.activity.TagActivity
 import com.b305.vuddy.databinding.FragmentWriteFeedBinding
 import com.b305.vuddy.model.FeedResponse
-import com.b305.vuddy.fragment.extension.getMyLocation
-import com.b305.vuddy.model.FeedsResponse
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.PhotoAdapter
 import com.b305.vuddy.util.RetrofitAPI.feedService

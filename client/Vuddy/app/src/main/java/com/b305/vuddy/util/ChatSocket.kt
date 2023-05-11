@@ -13,19 +13,18 @@ import java.time.LocalDateTime
 
 class ChatSocket(context: Context) {
     private var client = OkHttpClient()
-    private var url = "ws://k8b305.p.ssafy.io/chat"
+    private var url = "ws://k8b305.p.ssafy.io/chatting"
     private val sharedManager: SharedManager by lazy { SharedManager(context) }
     private lateinit var webSocket: WebSocket
 
     fun connection() {
         val request = Request.Builder()
-                .url(url)
-                .build()
+            .url(url)
+            .build()
 
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
-                // 연결이 성공적으로 열렸을 때 실행되는 코드를 작성합니다.
-                Log.d("onOpen", response.toString())
+                Log.d("ChatSocket", "****onOpen****")
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -45,11 +44,11 @@ class ChatSocket(context: Context) {
 
     fun sendMessage(chatId: Int, message: String) {
         var jsonObject = JSONObject()
-                .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
-                .put("nickname", sharedManager.getCurrentUser().nickname.toString())
-                .put("chatId", chatId)
-                .put("message", message)
-                .put("time", LocalDateTime.now().toString())
+            .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
+            .put("nickname", sharedManager.getCurrentUser().nickname.toString())
+            .put("chatId", chatId)
+            .put("message", message)
+            .put("time", LocalDateTime.now().toString())
 
         webSocket.send(jsonObject.toString())
     }
