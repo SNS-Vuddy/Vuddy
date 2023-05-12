@@ -12,4 +12,5 @@ public class LocationMessageReceive {
     private String longitude;
     private String localDateTime;
     private String accessToken;
+    private String status;
 }

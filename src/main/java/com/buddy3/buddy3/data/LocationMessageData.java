@@ -13,4 +13,5 @@ public class LocationMessageData {
     private String latitude;
     private String longitude;
     private String time;
+    private String status;
 }
