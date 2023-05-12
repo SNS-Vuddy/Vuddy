@@ -7,29 +7,59 @@ stages:          # List of stages for jobs, and their order of execution
 
 build-job/getting-branch-name:
   stage: build
-  # only:
-  #   - devops/cicd-script/backend
-  # rules:
-  #   - if: '$CI_COMMIT_REF_NAME =~ /^dev\/backend/'
+  only:
+    - dev/backend/test
   script:
     - echo "Getting branch name..."
     - echo $CI_COMMIT_BRANCH
     - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
     - echo "SERVICE NAME is $SERVICE_NAME"
+    - export SERVICE_NAME
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
-  # only:
-  #   - devops/cicd-script/backend
-  # rules:
-  #   - if: '$CI_COMMIT_REF_NAME =~ /^dev\/backend/'
+  needs: ["build-job/getting-branch-name"]
+  only:
+    - dev/backend/test
+  before_script:
+    - echo $CI_COMMIT_BRANCH
+    - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
   script:
     - echo "Compiling the code..."
+    - chmod +x gradlew
+    - ./gradlew clean bootJar
+    - docker build -t itmagician/b305-vuddy-$SERVICE_NAME:$CI_COMMIT_SHA .
+    - docker tag itmagician/b305-vuddy-$SERVICE_NAME:$CI_COMMIT_SHA itmagician/b305-vuddy-$SERVICE_NAME
+    - docker push itmagician/b305-vuddy-$SERVICE_NAME:$CI_COMMIT_SHA
+    - docker push itmagician/b305-vuddy-$SERVICE_NAME
     - echo "Compile complete."
+
+deploy-job/clean:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  needs: ["build-job"]
+  only:
+    - dev/backend/test
+  environment: production
+  allow_failure: true
+  before_script:
+    - echo $CI_COMMIT_BRANCH
+    - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
+  script:
+    - echo "clean ${SERVICE_NAME}-service container..."
+    - docker container stop ${SERVICE_NAME}-service
+    - docker container rm ${SERVICE_NAME}-service
+    - echo "Application successfully cleaned."
 
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  needs: ["deploy-job/clean"]
+  only:
+    - dev/backend/test
   environment: production
+  before_script:
+    - echo $CI_COMMIT_BRANCH
+    - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
   script:
     - echo "Deploying application..."
+    - docker run --name ${SERVICE_NAME}-service -p 9015:8080 -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_URL=$MYSQL_URL -e MYSQL_USERNAME=$MYSQL_USERNAME -d itmagician/b305-vuddy-$SERVICE_NAME:$CI_COMMIT_SHA
     - echo "Application successfully deployed."
