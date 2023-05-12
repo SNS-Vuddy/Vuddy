@@ -45,12 +45,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationProvider: LocationProvider
     private lateinit var mMap: GoogleMap
     private lateinit var markerOptionsMap: MutableMap<String, MarkerOptions>
+    private lateinit var markersMap: MutableMap<String, Marker>
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
         if (!::locationProvider.isInitialized) {
             locationProvider = LocationProvider(requireContext())
+        }
+        if (!::markersMap.isInitialized) {
+            markersMap = mutableMapOf<String, Marker>()
         }
         if (!::markerOptionsMap.isInitialized) {
             markerOptionsMap = mutableMapOf<String, MarkerOptions>()
@@ -74,19 +78,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (!::mMap.isInitialized) {
             return
         }
-        mMap.clear()
+        // mMap.clear() Remove this line
+
         markerOptionsMap.forEach { (nickname, markerOptions) ->
-            val marker = mMap.addMarker(markerOptions)
-            // 마커 추가 후 animateMarkerTo 호출
+            val marker = markersMap[nickname]
             if (marker != null) {
                 animateMarkerTo(marker, markerOptions.position)
+            } else {
+                val newMarker = mMap.addMarker(markerOptions)!!
+                markersMap[nickname] = newMarker
             }
         }
 
         if (isMoveCamera) {
             mMap.moveCamera(
                 CameraUpdateFactory.newLatLngZoom(
-                    markerOptionsMap[sharedManager.getCurrentUser().nickname]!!.position,
+                    markersMap[sharedManager.getCurrentUser().nickname]!!.position,
                     15f
                 )
             )
@@ -94,14 +101,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun animateMarkerTo(marker: Marker, targetPosition: LatLng) {
-        val startPosition = marker.position
         val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
-        valueAnimator.duration = 300
+        valueAnimator.duration = 1000
         valueAnimator.interpolator = LinearInterpolator()
         valueAnimator.addUpdateListener { animation ->
             val fraction = animation.animatedFraction
-            val lat = startPosition.latitude + (targetPosition.latitude - startPosition.latitude) * fraction
-            val lng = startPosition.longitude + (targetPosition.longitude - startPosition.longitude) * fraction
+            val lat = marker.position.latitude + (targetPosition.latitude - marker.position.latitude) * fraction
+            val lng = marker.position.longitude + (targetPosition.longitude - marker.position.longitude) * fraction
             marker.position = LatLng(lat, lng)
         }
         valueAnimator.start()
