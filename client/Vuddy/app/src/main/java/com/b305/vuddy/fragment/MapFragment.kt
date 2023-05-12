@@ -118,7 +118,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (marker == null) {
 //                val imgUrl = sharedManager.getCurrentUser().imgUrl
                 val imgUrl =
-                    "https://vuddy-s3-bucket1.s3.amazonaws.com/images/7646204d-81a4-4cc2-97ff-688e84bd6793_gastonabascal8F6pXyQyLUunsplash.jpg"
+                    "https://item.kakaocdn.net/do/d6ac539d04d3aaf4a22186c23dd33ca67154249a3890514a43687a85e6b6cc82"
                 val markerOption = getMarkerOptions(location, imgUrl)
                 marker = mMap.addMarker(markerOption)
             } else {
@@ -131,12 +131,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (nickname != null) {
                     val latitude = userLocation.lat!!.toDouble()
                     val longitude = userLocation.lng!!.toDouble()
+//                    val status = userLocation.status
+//                    val imgUrl = userLocation.imgUrl!!
+                    val imgUrl =
+                        "https://item.kakaocdn.net/do/d6ac539d04d3aaf4a22186c23dd33ca67154249a3890514a43687a85e6b6cc82"
                     val newLocation = LatLng(latitude, longitude)
                     val existingMarker = markerMap[nickname]
 
                     if (existingMarker == null) {
-                        val imgUrl =
-                            "https://vuddy-s3-bucket1.s3.amazonaws.com/images/508a80f8-0b9b-490a-928b-31aeabb9c1bb_reccccc.png"
                         val markerOption = getMarkerOptions(newLocation, imgUrl)
                         val newMarker = mMap.addMarker(markerOption)
                         markerMap[nickname] = newMarker!!
@@ -196,7 +198,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (marker == null) {
 //                val imgUrl = sharedManager.getCurrentUser().imgUrl
                 val imgUrl =
-                    "https://vuddy-s3-bucket1.s3.amazonaws.com/images/7646204d-81a4-4cc2-97ff-688e84bd6793_gastonabascal8F6pXyQyLUunsplash.jpg"
+                    "https://item.kakaocdn.net/do/d6ac539d04d3aaf4a22186c23dd33ca67154249a3890514a43687a85e6b6cc82"
                 val markerOption = getMarkerOptions(newLocation, imgUrl)
                 marker = mMap.addMarker(markerOption)
             } else {
@@ -214,18 +216,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (nickname != null) {
                 val latitude = userLocation.lat!!.toDouble()
                 val longitude = userLocation.lng!!.toDouble()
+                val newImgUrl = userLocation.imgUrl!!
                 val newLocation = LatLng(latitude, longitude)
                 val existingMarker = markerMap[nickname]
 
                 if (existingMarker == null) {
-//                    val imgUrl=userLocation.imgUrl
-                    val imgUrl =
-                        "https://vuddy-s3-bucket1.s3.amazonaws.com/images/508a80f8-0b9b-490a-928b-31aeabb9c1bb_reccccc.png"
-                    val markerOption = getMarkerOptions(newLocation, imgUrl)
-
+                    val markerOption = getMarkerOptions(newLocation, newImgUrl)
                     val newMarker = mMap.addMarker(markerOption)
                     markerMap[nickname] = newMarker!!
                 } else {
+                    val markerOptions = getMarkerOptions(newLocation, newImgUrl)
+                    existingMarker.setIcon(markerOptions.icon)
                     animateMarkerTo(existingMarker, newLocation)
                 }
             }

@@ -35,11 +35,19 @@ class LocationSocket(context: Context) {
                 val nickname = jsonObject.getString("nickname")
                 val latitude = jsonObject.getString("latitude")
                 val longitude = jsonObject.getString("longitude")
+//                val status = jsonObject.getString("status")
+//                val imgUrl = jsonObject.getString("imgUrl")
 
                 val userLocation = UserLocation()
                 userLocation.nickname = nickname
                 userLocation.lat = latitude.toDouble().toString()
                 userLocation.lng = longitude.toDouble().toString()
+//                userLocation.status = status
+//                userLocation.imgUrl = imgUrl
+                userLocation.status = "home"
+                userLocation.imgUrl =
+                    "https://item.kakaocdn.net/do/8b6a9c77549f6d25298779490a64019f8f324a0b9c48f77dbce3a43bd11ce785"
+
 
                 EventBus.getDefault().post(LocationEvent(false, userLocation))
                 Log.d("LocationSocket", "****onMessage $nickname $latitude $longitude****")
@@ -55,13 +63,14 @@ class LocationSocket(context: Context) {
         })
     }
 
-    fun sendLocation(latitude: String, longitude: String) {
+    fun sendLocation(latitude: String, longitude: String, imgUrl: String) {
         val jsonObject = JSONObject()
             .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
             .put("nickname", sharedManager.getCurrentUser().nickname.toString())
             .put("latitude", latitude)
             .put("longitude", longitude)
             .put("localDateTime", LocalDateTime.now().toString())
+            .put("imgUrl", imgUrl)
         webSocket.send(jsonObject.toString())
         Log.d("LocationSocket", "****sendLocation $latitude $longitude****")
     }

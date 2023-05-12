@@ -59,12 +59,12 @@ class ImmortalService : LifecycleService() {
         super.onStartCommand(intent, flags, startId)
         isTracking.postValue(true)
         Log.d("ImmortalService", "****onStartCommand****")
-        
+
         if (!::chatSocket.isInitialized) {
             chatSocket = ChatSocket(applicationContext)
             chatSocket.connection()
         }
-        
+
         return START_NOT_STICKY
     }
 
@@ -105,7 +105,8 @@ class ImmortalService : LifecycleService() {
             val longitude = location.longitude.toString()
             userLocation.lat = latitude
             userLocation.lng = longitude
-            locationSocket.sendLocation(latitude, longitude)
+            val imgUrl = "https://item.kakaocdn.net/do/d6ac539d04d3aaf4a22186c23dd33ca67154249a3890514a43687a85e6b6cc82"
+            locationSocket.sendLocation(latitude, longitude, imgUrl)
             EventBus.getDefault().post(LocationEvent(true, userLocation))
         }
     }
