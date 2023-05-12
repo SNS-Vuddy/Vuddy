@@ -112,7 +112,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return@withContext Glide.with(requireContext())
             .asBitmap()
             .load(statusUrl)
-            .override(230, 230)
+            .override(220, 220)
             .submit()
             .get()
     }
@@ -131,7 +131,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             canvas.drawBitmap(statusBitmap, 0f, 0f, null)
 
             // 프로필 이미지의 중심 좌표 계산
-            val profileTop = (resultBitmap.height - profileBitmap.height) / 2f
+            val profileTop = (resultBitmap.height - profileBitmap.height + 30f) / 2f
             val profileLeft = (resultBitmap.width - profileBitmap.width) / 2f
             canvas.drawBitmap(profileBitmap, profileLeft, profileTop, null)
 
