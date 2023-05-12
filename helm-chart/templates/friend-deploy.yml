@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth
+  name: friend
   namespace: {{ .Release.Namespace }}
   labels:
-    app: auth
+    app: friend
 spec:
   selector:
     matchLabels:
-      app: auth
-  replicas: {{ .Values.replicaCount }}
+      app: friend
+  replicas: {{ .Values.backend.friend.replicaCount }}
   # strategy:
   #   rollingUpdate:
   #     maxSurge: 25%
@@ -18,15 +18,19 @@ spec:
   template:
     metadata:
       labels:
-        app: auth
+        app: friend
     spec:
       # initContainers:
       # Init containers are exactly like regular containers, except:
       # - Init containers always run to completion.
       # - Each init container must complete successfully before the next one starts.
       containers:
-        - name: auth
-          image: itmagician/b305-vuddy:auth
+        - name: friend
+          {{ if (empty .Values.backend.friend.image.tag) }}
+          image: itmagician/b305-vuddy-friend
+          {{ else }}
+          image: {{ printf "itmagician/b305-vuddy-friend:%s" .Values.backend.friend.image.tag }}
+          {{ end }}
           # resources:
           #   requests:
           #     cpu: 100m
@@ -60,25 +64,23 @@ spec:
               value: {{ .Values.mysql.password }}
           ports:
             - containerPort: 8080
-      restartPolicy: {{ .Values.image.pullPolicy }}
+      restartPolicy: {{ .Values.backend.friend.image.pullPolicy }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-svc
+  name: friend-svc
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    app: auth
-  type: "ClusterIP"
+    app: friend
+  type: ClusterIP # LoadBalancer
   # sessionAffinity: None
   # sessionAffinityConfig:
   #   clientIP:
   #     timeoutSeconds: 10800
   ports:
-    - name: auth-svc
+    - name: friend-svc
       protocol: TCP
-      port: {{ .Values.ingress.port }}
+      port: 80
       targetPort: 8080
-      # If you set the `spec.type` field to `NodePort` and you want a specific port number,
-      # you can specify a value in the `spec.ports[*].nodePort` field.

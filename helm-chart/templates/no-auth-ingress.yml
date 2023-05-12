@@ -63,6 +63,13 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: chat-svc
+                name: chatting-svc
+                port:
+                  number: 80
+          - path: /test
+            pathType: Prefix
+            backend:
+              service:
+                name: test-svc
                 port:
                   number: 80

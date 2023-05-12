@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: location
+  name: comment
   namespace: {{ .Release.Namespace }}
   labels:
-    app: location
+    app: comment
 spec:
   selector:
     matchLabels:
-      app: location
-  replicas: {{ .Values.replicaCount }}
+      app: comment
+  replicas: {{ .Values.backend.comment.replicaCount }}
   # strategy:
   #   rollingUpdate:
   #     maxSurge: 25%
@@ -18,15 +18,15 @@ spec:
   template:
     metadata:
       labels:
-        app: location
+        app: comment
     spec:
-      # initContainers:
-      # Init containers are exactly like regular containers, except:
-      # - Init containers always run to completion.
-      # - Each init container must complete successfully before the next one starts.
       containers:
-        - name: location
-          image: itmagician/b305-vuddy:location
+        - name: comment
+          {{ if (empty .Values.backend.comment.image.tag) }}
+          image: itmagician/b305-vuddy-comment
+          {{ else }}
+          image: {{ printf "itmagician/b305-vuddy-comment:%s" .Values.backend.comment.image.tag }}
+          {{ end }}
           # resources:
           #   requests:
           #     cpu: 100m
@@ -58,31 +58,25 @@ spec:
               value: {{ .Values.mysql.username }}
             - name: MYSQL_PASSWORD
               value: {{ .Values.mysql.password }}
-            - name: REDIS_HOST_NAME
-              value: {{ .Values.redis.url }}
-            - name: REDIS_PASSWORD
-              value: {{ .Values.redis.password }}
-            - name: KAFKA_HOST_NAME
-              value: {{ printf "%s" .Values.kafka.hostname }}
           ports:
             - containerPort: 8080
-      restartPolicy: Always
+      restartPolicy: {{ .Values.backend.comment.image.pullPolicy }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: location-svc
+  name: comment-svc
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    app: location
+    app: comment
   type: ClusterIP
   # sessionAffinity: None
   # sessionAffinityConfig:
   #   clientIP:
   #     timeoutSeconds: 10800
   ports:
-    - name: location-svc
+    - name: comment-svc
       protocol: TCP
-      port: 80
+      port: {{ .Values.ingress.port }}
       targetPort: 8080
