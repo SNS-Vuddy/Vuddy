@@ -87,6 +87,7 @@ public class FeedService {
                 .createdAt(feed.getCreatedAt().toString())
                 .updatedAt(feed.getUpdatedAt().toString())
                 .isLiked(isLiked)
+                .isMine(Objects.equals(feed.getNickname(), nickname))
                 .likesCount((long) likesCount.size())
                 .commentsCount((long) commentDtoList.size())
                 .comments(commentDtoList)
