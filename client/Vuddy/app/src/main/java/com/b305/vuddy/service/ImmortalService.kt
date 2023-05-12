@@ -15,11 +15,13 @@ import com.b305.vuddy.R
 import com.b305.vuddy.activity.MainActivity
 import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.model.UserLocation
+import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
 import com.b305.vuddy.util.ChatSocket
 import com.b305.vuddy.util.FASTEST_LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LocationSocket
 import com.b305.vuddy.util.NOTI_ID
+import com.b305.vuddy.util.SharedManager
 import com.b305.vuddy.util.TrackingUtility
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -33,6 +35,7 @@ class ImmortalService : LifecycleService() {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationSocket: LocationSocket
     private lateinit var chatSocket: ChatSocket
+    private lateinit var sharedManager: SharedManager
 
     // 선언
     companion object {
@@ -98,14 +101,18 @@ class ImmortalService : LifecycleService() {
                 Log.d("ImmortalService", "****locationSocket****")
             }
 
+            if (!::sharedManager.isInitialized) {
+                sharedManager = SharedManager(applicationContext)
+            }
+
             val location = result.locations.last()
-            Log.d("ImmortalService", "****${location.latitude}, ${location.longitude}****")
             val userLocation = UserLocation()
             val latitude = location.latitude.toString()
             val longitude = location.longitude.toString()
+            val imgUrl = sharedManager.getCurrentUser().imgUrl ?: BASE_PROFILE_IMG_URL
             userLocation.lat = latitude
             userLocation.lng = longitude
-            val imgUrl = "https://item.kakaocdn.net/do/d6ac539d04d3aaf4a22186c23dd33ca67154249a3890514a43687a85e6b6cc82"
+            userLocation.imgUrl = sharedManager.getCurrentUser().imgUrl
             locationSocket.sendLocation(latitude, longitude, imgUrl)
             EventBus.getDefault().post(LocationEvent(true, userLocation))
         }

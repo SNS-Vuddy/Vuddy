@@ -10,6 +10,7 @@ import com.b305.vuddy.model.AuthRequest
 import com.b305.vuddy.model.AuthResponse
 import com.b305.vuddy.model.Token
 import com.b305.vuddy.model.User
+import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -85,7 +86,8 @@ fun AuthActivity.signupService(authRequest: AuthRequest) {
 
                 val nickname = authRequest.nickname
                 val password = authRequest.password
-                val user = User(nickname, password)
+                val profileImgUrl = BASE_PROFILE_IMG_URL
+                val user = User(nickname, password, profileImgUrl)
                 sharedManager.saveCurrentUser(user)
 
                 val result = response.body()
@@ -121,7 +123,8 @@ fun AuthActivity.loginService(authRequest: AuthRequest) {
 
                 val nickname = authRequest.nickname
                 val password = authRequest.password
-                val user = User(nickname, password)
+                val profileImgUrl = BASE_PROFILE_IMG_URL
+                val user = User(nickname, password, profileImgUrl)
                 sharedManager.saveCurrentUser(user)
 
                 val accessToken: String = result?.accessToken.toString()

@@ -3,7 +3,6 @@ package com.b305.vuddy.fragment
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Bitmap
-import android.media.Image
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,7 @@ import com.b305.vuddy.databinding.FragmentMapBinding
 import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.model.UserLocation
 import com.b305.vuddy.service.ImmortalService
+import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.SharedManager
 import com.bumptech.glide.Glide
@@ -87,7 +87,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             .asBitmap()
             .load(imgUrl)
             .circleCrop()
-            .override(250, 250)
+            .override(100, 100)
             .submit()
             .get()
     }
@@ -114,13 +114,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             var location = LatLng(latitude, longitude)
 
             mMap.clear()
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12f))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16f))
 
             if (marker == null) {
-//                val imgUrl = sharedManager.getCurrentUser().imgUrl
-                val imgUrl = "https://i.postimg.cc/W4X8LCWy/marker-office.png"
+                val currentUser = sharedManager.getCurrentUser()
+                var profileImgUrl: String = currentUser.imgUrl ?: BASE_PROFILE_IMG_URL
+                if (profileImgUrl.isEmpty()) {
+                    profileImgUrl = BASE_PROFILE_IMG_URL
+                    currentUser.imgUrl = BASE_PROFILE_IMG_URL
+                    sharedManager.saveCurrentUser(currentUser)
+                }
 
-                val markerOption = getMarkerOptions(location, imgUrl)
+                val markerOption = getMarkerOptions(location, profileImgUrl)
                 marker = mMap.addMarker(markerOption)
             } else {
                 animateMarkerTo(marker!!, location)
@@ -132,9 +137,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (nickname != null) {
                     val latitude = userLocation.lat!!.toDouble()
                     val longitude = userLocation.lng!!.toDouble()
-//                    val status = userLocation.status
-//                    val imgUrl = userLocation.imgUrl!!
-                    val imgUrl = "https://i.postimg.cc/W4X8LCWy/marker-office.png"
+                    val imgUrl = userLocation.imgUrl ?: BASE_PROFILE_IMG_URL
                     val newLocation = LatLng(latitude, longitude)
                     val existingMarker = markerMap[nickname]
 
@@ -178,11 +181,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     fun onLocationEvent(event: LocationEvent) {
         if (event.isMyLocation) {
             val userLocation = event.userLocation
-//            updateMyMarker(userLocation)
+            updateMyMarker(userLocation)
         } else {
             val friendLocation = event.userLocation
             sharedManager.addUserLocationList(friendLocation)
-//            updateFriendMarkers(friendLocation)
+            updateFriendMarkers(friendLocation)
         }
     }
 
@@ -193,16 +196,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         CoroutineScope(Dispatchers.Main).launch {
             val latitude = userLocation.lat!!.toDouble()
             val longitude = userLocation.lng!!.toDouble()
-            val newLocation = LatLng(latitude, longitude)
+            val location = LatLng(latitude, longitude)
 
             if (marker == null) {
-//                val imgUrl = sharedManager.getCurrentUser().imgUrl
-                val imgUrl = "https://i.postimg.cc/W4X8LCWy/marker-office.png"
-
-                val markerOption = getMarkerOptions(newLocation, imgUrl)
+                val currentUser = sharedManager.getCurrentUser()
+                var profileImgUrl: String = currentUser.imgUrl ?: BASE_PROFILE_IMG_URL
+                if (profileImgUrl.isEmpty()) {
+                    profileImgUrl = BASE_PROFILE_IMG_URL
+                    currentUser.imgUrl = BASE_PROFILE_IMG_URL
+                    sharedManager.saveCurrentUser(currentUser)
+                }
+                val markerOption = getMarkerOptions(location, profileImgUrl)
                 marker = mMap.addMarker(markerOption)
             } else {
-                animateMarkerTo(marker!!, newLocation)
+                animateMarkerTo(marker!!, location)
             }
         }
     }
