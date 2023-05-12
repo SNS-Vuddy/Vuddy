@@ -3,6 +3,7 @@ package com.b305.vuddy.fragment
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Bitmap
+import android.media.Image
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -86,7 +87,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             .asBitmap()
             .load(imgUrl)
             .circleCrop()
-            .override(150, 150)
+            .override(250, 250)
             .submit()
             .get()
     }
@@ -117,8 +118,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             if (marker == null) {
 //                val imgUrl = sharedManager.getCurrentUser().imgUrl
-                val imgUrl =
-                    "https://item.kakaocdn.net/do/d6ac539d04d3aaf4a22186c23dd33ca67154249a3890514a43687a85e6b6cc82"
+                val imgUrl = "https://i.postimg.cc/W4X8LCWy/marker-office.png"
+
                 val markerOption = getMarkerOptions(location, imgUrl)
                 marker = mMap.addMarker(markerOption)
             } else {
@@ -133,8 +134,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     val longitude = userLocation.lng!!.toDouble()
 //                    val status = userLocation.status
 //                    val imgUrl = userLocation.imgUrl!!
-                    val imgUrl =
-                        "https://item.kakaocdn.net/do/d6ac539d04d3aaf4a22186c23dd33ca67154249a3890514a43687a85e6b6cc82"
+                    val imgUrl = "https://i.postimg.cc/W4X8LCWy/marker-office.png"
                     val newLocation = LatLng(latitude, longitude)
                     val existingMarker = markerMap[nickname]
 
@@ -178,11 +178,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     fun onLocationEvent(event: LocationEvent) {
         if (event.isMyLocation) {
             val userLocation = event.userLocation
-            updateMyMarker(userLocation)
+//            updateMyMarker(userLocation)
         } else {
             val friendLocation = event.userLocation
             sharedManager.addUserLocationList(friendLocation)
-            updateFriendMarkers(friendLocation)
+//            updateFriendMarkers(friendLocation)
         }
     }
 
@@ -197,8 +197,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             if (marker == null) {
 //                val imgUrl = sharedManager.getCurrentUser().imgUrl
-                val imgUrl =
-                    "https://item.kakaocdn.net/do/d6ac539d04d3aaf4a22186c23dd33ca67154249a3890514a43687a85e6b6cc82"
+                val imgUrl = "https://i.postimg.cc/W4X8LCWy/marker-office.png"
+
                 val markerOption = getMarkerOptions(newLocation, imgUrl)
                 marker = mMap.addMarker(markerOption)
             } else {
