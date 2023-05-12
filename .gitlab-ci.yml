@@ -45,7 +45,8 @@ build-job/deploy-argo-cd:       # This job runs in the build stage, which runs f
     - echo "https://${CI_USERNAME}:${CI_TOKEN}@lab.ssafy.com/s08-final/S08P31B305.git"
     - git clone "https://${CI_USERNAME}:${CI_TOKEN}@lab.ssafy.com/s08-final/S08P31B305.git" "${CI_COMMIT_SHA}"
     - cd "${CI_COMMIT_SHA}"
-    - git checkout devops/kubernetes/helm-chart
+    - git checkout devops/kubernetes/argo-cd/develop
+    - cd helm-chart
     - ls -R .
   script:
     - yq e -i '.backend.feed.image.tag = env(CI_COMMIT_SHA)' backendImages-values.yaml
