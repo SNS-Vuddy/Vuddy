@@ -34,6 +34,25 @@ build-job:       # This job runs in the build stage, which runs first.
     - docker push itmagician/b305-vuddy-$SERVICE_NAME
     - echo "Compile complete."
 
+build-job/deploy-argo-cd:       # This job runs in the build stage, which runs first.
+  stage: build
+  needs: ["build-job"]
+  only:
+    - dev/backend/chatting
+  before_script:
+    - echo $CI_COMMIT_BRANCH
+    - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
+    - echo "https://${CI_USERNAME}:${CI_TOKEN}@lab.ssafy.com/s08-final/S08P31B305.git"
+    - git clone "https://${CI_USERNAME}:${CI_TOKEN}@lab.ssafy.com/s08-final/S08P31B305.git" "${CI_COMMIT_SHA}"
+    - cd "${CI_COMMIT_SHA}"
+    - git checkout devops/kubernetes/helm-chart
+    - ls -R .
+  script:
+    - yq e -i '.backend.auth.image.tag = env(CI_COMMIT_SHA)' backendImages-values.yaml
+    - git add .
+    - git commit -m "$CI_COMMIT_BRANCH's image is updated"
+    - git push origin devops/kubernetes/helm-chart -o ci.skip
+
 deploy-job/clean:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   needs: ["build-job"]
