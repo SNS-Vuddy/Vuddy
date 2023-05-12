@@ -21,6 +21,8 @@ public class SingleFeedRes {
     private String updatedAt;
     @JsonProperty("isLiked")
     private boolean isLiked;
+    @JsonProperty("isMine")
+    private boolean isMine;
     private Long likesCount;
     private Long commentsCount;
     private List<CommentDto> comments;
