@@ -47,7 +47,7 @@ build-job/deploy-argo-cd:       # This job runs in the build stage, which runs f
     - git config --global user.email "${GIT_USER_EMAIL:-$CI_EMAIL}"
     - git config --global user.name "${GIT_USER_NAME:-$CI_USERNAME}"
     - cd "${CI_COMMIT_SHA}"
-    - git checkout -B devops/kubernetes/helm-chart --
+    - git checkout devops/kubernetes/helm-chart --
     - ls -R .
   script:
     - yq e -i '.backend.auth.image.tag = env(CI_COMMIT_SHA)' backendImages-values.yaml
