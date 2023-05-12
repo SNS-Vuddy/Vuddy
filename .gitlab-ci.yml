@@ -36,7 +36,7 @@ build-job:       # This job runs in the build stage, which runs first.
 
 build-job/deploy-argo-cd:       # This job runs in the build stage, which runs first.
   stage: build
-  needs: ["build-job/getting-branch-name"]
+  needs: ["build-job"]
   only:
     - dev/backend/test
   before_script:
