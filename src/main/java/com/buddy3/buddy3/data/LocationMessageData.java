@@ -14,4 +14,5 @@ public class LocationMessageData {
     private String longitude;
     private String time;
     private String status;
+    private String imgUrl;
 }
