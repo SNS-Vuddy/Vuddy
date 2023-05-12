@@ -86,8 +86,7 @@ fun AuthActivity.signupService(authRequest: AuthRequest) {
 
                 val nickname = authRequest.nickname
                 val password = authRequest.password
-                val profileImgUrl = BASE_PROFILE_IMG_URL
-                val user = User(nickname, password, profileImgUrl)
+                val user = User(nickname, password)
                 sharedManager.saveCurrentUser(user)
 
                 val result = response.body()
@@ -123,8 +122,7 @@ fun AuthActivity.loginService(authRequest: AuthRequest) {
 
                 val nickname = authRequest.nickname
                 val password = authRequest.password
-                val profileImgUrl = BASE_PROFILE_IMG_URL
-                val user = User(nickname, password, profileImgUrl)
+                val user = User(nickname, password)
                 sharedManager.saveCurrentUser(user)
 
                 val accessToken: String = result?.accessToken.toString()
