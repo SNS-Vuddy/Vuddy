@@ -82,4 +82,11 @@ public class UserService {
     public UserAlarmDto findByIdAndAlarm(String nickname) {
         return userRepository.findUserAndAlarm(nickname);
     }
+
+    @Transactional
+    public void changeUserProfileImage(String userNickname, String imgUrl) {
+        User user = userRepository.findByNickname(userNickname);
+        user.changeProfileImage(imgUrl);
+
+    }
 }

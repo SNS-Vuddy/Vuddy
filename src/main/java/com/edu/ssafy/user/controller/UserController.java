@@ -6,16 +6,26 @@ import com.edu.ssafy.user.model.dto.common.SingleRes;
 import com.edu.ssafy.user.model.dto.request.UserStatusChangeReq;
 import com.edu.ssafy.user.model.dto.response.UserFeedsSummaryRes;
 import com.edu.ssafy.user.model.dto.response.UserProfileWithFeedsRes;
+import com.edu.ssafy.user.model.entity.User;
+import com.edu.ssafy.user.model.service.S3UploaderService;
 import com.edu.ssafy.user.model.service.UserService;
 import com.edu.ssafy.user.util.NicknameUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final S3UploaderService s3UploaderService;
 
     @GetMapping("/opened/health")
     public String health() {
@@ -48,6 +58,35 @@ public class UserController {
         Long userId = userService.findByNickname(userNickname).getId();
         userService.changeUserStatusMessage(userId, userStatusChangeReq.getStatusMessage());
         return new CommonRes(200, "상태메세지 수정 성공");
+    }
+
+    // 프로필 이미지 수정
+    @PutMapping("/profile/edit/image")
+    public CommonRes editProfileImage(@RequestHeader("x_nickname") String encodedNickname, @RequestPart(value = "images") List<MultipartFile> images) {
+        String userNickname = NicknameUtil.decodeNickname(encodedNickname);
+
+        ExecutorService executorService = Executors.newFixedThreadPool(5); // 스레드 풀 생성
+        List<Future<String>> futures = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            // 이미지 업로드 작업을 스레드 풀에 제출
+            Future<String> future = executorService.submit(() -> s3UploaderService.upload(image, "images"));
+            futures.add(future);
+        }
+
+        List<String> storedFileNames = new ArrayList<>();
+        for (Future<String> future : futures) {
+            try {
+                storedFileNames.add(future.get()); // 업로드된 이미지의 URL을 가져옴
+            } catch (Exception e) {
+                throw new RuntimeException("이미지 업로드 중 에러 발생", e);
+            }
+        }
+
+        executorService.shutdown(); // 스레드 풀 종료
+
+        userService.changeUserProfileImage(userNickname, storedFileNames.get(0));
+        return new CommonRes(200, "프로필 이미지 수정 성공");
     }
 
 }

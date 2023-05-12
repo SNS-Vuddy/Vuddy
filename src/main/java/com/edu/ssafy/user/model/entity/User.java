@@ -68,4 +68,7 @@ public class User {
         this.statusMessage = statusMessage;
     }
 
+    public void changeProfileImage(String imgUrl) {
+        this.profileImage = imgUrl;
+    }
 }
