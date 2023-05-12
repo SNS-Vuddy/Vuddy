@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -149,5 +150,22 @@ public class FeedService {
 
     public List<FriendsFeedsRes> findAllByUserIdIn(List<Long> friends) {
         return feedRepository.findAllByUserIdIn(friends);
+    }
+
+    @Transactional
+    public void dummyFeeds() {
+        for (int i = 10; i < 13; i++) {
+            Feed feed = Feed.builder()
+                    .user(userRepository.findById((long) i).orElse(null))
+                    .nickname("nickname" + i)
+                    .title("title" + i)
+                    .content("content" + i)
+                    .location("location" + i)
+                    .mainImg("mainImg" + i)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            feedRepository.save(feed);
+        }
     }
 }

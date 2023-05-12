@@ -273,6 +273,12 @@ public class FeedController {
         executorService.shutdown(); // 스레드 풀 종료
 
         return storedFileNames;
-
     }
+
+    @GetMapping("/opened/dummy/feeds")
+    public CommonRes dummyFeeds() {
+        feedService.dummyFeeds();
+        return new CommonRes(200, "더미 데이터 생성 성공");
+    }
+
 }
