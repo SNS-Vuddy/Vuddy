@@ -43,6 +43,7 @@ build-job/deploy-argo-cd:       # This job runs in the build stage, which runs f
     - echo $CI_COMMIT_BRANCH
     - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
 
+    - echo "https://${CI_USERNAME}:${CI_TOKEN}@lab.ssafy.com/s08-final/S08P31B305.git"
     - git clone "https://${CI_USERNAME}:${CI_TOKEN}@lab.ssafy.com/s08-final/S08P31B305.git" "${CI_COMMIT_SHA}"
     - git config --global user.email "${GIT_USER_EMAIL:-$CI_EMAIL}"
     - git config --global user.name "${GIT_USER_NAME:-$CI_USERNAME}"
