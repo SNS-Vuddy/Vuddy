@@ -13,13 +13,15 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import com.b305.vuddy.R
 import com.b305.vuddy.activity.MainActivity
-import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.model.UserLocation
+import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
+import com.b305.vuddy.util.BASIC_IMG_URL
 import com.b305.vuddy.util.ChatSocket
 import com.b305.vuddy.util.FASTEST_LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LocationSocket
 import com.b305.vuddy.util.NOTI_ID
+import com.b305.vuddy.util.SharedManager
 import com.b305.vuddy.util.TrackingUtility
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -33,6 +35,7 @@ class ImmortalService : LifecycleService() {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationSocket: LocationSocket
     private lateinit var chatSocket: ChatSocket
+    private lateinit var sharedManager: SharedManager
 
     // 선언
     companion object {
@@ -59,12 +62,12 @@ class ImmortalService : LifecycleService() {
         super.onStartCommand(intent, flags, startId)
         isTracking.postValue(true)
         Log.d("ImmortalService", "****onStartCommand****")
-        
+
         if (!::chatSocket.isInitialized) {
             chatSocket = ChatSocket(applicationContext)
             chatSocket.connection()
         }
-        
+
         return START_NOT_STICKY
     }
 
@@ -98,15 +101,21 @@ class ImmortalService : LifecycleService() {
                 Log.d("ImmortalService", "****locationSocket****")
             }
 
+            if (!::sharedManager.isInitialized) {
+                sharedManager = SharedManager(applicationContext)
+            }
+
+            val nickname = sharedManager.getCurrentUser().nickname
             val location = result.locations.last()
-            Log.d("ImmortalService", "****${location.latitude}, ${location.longitude}****")
-            val userLocation = UserLocation()
             val latitude = location.latitude.toString()
             val longitude = location.longitude.toString()
-            userLocation.lat = latitude
-            userLocation.lng = longitude
-            locationSocket.sendLocation(latitude, longitude)
-            EventBus.getDefault().post(LocationEvent(true, userLocation))
+            //Todo 여기도 수정
+            val statusImgUrl = BASIC_IMG_URL
+            val profileImgUrl = BASE_PROFILE_IMG_URL
+
+            val userLocation = UserLocation(nickname, latitude, longitude, statusImgUrl, profileImgUrl)
+            locationSocket.sendLocation(userLocation)
+            EventBus.getDefault().post(userLocation)
         }
     }
 

@@ -2,7 +2,6 @@ package com.b305.vuddy.util
 
 import android.content.Context
 import android.util.Log
-import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.model.UserLocation
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -35,14 +34,18 @@ class LocationSocket(context: Context) {
                 val nickname = jsonObject.getString("nickname")
                 val latitude = jsonObject.getString("latitude")
                 val longitude = jsonObject.getString("longitude")
+                val statusImgUrl = jsonObject.getString("status")
+                val profileImgUrl = jsonObject.getString("imgUrl")
 
                 val userLocation = UserLocation()
                 userLocation.nickname = nickname
-                userLocation.lat = latitude.toDouble().toString()
-                userLocation.lng = longitude.toDouble().toString()
+                userLocation.latitude = latitude
+                userLocation.longitude = longitude
+                userLocation.statusImgUrl = statusImgUrl
+                userLocation.profileImgUrl = profileImgUrl
 
-                EventBus.getDefault().post(LocationEvent(false, userLocation))
-                Log.d("LocationSocket", "****onMessage $nickname $latitude $longitude****")
+                EventBus.getDefault().post(userLocation)
+                Log.d("LocationSocket", "****onMessage $nickname $latitude $longitude $statusImgUrl $profileImgUrl****")
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -55,15 +58,21 @@ class LocationSocket(context: Context) {
         })
     }
 
-    fun sendLocation(latitude: String, longitude: String) {
+    fun sendLocation(userLocation: UserLocation) {
+        val nickname = userLocation.nickname
+        val latitude = userLocation.latitude
+        val longitude = userLocation.longitude
+        val profileImgUrl = userLocation.profileImgUrl
+
         val jsonObject = JSONObject()
             .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
-            .put("nickname", sharedManager.getCurrentUser().nickname.toString())
+            .put("nickname", nickname)
             .put("latitude", latitude)
             .put("longitude", longitude)
             .put("localDateTime", LocalDateTime.now().toString())
+            .put("imgUrl", profileImgUrl)
         webSocket.send(jsonObject.toString())
-        Log.d("LocationSocket", "****sendLocation $latitude $longitude****")
+        Log.d("LocationSocket", "****sendLocation $latitude $longitude $profileImgUrl****")
     }
 
     fun disconnect() {

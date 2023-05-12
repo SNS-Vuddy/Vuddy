@@ -10,6 +10,7 @@ import com.b305.vuddy.model.AuthRequest
 import com.b305.vuddy.model.AuthResponse
 import com.b305.vuddy.model.Token
 import com.b305.vuddy.model.User
+import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback

@@ -1,10 +1,9 @@
 package com.b305.vuddy.model
 
-var userLocationList = ArrayList<UserLocation>()
-
-class UserLocation {
-    var nickname: String? = null
-    var lat: String? = null
-    var lng: String? = null
-    var imgUrl: String? = null
-}
+data class UserLocation(
+    var nickname: String? = null,
+    var latitude: String? = null,
+    var longitude: String? = null,
+    var statusImgUrl: String? = null,
+    var profileImgUrl: String? = null
+)
