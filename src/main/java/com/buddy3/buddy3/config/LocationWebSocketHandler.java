@@ -110,7 +110,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         locationMessage.setLatitude(locationMessageReceive.getLatitude());
         locationMessage.setLongitude(locationMessageReceive.getLongitude());
         locationMessage.setTime(formatDateTime(timeNow));
-        locationMessage.setStatus("HOME");
+        locationMessage.setStatus("home");
         User userNow = userRepository.findByNickname(locationMessage.getNickname());
         locationMessage.setImgUrl(userNow.getProfileImg());
 
