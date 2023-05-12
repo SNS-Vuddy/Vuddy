@@ -2,6 +2,8 @@ package com.b305.vuddy.fragment
 
 import android.animation.ValueAnimator
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +28,9 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -149,23 +154,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         EventBus.getDefault().unregister(this)
     }
 
-    var count = 0
-
     @Subscribe
     fun onLocationEvent(event: LocationEvent) {
         if (event.isMyLocation) {
             val userLocation = event.userLocation
-            binding.tvTime.text = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault()))
-            binding.tvLatitude.text = userLocation.lat
-            binding.tvLongitude.text = userLocation.lng
-            count++
-            binding.tvCount.text = count.toString()
-            updateMyMarker(userLocation)
+//            updateMyMarker(userLocation)
         } else {
             val friendLocation = event.userLocation
             sharedManager.addUserLocationList(friendLocation)
-            updateFriendMarkers(friendLocation)
+//            updateFriendMarkers(friendLocation)
         }
     }
 
