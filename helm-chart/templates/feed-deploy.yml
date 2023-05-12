@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chat
-  namespace: {{ .Values.Namespace }}
+  name: feed
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: chat
+    app: feed
 spec:
   selector:
     matchLabels:
-      app: chat
-  replicas: {{ .Values.replicaCount }}
+      app: feed
+  replicas: {{ .Values.backend.feed.replicaCount }}
   # strategy:
   #   rollingUpdate:
   #     maxSurge: 25%
@@ -18,15 +18,15 @@ spec:
   template:
     metadata:
       labels:
-        app: chat
+        app: feed
     spec:
-      # initContainers:
-      # Init containers are exactly like regular containers, except:
-      # - Init containers always run to completion.
-      # - Each init container must complete successfully before the next one starts.
       containers:
-        - name: chat
-          image: itmagician/b305-vuddy:chatting
+        - name: feed
+          {{ if (empty .Values.backend.feed.image.tag) }}
+          image: itmagician/b305-vuddy-feed
+          {{ else }}
+          image: {{ printf "itmagician/b305-vuddy-feed:%s" .Values.backend.feed.image.tag }}
+          {{ end }}
           # resources:
           #   requests:
           #     cpu: 100m
@@ -58,31 +58,25 @@ spec:
               value: {{ .Values.mysql.username }}
             - name: MYSQL_PASSWORD
               value: {{ .Values.mysql.password }}
-            - name: REDIS_HOST_NAME
-              value: {{ .Values.redis.url }}
-            - name: REDIS_PASSWORD
-              value: {{ .Values.redis.password }}
-            - name: KAFKA_HOST_NAME
-              value: {{ printf "%s" .Values.kafka.hostname }}
           ports:
             - containerPort: 8080
-      restartPolicy: {{ .Values.image.pullPolicy }}
+      restartPolicy: {{ .Values.backend.feed.image.pullPolicy }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: chat-svc
+  name: feed-svc
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    app: chat
+    app: feed
   type: ClusterIP
   # sessionAffinity: None
   # sessionAffinityConfig:
   #   clientIP:
   #     timeoutSeconds: 10800
   ports:
-    - name: chat-svc
+    - name: feed-svc
       protocol: TCP
       port: 80
       targetPort: 8080

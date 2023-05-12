@@ -1,0 +1,36 @@
+# Default values for vuddy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+backend:
+  auth:
+    image:
+      pullPolicy: Always
+      tag: ""
+  user:
+    image:
+      pullPolicy: Always
+      tag: ""
+  feed:
+    image:
+      pullPolicy: Always
+      tag: ""
+  friend:
+    image:
+      pullPolicy: Always
+      tag: ""
+  comment:
+    image:
+      pullPolicy: Always
+      tag: ""
+  location:
+    image:
+      pullPolicy: Always
+      tag: ""
+  chatting:
+    image:
+      pullPolicy: Always
+      tag: ""
+  test:
+    image:
+      tag: ""

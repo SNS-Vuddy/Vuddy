@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: comment
-  namespace: {{ .Release.Namespace }}
+  name: chatting
+  namespace: {{ .Values.Namespace }}
   labels:
-    app: comment
+    app: chatting
 spec:
   selector:
     matchLabels:
-      app: comment
-  replicas: {{ .Values.replicaCount }}
+      app: chatting
+  replicas: {{ .Values.backend.chatting.replicaCount }}
   # strategy:
   #   rollingUpdate:
   #     maxSurge: 25%
@@ -18,11 +18,19 @@ spec:
   template:
     metadata:
       labels:
-        app: comment
+        app: chatting
     spec:
+      # initContainers:
+      # Init containers are exactly like regular containers, except:
+      # - Init containers always run to completion.
+      # - Each init container must complete successfully before the next one starts.
       containers:
-        - name: comment
-          image: itmagician/b305-vuddy:comment
+        - name: chatting
+          {{ if (empty .Values.backend.chatting.image.tag) }}
+          image: itmagician/b305-vuddy-chatting
+          {{ else }}
+          image: {{ printf "itmagician/b305-vuddy-chatting:%s" .Values.backend.chatting.image.tag }}
+          {{ end }}
           # resources:
           #   requests:
           #     cpu: 100m
@@ -54,25 +62,31 @@ spec:
               value: {{ .Values.mysql.username }}
             - name: MYSQL_PASSWORD
               value: {{ .Values.mysql.password }}
+            - name: REDIS_HOST_NAME
+              value: {{ .Values.redis.url }}
+            - name: REDIS_PASSWORD
+              value: {{ .Values.redis.password }}
+            - name: KAFKA_HOST_NAME
+              value: {{ printf "%s" .Values.kafka.hostname }}
           ports:
             - containerPort: 8080
-      restartPolicy: {{ .Values.image.pullPolicy }}
+      restartPolicy: {{ .Values.backend.chatting.image.pullPolicy }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: comment-svc
+  name: chatting-svc
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    app: comment
+    app: chatting
   type: ClusterIP
   # sessionAffinity: None
   # sessionAffinityConfig:
   #   clientIP:
   #     timeoutSeconds: 10800
   ports:
-    - name: comment-svc
+    - name: chatting-svc
       protocol: TCP
-      port: {{ .Values.ingress.port }}
+      port: 80
       targetPort: 8080
