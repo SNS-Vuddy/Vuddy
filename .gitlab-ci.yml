@@ -20,6 +20,7 @@ build-job/getting-branch-name:
     - echo "CI_BUILD_TAG is $CI_BUILD_TAG"
     - echo "CI_PIPELINE_IID is $CI_PIPELINE_IID"
 
+
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   needs: ["build-job/getting-branch-name"]
