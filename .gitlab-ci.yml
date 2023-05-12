@@ -27,7 +27,7 @@ build-job:       # This job runs in the build stage, which runs first.
     - echo "Compiling the code..."
     - chmod +x gradlew
     - ./gradlew clean bootJar
-    - docker build -t itmagician/b305-vuddy:$SERVICE_NAME .
+    - docker build -t itmagician/b305-vuddy-$SERVICE_NAME .
     - echo "Compile complete."
 
 deploy-job/clean:      # This job runs in the deploy stage.
