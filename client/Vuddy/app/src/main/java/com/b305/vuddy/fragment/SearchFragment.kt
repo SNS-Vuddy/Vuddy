@@ -1,9 +1,7 @@
 package com.b305.vuddy.fragment
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,7 +65,6 @@ class SearchFragment : Fragment() {
             } else if (nickname != null) {
                 searchUsers(nickname)
             }
-            Log.d(ContentValues.TAG, "입력값 $nickname")
         }
 
         return binding.root
@@ -100,9 +97,6 @@ class SearchFragment : Fragment() {
                 if (response.isSuccessful) {
                     val result = response.body()
                     val searchData = result?.data
-
-                    Log.d(ContentValues.TAG, "검색 친구 목록 ${searchData?.friends}")
-                    Log.d(ContentValues.TAG, "검색 친구 목록 ${searchData?.noFriends}")
 
                     searchData?.friends?.let {
                         friendList.clear()

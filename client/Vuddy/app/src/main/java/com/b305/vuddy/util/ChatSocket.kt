@@ -44,8 +44,8 @@ class ChatSocket(context: Context) {
 
     fun sendMessage(chatId: Int, message: String) {
         var jsonObject = JSONObject()
-            .put("accessToken", sharedManager.getCurrentToken().accessToken.toString())
             .put("nickname", sharedManager.getCurrentUser().nickname.toString())
+            .put("type", "CHAT")
             .put("chatId", chatId)
             .put("message", message)
             .put("time", LocalDateTime.now().toString())

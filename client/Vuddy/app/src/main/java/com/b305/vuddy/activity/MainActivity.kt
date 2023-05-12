@@ -8,6 +8,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.b305.vuddy.R
 import com.b305.vuddy.service.ImmortalService
+import com.b305.vuddy.fragment.BottomSheetFeedWriteFragment
+import com.b305.vuddy.fragment.WriteFeedFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

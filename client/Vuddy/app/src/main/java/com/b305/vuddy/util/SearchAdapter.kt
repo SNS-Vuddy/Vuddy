@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 class SearchAdapter(private val profileLsit: ArrayList<FriendProfile>) : RecyclerView.Adapter<SearchAdapter.CustomViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_list_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_friend_list, parent, false)
         return CustomViewHolder(view).apply {
             itemView.setOnClickListener {
                 val curPos : Int = bindingAdapterPosition

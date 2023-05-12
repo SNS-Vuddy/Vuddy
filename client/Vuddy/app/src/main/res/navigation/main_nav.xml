@@ -85,7 +85,19 @@
         <action
             android:id="@+id/action_messageFragment_to_writeFeedFragment"
             app:destination="@id/writeFeedFragment" />
+        <action
+            android:id="@+id/action_messageFragment_to_chatRoomActivity"
+            app:destination="@id/chatRoomActivity" />
     </fragment>
+    <activity
+        android:id="@+id/chatRoomActivity"
+        android:name="com.b305.vuddy.activity.ChatRoomActivity"
+        android:label="activity_chat_room"
+        tools:layout="@layout/activity_chat_room">
+        <action
+            android:id="@+id/action_chatRoomActivity_to_messageFragment"
+            app:destination="@id/messageFragment" />
+    </activity>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.b305.vuddy.fragment.ProfileFragment"
