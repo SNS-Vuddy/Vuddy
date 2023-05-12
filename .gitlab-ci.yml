@@ -42,12 +42,12 @@ build-job/deploy-argo-cd:       # This job runs in the build stage, which runs f
   before_script:
     - echo $CI_COMMIT_BRANCH
     - read SERVICE_NAME < <(echo $CI_COMMIT_BRANCH | sed 's/dev\/backend\///')
-    
+
     - git clone "https://${CI_USERNAME}:${CI_TOKEN}@gitlab.com/boomdotdev/app.git" "${CI_COMMIT_SHA}"
     - git config --global user.email "${GIT_USER_EMAIL:-$CI_EMAIL}"
     - git config --global user.name "${GIT_USER_NAME:-$CI_USERNAME}"
     - cd "${CI_COMMIT_SHA}"
-    - git checkout -B ${CI_COMMIT_BRANCH} remotes/origin/devops/kubernetes/helm-chart --
+    - git checkout -B devops/kubernetes/helm-chart --
   script:
     - yq e -i '.backend.auth.image.tag = env(CI_COMMIT_SHA)' backendImages-values.yaml
     - git config --global user.email "${GIT_USER_EMAIL:-$GITLAB_USER_EMAIL}"
