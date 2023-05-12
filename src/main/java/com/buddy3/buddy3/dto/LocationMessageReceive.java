@@ -13,4 +13,5 @@ public class LocationMessageReceive {
     private String localDateTime;
     private String accessToken;
     private String status;
+    private String imgUrl;
 }
