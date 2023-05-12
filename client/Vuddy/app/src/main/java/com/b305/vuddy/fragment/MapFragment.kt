@@ -3,6 +3,7 @@ package com.b305.vuddy.fragment
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,13 @@ import com.b305.vuddy.model.LocationEvent
 import com.b305.vuddy.model.UserLocation
 import com.b305.vuddy.service.ImmortalService
 import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
+import com.b305.vuddy.util.BASIC_IMG_URL
+import com.b305.vuddy.util.GOTOHOME_IMG_URL
+import com.b305.vuddy.util.GOTOWORK_IMG_URL
+import com.b305.vuddy.util.HOME_IMG_URL
 import com.b305.vuddy.util.LocationProvider
+import com.b305.vuddy.util.OFFICE_IMG_URL
+import com.b305.vuddy.util.SLEEP_IMG_URL
 import com.b305.vuddy.util.SharedManager
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -82,23 +89,56 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         refreshMarker()
     }
 
-    private suspend fun getBitmapFromURL(imgUrl: String): Bitmap = withContext(Dispatchers.IO) {
+    private suspend fun getProfileBitmap(imgUrl: String): Bitmap = withContext(Dispatchers.IO) {
         return@withContext Glide.with(requireContext())
             .asBitmap()
             .load(imgUrl)
             .circleCrop()
-            .override(100, 100)
+            .override(150, 150)
             .submit()
             .get()
     }
 
-    private suspend fun getMarkerOptions(location: LatLng, imgUrl: String): MarkerOptions =
+    private suspend fun getStatusBitmap(imgUrl: String): Bitmap = withContext(Dispatchers.IO) {
+        var statusUrl: String = BASIC_IMG_URL
+        when (imgUrl) {
+            "home" -> statusUrl = HOME_IMG_URL
+            "office" -> statusUrl = OFFICE_IMG_URL
+            "gotowork" -> statusUrl = GOTOWORK_IMG_URL
+            "gotohome" -> statusUrl = GOTOHOME_IMG_URL
+            "sleep" -> statusUrl = SLEEP_IMG_URL
+        }
+
+        return@withContext Glide.with(requireContext())
+            .asBitmap()
+            .load(statusUrl)
+            .override(230, 230)
+            .submit()
+            .get()
+    }
+
+    private suspend fun getMarkerOptions(location: LatLng, imgUrl: String, status: String): MarkerOptions =
         withContext(Dispatchers.IO) {
             val markerOptions = MarkerOptions()
-            val bitmap = getBitmapFromURL(imgUrl)
-            val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap)
+            val profileBitmap = getProfileBitmap(imgUrl)
+            val statusBitmap = getStatusBitmap(status)
+
+            // 결과 비트맵 크기를 statusBitmap의 크기로 설정
+            val resultBitmap = Bitmap.createBitmap(statusBitmap.width, statusBitmap.height, statusBitmap.config)
+            val canvas = Canvas(resultBitmap)
+
+            // 상태 이미지를 캔버스에 그림
+            canvas.drawBitmap(statusBitmap, 0f, 0f, null)
+
+            // 프로필 이미지의 중심 좌표 계산
+            val profileTop = (resultBitmap.height - profileBitmap.height) / 2f
+            val profileLeft = (resultBitmap.width - profileBitmap.width) / 2f
+            canvas.drawBitmap(profileBitmap, profileLeft, profileTop, null)
+
+            val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resultBitmap)
             markerOptions.icon(bitmapDescriptor)
                 .position(location)
+
             return@withContext markerOptions
         }
 
@@ -125,7 +165,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     sharedManager.saveCurrentUser(currentUser)
                 }
 
-                val markerOption = getMarkerOptions(location, profileImgUrl)
+                val markerOption = getMarkerOptions(location, profileImgUrl, "home")
                 marker = mMap.addMarker(markerOption)
             } else {
                 animateMarkerTo(marker!!, location)
@@ -142,7 +182,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     val existingMarker = markerMap[nickname]
 
                     if (existingMarker == null) {
-                        val markerOption = getMarkerOptions(newLocation, imgUrl)
+                        val markerOption = getMarkerOptions(newLocation, imgUrl, "home")
                         val newMarker = mMap.addMarker(markerOption)
                         markerMap[nickname] = newMarker!!
                     } else {
@@ -206,7 +246,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     currentUser.imgUrl = BASE_PROFILE_IMG_URL
                     sharedManager.saveCurrentUser(currentUser)
                 }
-                val markerOption = getMarkerOptions(location, profileImgUrl)
+                val markerOption = getMarkerOptions(location, profileImgUrl, "home")
                 marker = mMap.addMarker(markerOption)
             } else {
                 animateMarkerTo(marker!!, location)
@@ -223,16 +263,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (nickname != null) {
                 val latitude = userLocation.lat!!.toDouble()
                 val longitude = userLocation.lng!!.toDouble()
-                val newImgUrl = userLocation.imgUrl!!
+                val newProfile = userLocation.imgUrl!!
+                val newStatus = userLocation.status!!
                 val newLocation = LatLng(latitude, longitude)
                 val existingMarker = markerMap[nickname]
 
                 if (existingMarker == null) {
-                    val markerOption = getMarkerOptions(newLocation, newImgUrl)
+                    val markerOption = getMarkerOptions(newLocation, newProfile, newStatus)
                     val newMarker = mMap.addMarker(markerOption)
                     markerMap[nickname] = newMarker!!
                 } else {
-                    val markerOptions = getMarkerOptions(newLocation, newImgUrl)
+                    val markerOptions = getMarkerOptions(newLocation, newProfile, newStatus)
                     existingMarker.setIcon(markerOptions.icon)
                     animateMarkerTo(existingMarker, newLocation)
                 }
