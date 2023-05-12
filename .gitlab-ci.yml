@@ -48,7 +48,7 @@ build-job/deploy-argo-cd:       # This job runs in the build stage, which runs f
     - git checkout devops/kubernetes/helm-chart
     - ls -R .
   script:
-    - yq e -i '.backend.auth.image.tag = env(CI_COMMIT_SHA)' backendImages-values.yaml
+    - yq e -i '.backend.location.image.tag = env(CI_COMMIT_SHA)' backendImages-values.yaml
     - git add .
     - git commit -m "$CI_COMMIT_BRANCH's image is updated"
     - git push origin devops/kubernetes/helm-chart -o ci.skip
