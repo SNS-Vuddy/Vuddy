@@ -29,4 +29,18 @@ public class CommentController {
 
         return new ResponseEntity<>(new CommonRes(201, "댓글 작성 완료"), HttpStatus.CREATED);
     }
+
+    @PostMapping("/write/test/{feedId}")
+    public ResponseEntity<CommonRes> writeComment(
+            @RequestHeader("x_nickname") String encodedNickname,
+            @PathVariable Long feedId,
+            @RequestBody Object req
+    ) {
+
+        System.out.println("req = " + req.toString());
+        String userNickname = NicknameUtil.decodeNickname(encodedNickname);
+//        commentService.createComment(userNickname, feedId, req.getComment());
+
+        return new ResponseEntity<>(new CommonRes(201, "댓글 작성 완료"), HttpStatus.CREATED);
+    }
 }
