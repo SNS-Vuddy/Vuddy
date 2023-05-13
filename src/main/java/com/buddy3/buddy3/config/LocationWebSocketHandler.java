@@ -151,6 +151,9 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
             }
             LocalDateTime timeNow2 = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
             locationMessage.setTime(formatDateTime(timeNow2));
+            System.out.println("------- 3 --------");
+            System.out.println(locationMessage);
+            System.out.println("------- 3 --------");
             CurrentFriends currentFriends = currentUsersCurrentFriendsMap.get(locationMessage.getNickname());
             System.out.println(currentFriends);
             currentFriends.currentFriendsSendMessage(objectMapper.writeValueAsString(locationMessage));
