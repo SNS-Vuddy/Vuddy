@@ -26,7 +26,7 @@ backend:
   location:
     image:
       pullPolicy: Always
-      tag: "c6394f2474301bef7d6a685b568fd5556e72299d"
+      tag: "f8333bc93a85705ed5dea00ddb3e89e7b441f111"
   chatting:
     image:
       pullPolicy: Always
