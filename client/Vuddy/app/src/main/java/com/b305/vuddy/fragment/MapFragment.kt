@@ -59,6 +59,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var markerOptionsMap: MutableMap<String, MarkerOptions>
     private lateinit var markersMap: MutableMap<String, Marker>
     private var markerMode: Int = MAP_MODE
+    private lateinit var currentNickname: String
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -73,7 +74,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             markerOptionsMap = mutableMapOf<String, MarkerOptions>()
         }
 
-        val nickname = sharedManager.getCurrentUser().nickname!!
+        currentNickname = sharedManager.getCurrentUser().nickname!!
         val latitude = locationProvider.getLocationLatitude()!!
         val longitude = locationProvider.getLocationLongitude()!!
         val latLng = LatLng(latitude, longitude)
@@ -81,7 +82,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val profileImgUrl = BASE_PROFILE_IMG_URL
         val statusImgUrl = BASIC_IMG_URL
         val marKerOptions = makeMarkerOptions(latLng, profileImgUrl, statusImgUrl)
-        markerOptionsMap[nickname] = marKerOptions
+        markerOptionsMap[currentNickname] = marKerOptions
 
         refreshMap(true)
     }
@@ -91,82 +92,25 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             return
         }
 
-
-        //Todo 모드 테스트
-        if (markerMode == MAP_MODE) {
-            markerOptionsMap.forEach { (nickname, markerOptions) ->
-                val marker = markersMap[nickname]
-                if (marker != null) {
-                    animateMarkerTo(marker, markerOptions.position)
-                } else {
-                    val newMarker = mMap.addMarker(markerOptions)!!
-                    markersMap[nickname] = newMarker
-                }
-            }
-
-            if (isMoveCamera) {
-                mMap.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        markersMap[sharedManager.getCurrentUser().nickname]!!.position,
-                        15f
-                    )
-                )
-            }
-            return
-        }
-
-        // Map mode 아닌 경우 내 위치 마커 제외 하고 전부 삭제
-        val currentNickname = sharedManager.getCurrentUser().nickname!!
-        markersMap.filterKeys { it != currentNickname }
-            .forEach { (nickname, marker) ->
-                marker.remove()
-                markersMap.remove(nickname)
-            }
-        markerOptionsMap.filterKeys { it != currentNickname }
-            .forEach { (nickname, _) ->
-                markerOptionsMap.remove(nickname)
-            }
-
-        if (markerMode == FEED_MODE) {
-            val markerOptions = markerOptionsMap[currentNickname]!!
-            val marker = markersMap[currentNickname]
-
+        markerOptionsMap.forEach { (nickname, markerOptions) ->
+            val marker = markersMap[nickname]
             if (marker != null) {
                 animateMarkerTo(marker, markerOptions.position)
             } else {
                 val newMarker = mMap.addMarker(markerOptions)!!
-                markersMap[currentNickname] = newMarker
+                markersMap[nickname] = newMarker
             }
-            if (isMoveCamera) {
-                mMap.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        markersMap[sharedManager.getCurrentUser().nickname]!!.position,
-                        15f
-                    )
-                )
-            }
-            return
         }
-        if (markerMode == FRIEND_FEED_MODE) {
-            val markerOptions = markerOptionsMap[currentNickname]!!
-            val marker = markersMap[currentNickname]
 
-            if (marker != null) {
-                animateMarkerTo(marker, markerOptions.position)
-            } else {
-                val newMarker = mMap.addMarker(markerOptions)!!
-                markersMap[currentNickname] = newMarker
-            }
-            if (isMoveCamera) {
-                mMap.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        markersMap[sharedManager.getCurrentUser().nickname]!!.position,
-                        15f
-                    )
+        if (isMoveCamera) {
+            mMap.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    markersMap[sharedManager.getCurrentUser().nickname]!!.position,
+                    15f
                 )
-            }
-            return
+            )
         }
+        return
     }
 
     private fun animateMarkerTo(marker: Marker, targetPosition: LatLng) {
@@ -257,7 +201,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val statusImgUrl = BASIC_IMG_URL
         val marKerOptions = makeMarkerOptions(latLng, profileImgUrl, statusImgUrl)
         markerOptionsMap[nickname] = marKerOptions
-
         refreshMap(false)
     }
 
@@ -273,7 +216,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             binding.fabMapMode.backgroundTintList = fabSelect
             binding.fabFeedMode.backgroundTintList = fabUnselect
             binding.fabFriendFeedMode.backgroundTintList = fabUnselect
+
+            markersMap.filterKeys { it != currentNickname }.forEach { (nickname, marker) ->
+                marker.remove()
+                markersMap.remove(nickname)
+            }
+            markerOptionsMap.filterKeys { it != currentNickname }.forEach { (nickname, _) ->
+                markerOptionsMap.remove(nickname)
+            }
+
+            refreshMap(true)
         }
+
         binding.fabFeedMode.setOnClickListener {
             Log.d("MapFragment", "****FeedMode")
             markerMode = FEED_MODE
@@ -294,9 +248,47 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             val (latitudeStr, longitudeStr) = location.split(",")
                             val latitude: Double = latitudeStr.trim().toDouble()
                             val longitude: Double = longitudeStr.trim().toDouble()
-                            Log.d("MapFragment", "****FeedMode result : $feedId, $imgUrl, $latitude, $longitude")
+                            val latLng = LatLng(latitude, longitude)
+                            Log.d("MapFragment", "****FeedMode result : $feedId, $imgUrl, $latLng")
+
+                            if (!::locationProvider.isInitialized) {
+                                locationProvider = LocationProvider(requireContext())
+                            }
+                            if (!::markerOptionsMap.isInitialized) {
+                                markerOptionsMap = mutableMapOf<String, MarkerOptions>()
+                            }
+
+                            val statusImgUrl = BASIC_IMG_URL
+                            val marKerOptions = makeMarkerOptions(latLng, imgUrl, statusImgUrl)
+                            markerOptionsMap[feedId.toString()] = marKerOptions
+
+                            // Add or update marker in markersMap
+                            val existingMarker = markersMap[feedId.toString()]
+                            if (existingMarker != null) {
+                                animateMarkerTo(existingMarker, marKerOptions.position)
+                            } else {
+                                val newMarker = mMap.addMarker(marKerOptions)!!
+                                markersMap[feedId.toString()] = newMarker
+                            }
                         }
-                        Log.d("MapFragment", "****$result")
+
+                        // Remove old markers from markersMap
+                        if (result != null) {
+                            markersMap.filterKeys { it != currentNickname && !result.any { feed -> feed.feedId.toString() == it } }
+                                .forEach { (nickname, marker) ->
+                                    marker.remove()
+                                    markersMap.remove(nickname)
+                                }
+                        }
+                        if (result != null) {
+                            markerOptionsMap.filterKeys { it != currentNickname && !result.any { feed -> feed.feedId.toString() == it } }
+                                .forEach { (nickname, _) ->
+                                    markerOptionsMap.remove(nickname)
+                                }
+                        }
+
+                        // Refresh the map
+                        refreshMap(true)
                     } else {
                         val errorMessage = JSONObject(response.errorBody()?.string()!!)
                         Log.d("MapFragment", "****FeedMode errorMessage : $errorMessage")
@@ -308,7 +300,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     Log.d("MapFragment", "****FeedMode onFailure : ${t.message}")
                     Toast.makeText(context, "피드 불러오기 실패", Toast.LENGTH_SHORT).show()
                 }
-
             })
         }
         binding.fabFriendFeedMode.setOnClickListener {
@@ -331,8 +322,47 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             val (latitudeStr, longitudeStr) = location.split(",")
                             val latitude: Double = latitudeStr.trim().toDouble()
                             val longitude: Double = longitudeStr.trim().toDouble()
-                            Log.d("MapFragment", "****FriendFeedMode result : $feedId, $imgUrl, $latitude, $longitude")
+                            val latLng = LatLng(latitude, longitude)
+                            Log.d("MapFragment", "****FriendFeedMode result : $feedId, $imgUrl, $latLng")
+
+                            if (!::locationProvider.isInitialized) {
+                                locationProvider = LocationProvider(requireContext())
+                            }
+                            if (!::markerOptionsMap.isInitialized) {
+                                markerOptionsMap = mutableMapOf<String, MarkerOptions>()
+                            }
+
+                            val statusImgUrl = BASIC_IMG_URL
+                            val marKerOptions = makeMarkerOptions(latLng, imgUrl, statusImgUrl)
+                            markerOptionsMap[feedId.toString()] = marKerOptions
+
+                            // Add or update marker in markersMap
+                            val existingMarker = markersMap[feedId.toString()]
+                            if (existingMarker != null) {
+                                animateMarkerTo(existingMarker, marKerOptions.position)
+                            } else {
+                                val newMarker = mMap.addMarker(marKerOptions)!!
+                                markersMap[feedId.toString()] = newMarker
+                            }
                         }
+
+                        // Remove old markers from markersMap
+                        if (result != null) {
+                            markersMap.filterKeys { it != currentNickname && !result.any { feed -> feed.feedId.toString() == it } }
+                                .forEach { (nickname, marker) ->
+                                    marker.remove()
+                                    markersMap.remove(nickname)
+                                }
+                        }
+                        if (result != null) {
+                            markerOptionsMap.filterKeys { it != currentNickname && !result.any { feed -> feed.feedId.toString() == it } }
+                                .forEach { (nickname, _) ->
+                                    markerOptionsMap.remove(nickname)
+                                }
+                        }
+
+                        // Refresh the map
+                        refreshMap(true)
                     } else {
                         val errorMessage = JSONObject(response.errorBody()?.string()!!)
                         Log.d("MapFragment", "****FriendFeedMode errorMessage : $errorMessage")
