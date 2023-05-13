@@ -26,7 +26,9 @@ public class CurrentFriends {
 
     public void currentFriendsSendMessage(String message) throws Exception {
         for (Map.Entry<String, WebSocketSession> entry : friendsMap.entrySet()) {
-            entry.getValue().sendMessage(new TextMessage(message));
+            synchronized (entry.getValue()) {
+                entry.getValue().sendMessage(new TextMessage(message));
+            }
         }
     }
 
