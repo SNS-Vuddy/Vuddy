@@ -14,12 +14,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
-import com.b305.vuddy.model.Feeds
-import com.b305.vuddy.model.FeedsResponse
 import com.b305.vuddy.model.MapFeedResponse
 import com.b305.vuddy.model.UserLocation
 import com.b305.vuddy.service.ImmortalService
@@ -27,7 +23,6 @@ import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
 import com.b305.vuddy.util.BASIC_IMG_URL
 import com.b305.vuddy.util.FEED_MODE
 import com.b305.vuddy.util.FRIEND_FEED_MODE
-import com.b305.vuddy.util.FeedMineAdapter
 import com.b305.vuddy.util.GOTOHOME_IMG_URL
 import com.b305.vuddy.util.GOTOWORK_IMG_URL
 import com.b305.vuddy.util.HOME_IMG_URL
@@ -325,20 +320,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             //Todo API 테스트 인자 지금 admin1인데 나중에 바꿔야 함
             val call = RetrofitAPI.mapFeedService
-            call.getOneFriendFeed("admin1").enqueue(object : Callback<MapFeedResponse> {
+            call.getOneFriendFeed("admin2").enqueue(object : Callback<MapFeedResponse> {
                 override fun onResponse(call: Call<MapFeedResponse>, response: Response<MapFeedResponse>) {
                     if (response.isSuccessful) {
-                        val result = response.body()
-                        Log.d("MapFragment", "****FeedMode result : $result")
+                        val result = response.body()?.mapFeedList
+                        result?.forEach { mapFeed ->
+                            val feedId = mapFeed.feedId
+                            val imgUrl = mapFeed.imgUrl
+                            val location = mapFeed.location
+                            val (latitudeStr, longitudeStr) = location.split(",")
+                            val latitude: Double = latitudeStr.trim().toDouble()
+                            val longitude: Double = longitudeStr.trim().toDouble()
+                            Log.d("MapFragment", "****FriendFeedMode result : $feedId, $imgUrl, $latitude, $longitude")
+                        }
                     } else {
                         val errorMessage = JSONObject(response.errorBody()?.string()!!)
-                        Log.d("MapFragment", "****FeedMode errorMessage : $errorMessage")
+                        Log.d("MapFragment", "****FriendFeedMode errorMessage : $errorMessage")
                         Toast.makeText(context, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<MapFeedResponse>, t: Throwable) {
-                    Log.d("MapFragment", "****FeedMode onFailure : ${t.message}")
+                    Log.d("MapFragment", "****FriendFeedMode onFailure : ${t.message}")
                     Toast.makeText(context, "피드 불러오기 실패", Toast.LENGTH_SHORT).show()
                 }
 
