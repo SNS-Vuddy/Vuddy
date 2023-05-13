@@ -149,7 +149,11 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                     }
                 }
             }
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(locationMessage)));
+            LocalDateTime timeNow2 = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+            locationMessage.setTime(formatDateTime(timeNow2));
+            CurrentFriends currentFriends = currentUsersCurrentFriendsMap.get(locationMessage.getNickname());
+            System.out.println(currentFriends);
+            currentFriends.currentFriendsSendMessage(objectMapper.writeValueAsString(locationMessage));
 //            locationService.sendMessage(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
             redisLocationTemplate.opsForList().rightPush(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
 //            List<String> locationMessageStringList = redisLocationTemplate.opsForList().range(locationMessage.getNickname(), 0, -1);
