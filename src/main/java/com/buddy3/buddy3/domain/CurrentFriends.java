@@ -34,5 +34,6 @@ public class CurrentFriends {
     public CurrentFriends(String nickname, WebSocketSession session) {
         this.nickname = nickname;
         this.session = session;
+        this.friendsMap.put(nickname, session);
     }
 }
