@@ -19,7 +19,6 @@ import com.b305.vuddy.databinding.FragmentMapBinding
 import com.b305.vuddy.model.MapFeedResponse
 import com.b305.vuddy.model.UserLocation
 import com.b305.vuddy.service.ImmortalService
-import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
 import com.b305.vuddy.util.BASIC_IMG_URL
 import com.b305.vuddy.util.FEED_MODE
 import com.b305.vuddy.util.FRIEND_FEED_MODE
@@ -50,6 +49,7 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     lateinit var binding: FragmentMapBinding
@@ -104,12 +104,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
         if (isMoveCamera) {
-            mMap.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    markersMap[sharedManager.getCurrentUser().nickname]!!.position,
-                    15f
-                )
-            )
+            val zoomLevel = 15f
+            val latLng = markersMap[sharedManager.getCurrentUser().nickname]!!.position
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel)
+            mMap.animateCamera(cameraUpdate)
         }
         return
     }
@@ -241,7 +239,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             binding.fabFeedMode.backgroundTintList = fabSelect
             binding.fabFriendFeedMode.backgroundTintList = fabUnselect
 
-            //Todo API 테스트
             val call = RetrofitAPI.mapFeedService
             call.getAllFriendsFeed().enqueue(object : Callback<MapFeedResponse> {
                 override fun onResponse(call: Call<MapFeedResponse>, response: Response<MapFeedResponse>) {
@@ -268,7 +265,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             val marKerOptions = makeMarkerOptions(latLng, imgUrl, statusImgUrl)
                             markerOptionsMap[feedId.toString()] = marKerOptions
 
-                            // Add or update marker in markersMap
                             val existingMarker = markersMap[feedId.toString()]
                             if (existingMarker != null) {
                                 animateMarkerTo(existingMarker, marKerOptions.position)
@@ -278,7 +274,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             }
                         }
 
-                        // Remove old markers from markersMap
                         if (result != null) {
                             markersMap.filterKeys { it != currentNickname && !result.any { feed -> feed.feedId.toString() == it } }
                                 .forEach { (nickname, marker) ->
@@ -293,7 +288,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                 }
                         }
 
-                        // Refresh the map
                         refreshMap(true)
                     } else {
                         val errorMessage = JSONObject(response.errorBody()?.string()!!)
@@ -320,7 +314,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             //Todo API 테스트 인자 지금 admin1인데 나중에 바꿔야 함
             val call = RetrofitAPI.mapFeedService
-            call.getOneFriendFeed("admin2").enqueue(object : Callback<MapFeedResponse> {
+            call.getOneFriendFeed("admin1").enqueue(object : Callback<MapFeedResponse> {
                 override fun onResponse(call: Call<MapFeedResponse>, response: Response<MapFeedResponse>) {
                     if (response.isSuccessful) {
                         val result = response.body()?.mapFeedList
@@ -345,7 +339,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             val marKerOptions = makeMarkerOptions(latLng, imgUrl, statusImgUrl)
                             markerOptionsMap[feedId.toString()] = marKerOptions
 
-                            // Add or update marker in markersMap
                             val existingMarker = markersMap[feedId.toString()]
                             if (existingMarker != null) {
                                 animateMarkerTo(existingMarker, marKerOptions.position)
@@ -355,7 +348,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             }
                         }
 
-                        // Remove old markers from markersMap
                         if (result != null) {
                             markersMap.filterKeys { it != currentNickname && !result.any { feed -> feed.feedId.toString() == it } }
                                 .forEach { (nickname, marker) ->
@@ -370,7 +362,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                 }
                         }
 
-                        // Refresh the map
                         refreshMap(true)
                     } else {
                         val errorMessage = JSONObject(response.errorBody()?.string()!!)
@@ -409,15 +400,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             requireActivity().stopService(Intent(requireContext(), ImmortalService::class.java))
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
         }
+
         binding.fabMoveCurrentLocation.setOnClickListener {
             if (!::locationProvider.isInitialized) {
                 locationProvider = LocationProvider(requireContext())
             }
-
-            val latitude = locationProvider.getLocationLatitude()!!
-            val longitude = locationProvider.getLocationLongitude()!!
-            val latLng = LatLng(latitude, longitude)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+            val location = locationProvider.getLocation()
+            if (location != null) {
+                val latLng = LatLng(location.latitude, location.longitude)
+                val zoomLevel = 15f
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel)
+                mMap.animateCamera(cameraUpdate)
+            }
         }
         return binding.root
     }
