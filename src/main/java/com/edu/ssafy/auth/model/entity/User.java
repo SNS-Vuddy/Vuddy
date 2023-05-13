@@ -49,7 +49,7 @@ public class User {
         User user = new User();
         user.nickname = nickname;
         user.password = password;
-        user.profileImage = "https://i.postimg.cc/Wzc0DqnQ/bird.png";
+        user.profileImage = "https://velog.velcdn.com/images/hyunseokcheong/post/3aadc8a7-5adc-4f14-8828-9cdffbeba42f/image.png";
         user.statusMessage = statusMessage;
         user.userRoll = UserRoll.NORMAL_USER;
         return user;
