@@ -5,6 +5,7 @@ import com.edu.ssafy.auth.model.dto.common.CommonRes;
 import com.edu.ssafy.auth.model.dto.common.SingleRes;
 import com.edu.ssafy.auth.model.dto.request.LoginReq;
 import com.edu.ssafy.auth.model.dto.request.SignupReq;
+import com.edu.ssafy.auth.model.dto.response.LoginRes;
 import com.edu.ssafy.auth.model.dto.response.SignupRes;
 import com.edu.ssafy.auth.model.entity.User;
 import com.edu.ssafy.auth.model.service.UserService;
@@ -63,7 +64,7 @@ public class AuthController {
 
         String refreshToken = userService.createRefreshToken(loginUser);
 
-        return new ResponseEntity<>(new SignupRes(200, "로그인 성공", accessToken, refreshToken), HttpStatus.OK);
+        return new ResponseEntity<>(new LoginRes(200, "로그인 성공", accessToken, refreshToken, loginUser.getProfileImage()), HttpStatus.OK);
     }
 
 
