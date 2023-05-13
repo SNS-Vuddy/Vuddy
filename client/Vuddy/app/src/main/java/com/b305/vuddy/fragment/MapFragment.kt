@@ -10,23 +10,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
+import com.b305.vuddy.model.Feeds
+import com.b305.vuddy.model.FeedsResponse
+import com.b305.vuddy.model.MapFeedResponse
 import com.b305.vuddy.model.UserLocation
 import com.b305.vuddy.service.ImmortalService
 import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
 import com.b305.vuddy.util.BASIC_IMG_URL
 import com.b305.vuddy.util.FEED_MODE
 import com.b305.vuddy.util.FRIEND_FEED_MODE
+import com.b305.vuddy.util.FeedMineAdapter
 import com.b305.vuddy.util.GOTOHOME_IMG_URL
 import com.b305.vuddy.util.GOTOWORK_IMG_URL
 import com.b305.vuddy.util.HOME_IMG_URL
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.MAP_MODE
 import com.b305.vuddy.util.OFFICE_IMG_URL
+import com.b305.vuddy.util.RetrofitAPI
 import com.b305.vuddy.util.SLEEP_IMG_URL
 import com.b305.vuddy.util.SharedManager
 import com.bumptech.glide.Glide
@@ -43,6 +51,10 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     lateinit var binding: FragmentMapBinding
@@ -273,6 +285,27 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             binding.fabMapMode.backgroundTintList = fabUnselect
             binding.fabFeedMode.backgroundTintList = fabSelect
             binding.fabFriendFeedMode.backgroundTintList = fabUnselect
+
+            //Todo API 테스트
+            val call = RetrofitAPI.mapFeedService
+            call.getAllFriendsFeed().enqueue(object :Callback<MapFeedResponse> {
+                override fun onResponse(call: Call<MapFeedResponse>, response: Response<MapFeedResponse>) {
+                    if (response.isSuccessful) {
+                        val result = response.body()
+                        Log.d("MapFragment", "****FeedMode result : $result")
+                    } else {
+                        val errorMessage = JSONObject(response.errorBody()?.string()!!)
+                        Log.d("MapFragment", "****FeedMode errorMessage : $errorMessage")
+                        Toast.makeText(context,errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<MapFeedResponse>, t: Throwable) {
+                    Log.d("MapFragment", "****FeedMode onFailure : ${t.message}")
+                    Toast.makeText(context, "피드 불러오기 실패", Toast.LENGTH_SHORT).show()
+                }
+
+            })
         }
         binding.fabFriendFeedMode.setOnClickListener {
             Log.d("MapFragment", "****FriendFeedMode")
@@ -280,6 +313,27 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             binding.fabMapMode.backgroundTintList = fabUnselect
             binding.fabFeedMode.backgroundTintList = fabUnselect
             binding.fabFriendFeedMode.backgroundTintList = fabSelect
+
+            //Todo API 테스트 인자 지금 admin1인데 나중에 바꿔야 함
+            val call = RetrofitAPI.mapFeedService
+            call.getOneFriendFeed("admin1").enqueue(object :Callback<MapFeedResponse> {
+                override fun onResponse(call: Call<MapFeedResponse>, response: Response<MapFeedResponse>) {
+                    if (response.isSuccessful) {
+                        val result = response.body()
+                        Log.d("MapFragment", "****FeedMode result : $result")
+                    } else {
+                        val errorMessage = JSONObject(response.errorBody()?.string()!!)
+                        Log.d("MapFragment", "****FeedMode errorMessage : $errorMessage")
+                        Toast.makeText(context,errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<MapFeedResponse>, t: Throwable) {
+                    Log.d("MapFragment", "****FeedMode onFailure : ${t.message}")
+                    Toast.makeText(context, "피드 불러오기 실패", Toast.LENGTH_SHORT).show()
+                }
+
+            })
         }
 
         binding.ivFriend.setOnClickListener {
