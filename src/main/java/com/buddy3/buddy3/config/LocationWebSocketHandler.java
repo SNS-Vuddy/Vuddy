@@ -149,7 +149,8 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                     }
                 }
             }
-            locationService.sendMessage(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(locationMessage)));
+//            locationService.sendMessage(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
             redisLocationTemplate.opsForList().rightPush(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
 //            List<String> locationMessageStringList = redisLocationTemplate.opsForList().range(locationMessage.getNickname(), 0, -1);
 
