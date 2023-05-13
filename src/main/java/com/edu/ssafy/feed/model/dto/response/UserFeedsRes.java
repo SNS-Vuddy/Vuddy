@@ -8,6 +8,6 @@ import lombok.Data;
 public class UserFeedsRes {
 
     private Long feedId;
-    private String content;
-    private String mainImg;
+    private String imgUrl;
+    private String location;
 }

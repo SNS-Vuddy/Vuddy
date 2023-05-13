@@ -43,7 +43,7 @@ public class FeedService {
         List<UserFeedsRes> userFeedsResList = new ArrayList<>();
 
         for (Feed feed : allFeeds) {
-            UserFeedsRes userFeedsRes = new UserFeedsRes(feed.getId(), feed.getContent(), feed.getMainImg());
+            UserFeedsRes userFeedsRes = new UserFeedsRes(feed.getId(), feed.getMainImg(), feed.getLocation());
             userFeedsResList.add(userFeedsRes);
         }
 
