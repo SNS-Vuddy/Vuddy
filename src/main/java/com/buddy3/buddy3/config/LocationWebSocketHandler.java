@@ -112,6 +112,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         locationMessage.setTime(formatDateTime(timeNow));
         locationMessage.setStatus("home");
         User userNow = userRepository.findByNickname(locationMessage.getNickname());
+        log.warn("userImg : {}", userNow.getProfileImg());
         locationMessage.setImgUrl(userNow.getProfileImg());
 
         if (!locationMessage.getNickname().equals("")) {
