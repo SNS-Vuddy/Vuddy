@@ -32,17 +32,20 @@ class SharedManager(context: Context) {
     fun saveCurrentUser(user: User) {
         prefs["nickname"] = user.nickname.toString()
         prefs["password"] = user.password.toString()
+        prefs["profileImgUrl"] = user.profileImgUrl.toString()
     }
 
     fun getCurrentUser(): User {
         return User().apply {
             nickname = prefs["nickname", ""]
             password = prefs["password", ""]
+            profileImgUrl = prefs["profileImgUrl", ""]
         }
     }
 
     fun removeCurrentUser() {
         prefs.remove("nickname")
         prefs.remove("password")
+        prefs.remove("profileImgUrl")
     }
 }

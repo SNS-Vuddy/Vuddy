@@ -78,8 +78,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val latitude = locationProvider.getLocationLatitude()!!
         val longitude = locationProvider.getLocationLongitude()!!
         val latLng = LatLng(latitude, longitude)
-        //Todo 이거 API로 바꿔야함
-        val profileImgUrl = BASE_PROFILE_IMG_URL
+        val profileImgUrl = sharedManager.getCurrentUser().profileImgUrl!!
         val statusImgUrl = BASIC_IMG_URL
         val marKerOptions = makeMarkerOptions(latLng, profileImgUrl, statusImgUrl)
         markerOptionsMap[currentNickname] = marKerOptions
@@ -196,9 +195,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val latitude = userLocation.latitude?.toDouble()!!
         val longitude = userLocation.longitude?.toDouble()!!
         val latLng = LatLng(latitude, longitude)
-        //Todo 이거 API로 바꿔야함
-        val profileImgUrl = BASE_PROFILE_IMG_URL
-        val statusImgUrl = BASIC_IMG_URL
+        val profileImgUrl = userLocation.profileImgUrl!!
+        val statusImgUrl = userLocation.statusImgUrl!!
         val marKerOptions = makeMarkerOptions(latLng, profileImgUrl, statusImgUrl)
         markerOptionsMap[nickname] = marKerOptions
         refreshMap(false)
