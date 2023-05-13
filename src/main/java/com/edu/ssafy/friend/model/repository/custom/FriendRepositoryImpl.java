@@ -99,6 +99,7 @@ public class FriendRepositoryImpl implements FriendRepositoryCustom {
                                 .and(userFriends.status.eq(status))
                                 .and(user.nickname.ne(requester.getNickname()))
                 )
+                .orderBy(user.nickname.asc())
                 .fetch();
     }
 }
