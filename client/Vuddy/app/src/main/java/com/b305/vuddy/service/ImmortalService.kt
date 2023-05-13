@@ -14,8 +14,6 @@ import androidx.lifecycle.MutableLiveData
 import com.b305.vuddy.R
 import com.b305.vuddy.activity.MainActivity
 import com.b305.vuddy.model.UserLocation
-import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
-import com.b305.vuddy.util.BASIC_IMG_URL
 import com.b305.vuddy.util.ChatSocket
 import com.b305.vuddy.util.FASTEST_LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LOCATION_UPDATE_INTERVAL
@@ -104,14 +102,13 @@ class ImmortalService : LifecycleService() {
             if (!::sharedManager.isInitialized) {
                 sharedManager = SharedManager(applicationContext)
             }
-
-            val nickname = sharedManager.getCurrentUser().nickname
+            val user = sharedManager.getCurrentUser()
+            val nickname = user.nickname
             val location = result.locations.last()
             val latitude = location.latitude.toString()
             val longitude = location.longitude.toString()
-            //Todo 여기도 수정
-            val statusImgUrl = BASIC_IMG_URL
-            val profileImgUrl = BASE_PROFILE_IMG_URL
+            val profileImgUrl = user.profileImgUrl
+            val statusImgUrl = user.statusImgUrl
 
             val userLocation = UserLocation(nickname, latitude, longitude, statusImgUrl, profileImgUrl)
             locationSocket.sendLocation(userLocation)

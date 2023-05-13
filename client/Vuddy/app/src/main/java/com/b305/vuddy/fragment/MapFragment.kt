@@ -17,8 +17,10 @@ import androidx.navigation.findNavController
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
 import com.b305.vuddy.model.MapFeedResponse
+import com.b305.vuddy.model.User
 import com.b305.vuddy.model.UserLocation
 import com.b305.vuddy.service.ImmortalService
+import com.b305.vuddy.util.ANIMATE_CAMERA
 import com.b305.vuddy.util.BASIC_IMG_URL
 import com.b305.vuddy.util.FEED_MODE
 import com.b305.vuddy.util.FRIEND_FEED_MODE
@@ -27,10 +29,13 @@ import com.b305.vuddy.util.GOTOWORK_IMG_URL
 import com.b305.vuddy.util.HOME_IMG_URL
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.MAP_MODE
+import com.b305.vuddy.util.MOVE_CAMERA
+import com.b305.vuddy.util.NOT_MOVE_CAMERA
 import com.b305.vuddy.util.OFFICE_IMG_URL
 import com.b305.vuddy.util.RetrofitAPI
 import com.b305.vuddy.util.SLEEP_IMG_URL
 import com.b305.vuddy.util.SharedManager
+import com.b305.vuddy.util.ZOOM_LEVEL
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -59,7 +64,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var markerOptionsMap: MutableMap<String, MarkerOptions>
     private lateinit var markersMap: MutableMap<String, Marker>
     private var markerMode: Int = MAP_MODE
+    private lateinit var currentUser: User
     private lateinit var currentNickname: String
+    private lateinit var currentProfileImgUrl: String
+    private lateinit var currentStatusImgUrl: String
 
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d("MapFragment", "****onMapReady")
@@ -74,21 +82,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (!::markerOptionsMap.isInitialized) {
             markerOptionsMap = mutableMapOf<String, MarkerOptions>()
         }
+        currentUser = sharedManager.getCurrentUser()
+        currentNickname = currentUser.nickname!!
+        currentProfileImgUrl = currentUser.profileImgUrl!!
+        currentStatusImgUrl = currentUser.statusImgUrl!!
 
-        currentNickname = sharedManager.getCurrentUser().nickname!!
         val latitude = locationProvider.getLocationLatitude()!!
         val longitude = locationProvider.getLocationLongitude()!!
         val latLng = LatLng(latitude, longitude)
-        val profileImgUrl = sharedManager.getCurrentUser().profileImgUrl!!
-        Log.d("MapFragment", "****onMapReady: $profileImgUrl")
-        val statusImgUrl = BASIC_IMG_URL
-        val marKerOptions = makeMarkerOptions(latLng, profileImgUrl, statusImgUrl)
-        markerOptionsMap[currentNickname] = marKerOptions
+        val marKerOptions = makeMarkerOptions(latLng, currentProfileImgUrl, currentStatusImgUrl)
 
-        refreshMap(true)
+        markerOptionsMap[currentNickname] = marKerOptions
+        refreshMap(MOVE_CAMERA)
     }
 
-    private fun refreshMap(isMoveCamera: Boolean) {
+    private fun refreshMap(cameraMode: Int) {
         if (!::mMap.isInitialized) {
             return
         }
@@ -103,11 +111,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
-        if (isMoveCamera) {
-            val zoomLevel = 15f
-            val latLng = markersMap[sharedManager.getCurrentUser().nickname]!!.position
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel)
-            mMap.animateCamera(cameraUpdate)
+        val latLng = markersMap[sharedManager.getCurrentUser().nickname]!!.position
+        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL)
+        when (cameraMode) {
+            MOVE_CAMERA -> {
+                mMap.moveCamera(cameraUpdate)
+            }
+
+            ANIMATE_CAMERA -> {
+                mMap.animateCamera(cameraUpdate)
+            }
+
+            NOT_MOVE_CAMERA -> {
+                // do nothing
+            }
         }
         return
     }
@@ -187,8 +204,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (!::locationProvider.isInitialized) {
             locationProvider = LocationProvider(requireContext())
         }
+
         if (!::markerOptionsMap.isInitialized) {
             markerOptionsMap = mutableMapOf<String, MarkerOptions>()
+        }
+
+        if (markerMode != MAP_MODE && userLocation.nickname != currentNickname) {
+            return
         }
 
         val nickname = userLocation.nickname!!
@@ -199,7 +221,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val statusImgUrl = userLocation.statusImgUrl!!
         val marKerOptions = makeMarkerOptions(latLng, profileImgUrl, statusImgUrl)
         markerOptionsMap[nickname] = marKerOptions
-        refreshMap(false)
+        refreshMap(NOT_MOVE_CAMERA)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -226,7 +248,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 markerOptionsMap.remove(nickname)
             }
 
-            refreshMap(true)
+            refreshMap(ANIMATE_CAMERA)
         }
 
         binding.fabFeedMode.setOnClickListener {
@@ -288,7 +310,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                 }
                         }
 
-                        refreshMap(true)
+                        refreshMap(ANIMATE_CAMERA)
                     } else {
                         val errorMessage = JSONObject(response.errorBody()?.string()!!)
                         Log.d("MapFragment", "****FeedMode errorMessage : $errorMessage")
@@ -362,7 +384,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                 }
                         }
 
-                        refreshMap(true)
+                        refreshMap(ANIMATE_CAMERA)
                     } else {
                         val errorMessage = JSONObject(response.errorBody()?.string()!!)
                         Log.d("MapFragment", "****FriendFeedMode errorMessage : $errorMessage")

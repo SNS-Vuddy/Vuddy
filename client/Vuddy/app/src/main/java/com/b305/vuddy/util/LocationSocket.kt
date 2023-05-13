@@ -44,6 +44,10 @@ class LocationSocket(context: Context) {
                 userLocation.statusImgUrl = statusImgUrl
                 userLocation.profileImgUrl = profileImgUrl
 
+                val user = sharedManager.getCurrentUser()
+                user.statusImgUrl = statusImgUrl
+                sharedManager.saveCurrentUser(user)
+
                 EventBus.getDefault().post(userLocation)
                 Log.d("LocationSocket", "****onMessage $nickname $latitude $longitude $statusImgUrl $profileImgUrl****")
             }
