@@ -18,7 +18,7 @@ backend:
   friend:
     image:
       pullPolicy: Always
-      tag: "0043577b006a2d74ccaf6ac1562c9d585b9b891e"
+      tag: "613fb2edd03b1799bfdcfbce4ede6ae64cc65703"
   comment:
     image:
       pullPolicy: Always
