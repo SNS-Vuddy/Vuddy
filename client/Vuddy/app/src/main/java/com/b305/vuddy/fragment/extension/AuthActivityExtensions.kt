@@ -1,6 +1,7 @@
 package com.b305.vuddy.fragment.extension
 
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.b305.vuddy.R
@@ -123,16 +124,16 @@ fun AuthActivity.loginService(authRequest: AuthRequest) {
 
                 val nickname = authRequest.nickname
                 val password = authRequest.password
-                // Todo 여기 프로필 이미지 API로 불러오는걸로 수정
-                val profileImgUrl = BASE_PROFILE_IMG_URL
-                val user = User(nickname, password, profileImgUrl)
-                sharedManager.saveCurrentUser(user)
 
                 val accessToken: String = result?.accessToken.toString()
                 val refreshToken: String = result?.refreshToken.toString()
+                val profileImgUrl = result?.profileImage.toString()
+                Log.d("profileImgUrl", profileImgUrl)
+                Log.d("profileImgUrl", "*****")
+                val user = User(nickname, password, profileImgUrl)
                 val token: Token = Token(accessToken, refreshToken)
+                sharedManager.saveCurrentUser(user)
                 sharedManager.saveCurrentToken(token)
-
 
                 val message: String = result?.message.toString()
                 Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()

@@ -62,6 +62,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var currentNickname: String
 
     override fun onMapReady(googleMap: GoogleMap) {
+        Log.d("MapFragment", "****onMapReady")
         mMap = googleMap
 
         if (!::locationProvider.isInitialized) {
@@ -79,6 +80,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val longitude = locationProvider.getLocationLongitude()!!
         val latLng = LatLng(latitude, longitude)
         val profileImgUrl = sharedManager.getCurrentUser().profileImgUrl!!
+        Log.d("MapFragment", "****onMapReady: $profileImgUrl")
         val statusImgUrl = BASIC_IMG_URL
         val marKerOptions = makeMarkerOptions(latLng, profileImgUrl, statusImgUrl)
         markerOptionsMap[currentNickname] = marKerOptions
@@ -209,6 +211,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val fabUnselect = ContextCompat.getColorStateList(requireContext(), R.color.unselected)
 
         binding.fabMapMode.setOnClickListener {
+            if (markerMode == MAP_MODE) {
+                return@setOnClickListener
+            }
             Log.d("MapFragment", "****MapMode")
             markerMode = MAP_MODE
             binding.fabMapMode.backgroundTintList = fabSelect
@@ -227,6 +232,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
         binding.fabFeedMode.setOnClickListener {
+            if (markerMode == FEED_MODE) {
+                return@setOnClickListener
+            }
             Log.d("MapFragment", "****FeedMode")
             markerMode = FEED_MODE
             binding.fabMapMode.backgroundTintList = fabUnselect
@@ -301,6 +309,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             })
         }
         binding.fabFriendFeedMode.setOnClickListener {
+            if (markerMode == FRIEND_FEED_MODE) {
+                return@setOnClickListener
+            }
             Log.d("MapFragment", "****FriendFeedMode")
             markerMode = FRIEND_FEED_MODE
             binding.fabMapMode.backgroundTintList = fabUnselect
@@ -397,6 +408,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             sharedManager.removeCurrentUser()
             requireActivity().stopService(Intent(requireContext(), ImmortalService::class.java))
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
+        }
+        binding.fabMoveCurrentLocation.setOnClickListener {
+            if (!::locationProvider.isInitialized) {
+                locationProvider = LocationProvider(requireContext())
+            }
+
+            val latitude = locationProvider.getLocationLatitude()!!
+            val longitude = locationProvider.getLocationLongitude()!!
+            val latLng = LatLng(latitude, longitude)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
         }
         return binding.root
     }

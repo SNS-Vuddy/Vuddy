@@ -15,6 +15,9 @@ data class AuthResponse(
 
     @SerializedName("refreshToken")
     val refreshToken: String?,
+
+    @SerializedName("profileImage")
+    val profileImage: String?
 )
 
 data class FriendsResponse(

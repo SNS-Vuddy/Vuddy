@@ -8,11 +8,11 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface AuthService {
-    
+
     @Headers("Content-Type: application/json")
     @POST("/auth/signup")
     fun signup(@Body authRequest: AuthRequest): Call<AuthResponse>
-    
+
     @Headers("Content-Type: application/json")
     @POST("/auth/login")
     fun login(@Body authRequest: AuthRequest): Call<AuthResponse>
