@@ -9,9 +9,13 @@ data class MapFeedResponse(
 )
 
 data class MapFeed(
+
+    @SerializedName("feedId")
     val feedId: Int,
-    val nickname:String,
-    val content: String,
+
+    @SerializedName("imgUrl")
     val imgUrl: String,
+
+    @SerializedName("location")
     val location: String
 )

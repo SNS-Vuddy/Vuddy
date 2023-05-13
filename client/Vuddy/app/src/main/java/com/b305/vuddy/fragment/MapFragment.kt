@@ -288,15 +288,24 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             //Todo API 테스트
             val call = RetrofitAPI.mapFeedService
-            call.getAllFriendsFeed().enqueue(object :Callback<MapFeedResponse> {
+            call.getAllFriendsFeed().enqueue(object : Callback<MapFeedResponse> {
                 override fun onResponse(call: Call<MapFeedResponse>, response: Response<MapFeedResponse>) {
                     if (response.isSuccessful) {
-                        val result = response.body()
-                        Log.d("MapFragment", "****FeedMode result : $result")
+                        val result = response.body()?.mapFeedList
+                        result?.forEach { mapFeed ->
+                            val feedId = mapFeed.feedId
+                            val imgUrl = mapFeed.imgUrl
+                            val location = mapFeed.location
+                            val (latitudeStr, longitudeStr) = location.split(",")
+                            val latitude: Double = latitudeStr.trim().toDouble()
+                            val longitude: Double = longitudeStr.trim().toDouble()
+                            Log.d("MapFragment", "****FeedMode result : $feedId, $imgUrl, $latitude, $longitude")
+                        }
+                        Log.d("MapFragment", "****$result")
                     } else {
                         val errorMessage = JSONObject(response.errorBody()?.string()!!)
                         Log.d("MapFragment", "****FeedMode errorMessage : $errorMessage")
-                        Toast.makeText(context,errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -316,7 +325,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             //Todo API 테스트 인자 지금 admin1인데 나중에 바꿔야 함
             val call = RetrofitAPI.mapFeedService
-            call.getOneFriendFeed("admin1").enqueue(object :Callback<MapFeedResponse> {
+            call.getOneFriendFeed("admin1").enqueue(object : Callback<MapFeedResponse> {
                 override fun onResponse(call: Call<MapFeedResponse>, response: Response<MapFeedResponse>) {
                     if (response.isSuccessful) {
                         val result = response.body()
@@ -324,7 +333,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     } else {
                         val errorMessage = JSONObject(response.errorBody()?.string()!!)
                         Log.d("MapFragment", "****FeedMode errorMessage : $errorMessage")
-                        Toast.makeText(context,errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
                     }
                 }
 
