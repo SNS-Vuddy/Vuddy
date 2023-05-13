@@ -4,7 +4,6 @@ stages:          # List of stages for jobs, and their order of execution
   - deploy
 
 
-
 build-job/getting-branch-name:
   stage: build
   only:
