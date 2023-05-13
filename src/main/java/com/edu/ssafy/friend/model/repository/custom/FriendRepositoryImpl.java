@@ -87,4 +87,18 @@ public class FriendRepositoryImpl implements FriendRepositoryCustom {
                 .where(userFriends.receiveUser.eq(user).and(userFriends.status.eq(userFriendStatus)))
                 .fetch();
     }
+
+    @Override
+    public List<AllFriendDto> findAllByRequestUserAndStatusIs(User requester, UserFriendStatus status) {
+        return queryFactory
+                .select(Projections.constructor(AllFriendDto.class, user.nickname, user.profileImage))
+                .from(user)
+                .join(userFriends).on((userFriends.receiveUser.eq(user)).or(userFriends.requestUser.eq(user)))
+                .where(
+                        (userFriends.requestUser.eq(requester).or(userFriends.receiveUser.eq(requester)))
+                                .and(userFriends.status.eq(status))
+                                .and(user.nickname.ne(requester.getNickname()))
+                )
+                .fetch();
+    }
 }
