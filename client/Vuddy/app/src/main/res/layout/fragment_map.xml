@@ -16,6 +16,36 @@
             tools:layout_editor_absoluteY="96dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_map_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/selected"
+            app:borderWidth="0dp"
+            android:layout_margin="10dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline3"
+            app:layout_constraintStart_toStartOf="@+id/guideline1" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_feed_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/unselected"
+            app:borderWidth="0dp"
+            android:layout_margin="10dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline3"
+            app:layout_constraintStart_toEndOf="@+id/fab_map_mode" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_friend_feed_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/unselected"
+            app:borderWidth="0dp"
+            android:layout_margin="10dp"
+            app:layout_constraintTop_toTopOf="@+id/guideline3"
+            app:layout_constraintStart_toEndOf="@+id/fab_feed_mode" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

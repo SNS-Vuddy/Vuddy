@@ -7,6 +7,7 @@ const val FASTEST_LOCATION_UPDATE_INTERVAL = 5000L
 // Notification 옵션
 const val NOTI_ID = 1
 
+// Img URL
 const val BASE_PROFILE_IMG_URL =
     "https://file.notion.so/f/s/5c0a1a93-82c8-434b-8438-c3677f735b8a/bird.png?id=43efed67-5eff-42d1-abdb-89c0d7fd06b5&table=block&spaceId=7b3bcbdb-5674-42d5-8d9f-7d143694dc32&expirationTimestamp=1683959019758&signature=52z1pqBne_ljByzjQnFjgdSreQHoS-ntaJg4UbWVZ5Q&downloadName=bird.png"
 const val BASIC_IMG_URL =
@@ -21,3 +22,8 @@ const val GOTOHOME_IMG_URL =
     "https://file.notion.so/f/s/c99c8b91-218c-464a-a723-c674a782840f/Untitled.png?id=fd911d37-ff29-4a0b-b54b-aa7112d2fc4f&table=block&spaceId=7b3bcbdb-5674-42d5-8d9f-7d143694dc32&expirationTimestamp=1683963515027&signature=txAd88wOAqYog77hBVnorn4sjyDmZGzswKEo_bqzlmo&downloadName=Untitled.png"
 const val SLEEP_IMG_URL =
     "https://file.notion.so/f/s/845dda23-8a23-42d0-8496-516c6ae43369/Untitled.png?id=787ebf6b-a0aa-4499-be11-49a81df39c63&table=block&spaceId=7b3bcbdb-5674-42d5-8d9f-7d143694dc32&expirationTimestamp=1683963517473&signature=Ybyc5nyM_phFmwWOHnBVv6UKYenIjgSTDL9F1-t0ucU&downloadName=Untitled.png"
+
+// Map Mode
+const val MAP_MODE = 1
+const val FEED_MODE = 2
+const val FRIEND_FEED_MODE = 3

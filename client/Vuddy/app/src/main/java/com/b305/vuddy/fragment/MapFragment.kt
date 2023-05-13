@@ -5,10 +5,12 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.vuddy.R
@@ -17,10 +19,13 @@ import com.b305.vuddy.model.UserLocation
 import com.b305.vuddy.service.ImmortalService
 import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
 import com.b305.vuddy.util.BASIC_IMG_URL
+import com.b305.vuddy.util.FEED_MODE
+import com.b305.vuddy.util.FRIEND_FEED_MODE
 import com.b305.vuddy.util.GOTOHOME_IMG_URL
 import com.b305.vuddy.util.GOTOWORK_IMG_URL
 import com.b305.vuddy.util.HOME_IMG_URL
 import com.b305.vuddy.util.LocationProvider
+import com.b305.vuddy.util.MAP_MODE
 import com.b305.vuddy.util.OFFICE_IMG_URL
 import com.b305.vuddy.util.SLEEP_IMG_URL
 import com.b305.vuddy.util.SharedManager
@@ -46,6 +51,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var markerOptionsMap: MutableMap<String, MarkerOptions>
     private lateinit var markersMap: MutableMap<String, Marker>
+    private var markerMode: Int = MAP_MODE
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -66,7 +72,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val latLng = LatLng(latitude, longitude)
         //Todo 이거 API로 바꿔야함
         val profileImgUrl = BASE_PROFILE_IMG_URL
-        //Todo 이거 API로 바꿔야함
         val statusImgUrl = BASIC_IMG_URL
         val marKerOptions = makeMarkerOptions(latLng, profileImgUrl, statusImgUrl)
         markerOptionsMap[nickname] = marKerOptions
@@ -78,25 +83,82 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (!::mMap.isInitialized) {
             return
         }
-        // mMap.clear() Remove this line
 
-        markerOptionsMap.forEach { (nickname, markerOptions) ->
-            val marker = markersMap[nickname]
+
+        //Todo 모드 테스트
+        if (markerMode == MAP_MODE) {
+            markerOptionsMap.forEach { (nickname, markerOptions) ->
+                val marker = markersMap[nickname]
+                if (marker != null) {
+                    animateMarkerTo(marker, markerOptions.position)
+                } else {
+                    val newMarker = mMap.addMarker(markerOptions)!!
+                    markersMap[nickname] = newMarker
+                }
+            }
+
+            if (isMoveCamera) {
+                mMap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        markersMap[sharedManager.getCurrentUser().nickname]!!.position,
+                        15f
+                    )
+                )
+            }
+            return
+        }
+
+        // Map mode 아닌 경우 내 위치 마커 제외 하고 전부 삭제
+        val currentNickname = sharedManager.getCurrentUser().nickname!!
+        markersMap.filterKeys { it != currentNickname }
+            .forEach { (nickname, marker) ->
+                marker.remove()
+                markersMap.remove(nickname)
+            }
+        markerOptionsMap.filterKeys { it != currentNickname }
+            .forEach { (nickname, _) ->
+                markerOptionsMap.remove(nickname)
+            }
+
+        if (markerMode == FEED_MODE) {
+            val markerOptions = markerOptionsMap[currentNickname]!!
+            val marker = markersMap[currentNickname]
+
             if (marker != null) {
                 animateMarkerTo(marker, markerOptions.position)
             } else {
                 val newMarker = mMap.addMarker(markerOptions)!!
-                markersMap[nickname] = newMarker
+                markersMap[currentNickname] = newMarker
             }
-        }
-
-        if (isMoveCamera) {
-            mMap.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    markersMap[sharedManager.getCurrentUser().nickname]!!.position,
-                    15f
+            if (isMoveCamera) {
+                mMap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        markersMap[sharedManager.getCurrentUser().nickname]!!.position,
+                        15f
+                    )
                 )
-            )
+            }
+            return
+        }
+        if (markerMode == FRIEND_FEED_MODE) {
+            val markerOptions = markerOptionsMap[currentNickname]!!
+            val marker = markersMap[currentNickname]
+
+            if (marker != null) {
+                animateMarkerTo(marker, markerOptions.position)
+            } else {
+                val newMarker = mMap.addMarker(markerOptions)!!
+                markersMap[currentNickname] = newMarker
+            }
+            if (isMoveCamera) {
+                mMap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        markersMap[sharedManager.getCurrentUser().nickname]!!.position,
+                        15f
+                    )
+                )
+            }
+            return
         }
     }
 
@@ -185,7 +247,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val latLng = LatLng(latitude, longitude)
         //Todo 이거 API로 바꿔야함
         val profileImgUrl = BASE_PROFILE_IMG_URL
-        //Todo 이거 API로 바꿔야함
         val statusImgUrl = BASIC_IMG_URL
         val marKerOptions = makeMarkerOptions(latLng, profileImgUrl, statusImgUrl)
         markerOptionsMap[nickname] = marKerOptions
@@ -195,6 +256,31 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMapBinding.inflate(layoutInflater, container, false)
+
+        val fabSelect = ContextCompat.getColorStateList(requireContext(), R.color.selected)
+        val fabUnselect = ContextCompat.getColorStateList(requireContext(), R.color.unselected)
+
+        binding.fabMapMode.setOnClickListener {
+            Log.d("MapFragment", "****MapMode")
+            markerMode = MAP_MODE
+            binding.fabMapMode.backgroundTintList = fabSelect
+            binding.fabFeedMode.backgroundTintList = fabUnselect
+            binding.fabFriendFeedMode.backgroundTintList = fabUnselect
+        }
+        binding.fabFeedMode.setOnClickListener {
+            Log.d("MapFragment", "****FeedMode")
+            markerMode = FEED_MODE
+            binding.fabMapMode.backgroundTintList = fabUnselect
+            binding.fabFeedMode.backgroundTintList = fabSelect
+            binding.fabFriendFeedMode.backgroundTintList = fabUnselect
+        }
+        binding.fabFriendFeedMode.setOnClickListener {
+            Log.d("MapFragment", "****FriendFeedMode")
+            markerMode = FRIEND_FEED_MODE
+            binding.fabMapMode.backgroundTintList = fabUnselect
+            binding.fabFeedMode.backgroundTintList = fabUnselect
+            binding.fabFriendFeedMode.backgroundTintList = fabSelect
+        }
 
         binding.ivFriend.setOnClickListener {
             it.findNavController().navigate(R.id.action_mapFragment_to_friendFragment)
