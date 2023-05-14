@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/feed"
+    app:startDestination="@id/feedDetailFragment">
+    <dialog
+        android:id="@+id/feedDetailFragment"
+        android:name="com.b305.vuddy.fragment.FeedDetailFragment"
+        android:label="fragment_feed_detail"
+        tools:layout="@layout/fragment_feed_detail" >
+        <action
+            android:id="@+id/action_feedDetailFragment_to_commentFragment"
+            app:destination="@id/commentFragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/commentFragment"
+        android:name="com.b305.vuddy.fragment.CommentFragment"
+        android:label="fragment_comment"
+        tools:layout="@layout/fragment_comment" >
+        <action
+            android:id="@+id/action_commentFragment_to_feedDetailFragment"
+            app:destination="@id/feedDetailFragment" />
+    </dialog>
+</navigation>
