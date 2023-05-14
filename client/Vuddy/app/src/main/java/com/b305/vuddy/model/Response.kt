@@ -42,3 +42,9 @@ data class SearchData(
     @SerializedName("noFriends")
     val noFriends: List<FriendProfile>?
 )
+
+
+data class AlarmResponse(
+    @SerializedName("data")
+    val AlarmList: ArrayList<Alarm>
+)

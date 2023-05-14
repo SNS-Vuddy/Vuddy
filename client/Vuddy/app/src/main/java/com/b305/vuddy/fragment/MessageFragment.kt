@@ -24,7 +24,8 @@ class MessageFragment : Fragment() {
             it.findNavController().navigate(R.id.action_messageFragment_to_mapFragment)
         }
         view.findViewById<ImageView>(R.id.iv_write).setOnClickListener {
-            it.findNavController().navigate(R.id.action_messageFragment_to_writeFeedFragment)
+            val bottomSheetFragment = WriteFeedFragment()
+            bottomSheetFragment.show(parentFragmentManager, "bottomSheetTag")
         }
         view.findViewById<ImageView>(R.id.iv_friend).setOnClickListener {
             it.findNavController().navigate(R.id.action_messageFragment_to_friendFragment)

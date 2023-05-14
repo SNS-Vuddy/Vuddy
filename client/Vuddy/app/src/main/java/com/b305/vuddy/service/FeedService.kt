@@ -9,6 +9,7 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Multipart
@@ -47,6 +48,17 @@ interface FeedService {
 
 //    @GET("/feed/1")
 //    fun feedDetailGet(): Observable<FeedResponse>
+    @POST("/comment/write/{feedId}")
+    @Headers("Content-Type: application/json")
+    fun commentWrite(
+        @Path("feedId") feedId : Int,
+        @Body comment : RequestBody,
+    ): Call<ResponseBody>
+
+    @POST("/feed/like/{feedId}")
+    fun feedLike(
+        @Path("feedId") feedId : Int,
+    ): Call<ResponseBody>
 
     @Headers("Content-Type: application/json")
     @GET("/feed/{feedId}")
@@ -60,4 +72,10 @@ interface FeedService {
 
     @GET("/feed/feeds/nickname/test1")
     fun feedUserGet() : Call<FeedsResponse>
+
+    @Headers("Content-Type: application/json")
+    @GET("/feed/feeds/nickname/{nickname}")
+    fun FriendfeedGet(
+        @Path("nickname") nickname: String,
+    ): Call<FeedsResponse>
 }

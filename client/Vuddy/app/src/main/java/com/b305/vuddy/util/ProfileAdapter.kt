@@ -1,14 +1,18 @@
 package com.b305.vuddy.util
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
+import com.b305.vuddy.fragment.FeedDetailFragment
+import com.b305.vuddy.fragment.FriendProfileFragment
 import com.b305.vuddy.model.FriendProfile
 import com.bumptech.glide.Glide
 
@@ -21,7 +25,6 @@ class ProfileAdapter(private val profileLsit: ArrayList<FriendProfile>) : Recycl
                 val curPos : Int = bindingAdapterPosition
                 val profile : FriendProfile = profileLsit.get(curPos)
                 Toast.makeText(parent.context, "닉네임: ${profile.nickname}", Toast.LENGTH_SHORT).show()
-                it.findNavController().navigate(R.id.action_friendFragment_to_profileFragment)
             }
         }
     }
@@ -37,6 +40,19 @@ class ProfileAdapter(private val profileLsit: ArrayList<FriendProfile>) : Recycl
             .circleCrop() // 동그랗게 자르기
             .into(holder.profileImage) // 이미지를 넣을 뷰
         holder.nickname.text = currentItem.nickname
+
+        holder.itemView.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("nickname", currentItem.nickname)
+            val friendprofileFragment = FriendProfileFragment()
+            friendprofileFragment.arguments = bundle
+
+            val fragmentManager = (holder.itemView.context as AppCompatActivity).supportFragmentManager
+            fragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, friendprofileFragment)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     override fun getItemCount(): Int {
