@@ -1,5 +1,8 @@
 package com.b305.vuddy.model
 
 data class User(
-    var nickname: String? = null, var password: String? = null
+    var nickname: String? = null,
+    var password: String? = null,
+    var profileImgUrl: String? = null,
+    var statusImgUrl: String? = null
 )

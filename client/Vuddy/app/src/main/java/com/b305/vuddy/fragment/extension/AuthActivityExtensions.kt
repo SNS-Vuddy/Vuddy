@@ -1,6 +1,7 @@
 package com.b305.vuddy.fragment.extension
 
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.b305.vuddy.R
@@ -11,6 +12,7 @@ import com.b305.vuddy.model.AuthResponse
 import com.b305.vuddy.model.Token
 import com.b305.vuddy.model.User
 import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
+import com.b305.vuddy.util.BASIC_IMG_URL
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -86,7 +88,9 @@ fun AuthActivity.signupService(authRequest: AuthRequest) {
 
                 val nickname = authRequest.nickname
                 val password = authRequest.password
-                val user = User(nickname, password)
+                val profileImgUrl = BASE_PROFILE_IMG_URL
+                val statusImgUrl = BASIC_IMG_URL
+                val user = User(nickname, password, profileImgUrl, statusImgUrl)
                 sharedManager.saveCurrentUser(user)
 
                 val result = response.body()
@@ -122,14 +126,15 @@ fun AuthActivity.loginService(authRequest: AuthRequest) {
 
                 val nickname = authRequest.nickname
                 val password = authRequest.password
-                val user = User(nickname, password)
-                sharedManager.saveCurrentUser(user)
 
                 val accessToken: String = result?.accessToken.toString()
                 val refreshToken: String = result?.refreshToken.toString()
+                val profileImgUrl = result?.profileImage.toString()
+                val statusImgUrl = BASIC_IMG_URL
+                val user = User(nickname, password, profileImgUrl, statusImgUrl)
                 val token: Token = Token(accessToken, refreshToken)
+                sharedManager.saveCurrentUser(user)
                 sharedManager.saveCurrentToken(token)
-
 
                 val message: String = result?.message.toString()
                 Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
