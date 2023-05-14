@@ -27,16 +27,23 @@ public class FriendRepositoryImpl implements FriendRepositoryCustom {
     @Override
     public FriendAndNoFriendRes findMyFriendAndNoFriend(String myNickname, String nickname) {
 
+        User myUser = queryFactory
+                .selectFrom(user)
+                .where(user.nickname.eq(myNickname))
+                .fetchOne();
+
         List<NicknameImgStatusDto> results = queryFactory
                 .select(Projections.constructor(NicknameImgStatusDto.class, user.nickname, user.profileImage, userFriends.status))
                 .from(user)
                 .leftJoin(userFriends)
-                .on(userFriends.requestUser.eq(user).or(userFriends.receiveUser.eq(user)))
-                .where(user.nickname.like("%" + nickname + "%")
-                        .and(user.nickname.ne(myNickname))
-                        .and((userFriends.requestUser.nickname.eq(myNickname)
-                                .or(userFriends.receiveUser.nickname.eq(myNickname)))))
-                .orderBy(user.nickname.asc())
+                .on(
+                        (user.eq(userFriends.requestUser).and(userFriends.receiveUser.eq(myUser)))
+                        .or(user.eq(userFriends.receiveUser).and(userFriends.requestUser.eq(myUser)))
+                )
+                .where(
+                        (user.nickname.contains(nickname))
+                        .and(user.id.ne(myUser.getId()))
+                )
                 .fetch();
 
         List<NicknameImgDto> friends = results.stream()
