@@ -1,7 +1,9 @@
 package com.edu.ssafy.user.model.entity;
 
+import com.edu.ssafy.user.model.entity.enums.FeedPrivacy;
 import com.edu.ssafy.user.model.entity.enums.UserRoll;
 import lombok.Getter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@DynamicUpdate
 @Table(name = "user")
 public class User {
     @Id
@@ -45,6 +48,10 @@ public class User {
     @Column(name = "u_is_withdrawal")
     private boolean isWithdrawal;
 
+    @Column(name = "u_feed_privacy")
+    @Enumerated(EnumType.STRING)
+    private FeedPrivacy feedPrivacy;
+
     // 생성 메서드
     public static User createNormalUser(String nickname, String password, String profileImage, String statusMessage) {
         User user = new User();
@@ -70,5 +77,13 @@ public class User {
 
     public void changeProfileImage(String imgUrl) {
         this.profileImage = imgUrl;
+    }
+
+    public void changePrivacy() {
+        if (this.feedPrivacy == FeedPrivacy.PUBLIC) {
+            this.feedPrivacy = FeedPrivacy.PRIVATE;
+        } else {
+            this.feedPrivacy = FeedPrivacy.PUBLIC;
+        }
     }
 }

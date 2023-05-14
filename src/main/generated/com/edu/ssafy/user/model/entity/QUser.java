@@ -21,6 +21,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath email = createString("email");
 
+    public final EnumPath<com.edu.ssafy.user.model.entity.enums.FeedPrivacy> feedPrivacy = createEnum("feedPrivacy", com.edu.ssafy.user.model.entity.enums.FeedPrivacy.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final BooleanPath isWithdrawal = createBoolean("isWithdrawal");

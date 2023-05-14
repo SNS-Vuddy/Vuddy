@@ -18,6 +18,7 @@ public class UserFeedsSummaryRes {
     private String profileImage;
     private String statusMessage;
     private boolean has_new_alarm;
+    private boolean canISeeFeeds;
     private List<BriefFeedIngoDto> feeds;
 
 }
