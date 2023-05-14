@@ -81,8 +81,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.fabFeedMode.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.unselected)
         binding.fabFriendFeedMode.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.selected)
 
-
-        //Todo API 테스트 인자 지금 admin1인데 나중에 바꿔야 함
         val call = RetrofitAPI.mapFeedService
         call.getOneFriendFeed(nickname).enqueue(object : Callback<MapFeedResponse> {
             override fun onResponse(call: Call<MapFeedResponse>, response: Response<MapFeedResponse>) {
@@ -187,7 +185,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 entry.value == it
             }?.key
 
-            //Todo 친구 위치 마커 클릭시 : 바텀 시트
             if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && !clickedMarkerNickname.startsWith("FEED:")) {
                 val clickedMarkerIcon = markerOptionsMap[clickedMarkerNickname]?.icon
                 if (clickedMarkerIcon != null) {
@@ -200,8 +197,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             //Todo 피드 마커 클릭시 : 피드 바텀 시트
             if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && clickedMarkerNickname.startsWith("FEED:")) {
                 val feedId = clickedMarkerNickname.split(":")[1].toInt()
-                val feedMarkerBottomSheetFragment = FeedMarkerBottomSheetFragment.newInstance(feedId)
-                feedMarkerBottomSheetFragment.show(requireActivity().supportFragmentManager, feedMarkerBottomSheetFragment.tag)
+                val feedDetailFragment = FeedDetailFragment()
+                val bundle = Bundle()
+                bundle.putInt("feedId", feedId)
+                feedDetailFragment.arguments = bundle
+                feedDetailFragment.show(requireActivity().supportFragmentManager, feedDetailFragment.tag)
             }
 
             if (clickedMarkerNickname == currentNickname) {
@@ -277,7 +277,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             val profileLeft = (resultBitmap.width - profileBitmap.width) / 2f
             canvas.drawBitmap(profileBitmap, profileLeft, profileTop, null)
             val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resultBitmap)
-            //Todo bitmap
             markerBitmapMap[nickname] = resultBitmap
             val markerOptions = MarkerOptions()
             markerOptions.position(latLng)
