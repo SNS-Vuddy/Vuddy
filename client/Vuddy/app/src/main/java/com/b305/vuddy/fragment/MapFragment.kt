@@ -63,6 +63,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var markerOptionsMap: MutableMap<String, MarkerOptions>
     private lateinit var markersMap: MutableMap<String, Marker>
+    private lateinit var markerBitmapMap: MutableMap<String, Bitmap>
     private var markerMode: Int = MAP_MODE
     private lateinit var currentUser: User
     private lateinit var currentNickname: String
@@ -82,6 +83,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (!::markerOptionsMap.isInitialized) {
             markerOptionsMap = mutableMapOf<String, MarkerOptions>()
         }
+        if (!::markerBitmapMap.isInitialized) {
+            markerBitmapMap = mutableMapOf<String, Bitmap>()
+        }
         currentUser = sharedManager.getCurrentUser()
         currentNickname = currentUser.nickname!!
         currentProfileImgUrl = currentUser.profileImgUrl!!
@@ -90,7 +94,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val latitude = locationProvider.getLocationLatitude()!!
         val longitude = locationProvider.getLocationLongitude()!!
         val latLng = LatLng(latitude, longitude)
-        val marKerOptions = makeMarkerOptions(latLng, currentProfileImgUrl, currentStatusImgUrl)
+        val marKerOptions = makeMarkerOptions(currentNickname, latLng, currentProfileImgUrl, currentStatusImgUrl)
 
         markerOptionsMap[currentNickname] = marKerOptions
         refreshMap(MOVE_CAMERA)
@@ -100,20 +104,26 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 entry.value == it
             }?.key
 
-            //Todo 친구 위치 마커 클릭시 : 이동 + 바텀 시트
+            //Todo 친구 위치 마커 클릭시 : 바텀 시트
             if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && !clickedMarkerNickname.startsWith("FEED:")) {
-                Toast.makeText(requireContext(), "피드 아님 $clickedMarkerNickname", Toast.LENGTH_SHORT).show()
+                val clickedMarkerIcon = markerOptionsMap[clickedMarkerNickname]?.icon
+                if (clickedMarkerIcon != null) {
+                    val clickedMarkerBitmap = markerBitmapMap[clickedMarkerNickname]!!
+                    val friendMarkerBottomSheetFragment = FriendMarkerBottomSheetFragment.newInstance(clickedMarkerNickname, clickedMarkerBitmap)
+                    friendMarkerBottomSheetFragment.show(requireActivity().supportFragmentManager, friendMarkerBottomSheetFragment.tag)
+                }
             }
 
-            //Todo 피드 마커 클릭시 : 이동 + 피드 바텀 시트
+            //Todo 피드 마커 클릭시 : 피드 바텀 시트
             if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && clickedMarkerNickname.startsWith("FEED:")) {
                 Toast.makeText(requireContext(), clickedMarkerNickname, Toast.LENGTH_SHORT).show()
             }
 
-            //Todo 내 위치 마커 클릭시 : 이동만
-            val latLng = it.position
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL)
-            mMap.animateCamera(cameraUpdate)
+            if (clickedMarkerNickname == currentNickname) {
+                val latLng = it.position
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL)
+                mMap.animateCamera(cameraUpdate)
+            }
             true
         }
     }
@@ -164,7 +174,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         valueAnimator.start()
     }
 
-    private fun makeMarkerOptions(latLng: LatLng, profileImgUrl: String, statusImgUrl: String): MarkerOptions =
+    private fun makeMarkerOptions(nickname: String, latLng: LatLng, profileImgUrl: String, statusImgUrl: String): MarkerOptions =
         runBlocking {
             val profileBitmap = makeProfileBitmap(profileImgUrl)
             val statusBitmap = makeStatusBitmap(statusImgUrl)
@@ -176,7 +186,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             val profileLeft = (resultBitmap.width - profileBitmap.width) / 2f
             canvas.drawBitmap(profileBitmap, profileLeft, profileTop, null)
             val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resultBitmap)
-
+            //Todo bitmap
+            markerBitmapMap[nickname] = resultBitmap
             val markerOptions = MarkerOptions()
             markerOptions.position(latLng)
                 .icon(bitmapDescriptor)
@@ -227,8 +238,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             locationProvider = LocationProvider(requireContext())
         }
 
+        if (!::markersMap.isInitialized) {
+            markersMap = mutableMapOf<String, Marker>()
+        }
         if (!::markerOptionsMap.isInitialized) {
             markerOptionsMap = mutableMapOf<String, MarkerOptions>()
+        }
+        if (!::markerBitmapMap.isInitialized) {
+            markerBitmapMap = mutableMapOf<String, Bitmap>()
         }
 
         if (markerMode != MAP_MODE && userLocation.nickname != currentNickname) {
@@ -241,7 +258,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val latLng = LatLng(latitude, longitude)
         val profileImgUrl = userLocation.profileImgUrl!!
         val statusImgUrl = userLocation.statusImgUrl!!
-        val marKerOptions = makeMarkerOptions(latLng, profileImgUrl, statusImgUrl)
+        val marKerOptions = makeMarkerOptions(nickname, latLng, profileImgUrl, statusImgUrl)
         markerOptionsMap[nickname] = marKerOptions
         refreshMap(NOT_MOVE_CAMERA)
     }
@@ -301,12 +318,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             if (!::locationProvider.isInitialized) {
                                 locationProvider = LocationProvider(requireContext())
                             }
+                            if (!::markersMap.isInitialized) {
+                                markersMap = mutableMapOf<String, Marker>()
+                            }
                             if (!::markerOptionsMap.isInitialized) {
                                 markerOptionsMap = mutableMapOf<String, MarkerOptions>()
                             }
+                            if (!::markerBitmapMap.isInitialized) {
+                                markerBitmapMap = mutableMapOf<String, Bitmap>()
+                            }
 
                             val statusImgUrl = BASIC_IMG_URL
-                            val marKerOptions = makeMarkerOptions(latLng, imgUrl, statusImgUrl)
+                            val marKerOptions = makeMarkerOptions(feedId, latLng, imgUrl, statusImgUrl)
                             markerOptionsMap[feedId] = marKerOptions
 
                             val existingMarker = markersMap[feedId]
@@ -375,11 +398,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             if (!::locationProvider.isInitialized) {
                                 locationProvider = LocationProvider(requireContext())
                             }
+                            if (!::markersMap.isInitialized) {
+                                markersMap = mutableMapOf<String, Marker>()
+                            }
                             if (!::markerOptionsMap.isInitialized) {
                                 markerOptionsMap = mutableMapOf<String, MarkerOptions>()
                             }
+                            if (!::markerBitmapMap.isInitialized) {
+                                markerBitmapMap = mutableMapOf<String, Bitmap>()
+                            }
                             val statusImgUrl = BASIC_IMG_URL
-                            val marKerOptions = makeMarkerOptions(latLng, imgUrl, statusImgUrl)
+                            val marKerOptions = makeMarkerOptions(feedId, latLng, imgUrl, statusImgUrl)
                             markerOptionsMap[feedId] = marKerOptions
 
                             val existingMarker = markersMap[feedId]

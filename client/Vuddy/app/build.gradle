@@ -93,8 +93,6 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
 
-
-
     // LifecycleService
     implementation 'androidx.lifecycle:lifecycle-service:2.6.1'
 }
