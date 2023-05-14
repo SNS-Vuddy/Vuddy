@@ -94,6 +94,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         markerOptionsMap[currentNickname] = marKerOptions
         refreshMap(MOVE_CAMERA)
+
+        mMap.setOnMarkerClickListener {
+            val clickedMarkerNickname = markersMap.entries.find { entry ->
+                entry.value == it
+            }?.key
+
+            //Todo 친구 위치 마커 클릭시 : 이동 + 바텀 시트
+            if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && !clickedMarkerNickname.startsWith("FEED:")) {
+                Toast.makeText(requireContext(), "피드 아님 $clickedMarkerNickname", Toast.LENGTH_SHORT).show()
+            }
+
+            //Todo 피드 마커 클릭시 : 이동 + 피드 바텀 시트
+            if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && clickedMarkerNickname.startsWith("FEED:")) {
+                Toast.makeText(requireContext(), clickedMarkerNickname, Toast.LENGTH_SHORT).show()
+            }
+
+            //Todo 내 위치 마커 클릭시 : 이동만
+            val latLng = it.position
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL)
+            mMap.animateCamera(cameraUpdate)
+            true
+        }
     }
 
     private fun refreshMap(cameraMode: Int) {
@@ -267,7 +289,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     if (response.isSuccessful) {
                         val result = response.body()?.mapFeedList
                         result?.forEach { mapFeed ->
-                            val feedId = mapFeed.feedId
+                            val feedId = "FEED:${mapFeed.feedId}"
                             val imgUrl = mapFeed.imgUrl
                             val location = mapFeed.location
                             val (latitudeStr, longitudeStr) = location.split(",")
@@ -285,26 +307,26 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                             val statusImgUrl = BASIC_IMG_URL
                             val marKerOptions = makeMarkerOptions(latLng, imgUrl, statusImgUrl)
-                            markerOptionsMap[feedId.toString()] = marKerOptions
+                            markerOptionsMap[feedId] = marKerOptions
 
-                            val existingMarker = markersMap[feedId.toString()]
+                            val existingMarker = markersMap[feedId]
                             if (existingMarker != null) {
                                 animateMarkerTo(existingMarker, marKerOptions.position)
                             } else {
                                 val newMarker = mMap.addMarker(marKerOptions)!!
-                                markersMap[feedId.toString()] = newMarker
+                                markersMap[feedId] = newMarker
                             }
                         }
 
                         if (result != null) {
-                            markersMap.filterKeys { it != currentNickname && !result.any { feed -> feed.feedId.toString() == it } }
+                            markersMap.filterKeys { it != currentNickname && !result.any { feed -> "FEED:${feed.feedId}" == it } }
                                 .forEach { (nickname, marker) ->
                                     marker.remove()
                                     markersMap.remove(nickname)
                                 }
                         }
                         if (result != null) {
-                            markerOptionsMap.filterKeys { it != currentNickname && !result.any { feed -> feed.feedId.toString() == it } }
+                            markerOptionsMap.filterKeys { it != currentNickname && !result.any { feed -> "FEED:${feed.feedId}" == it } }
                                 .forEach { (nickname, _) ->
                                     markerOptionsMap.remove(nickname)
                                 }
@@ -341,7 +363,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     if (response.isSuccessful) {
                         val result = response.body()?.mapFeedList
                         result?.forEach { mapFeed ->
-                            val feedId = mapFeed.feedId
+                            val feedId = "FEED:${mapFeed.feedId}"
                             val imgUrl = mapFeed.imgUrl
                             val location = mapFeed.location
                             val (latitudeStr, longitudeStr) = location.split(",")
@@ -356,29 +378,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             if (!::markerOptionsMap.isInitialized) {
                                 markerOptionsMap = mutableMapOf<String, MarkerOptions>()
                             }
-
                             val statusImgUrl = BASIC_IMG_URL
                             val marKerOptions = makeMarkerOptions(latLng, imgUrl, statusImgUrl)
-                            markerOptionsMap[feedId.toString()] = marKerOptions
+                            markerOptionsMap[feedId] = marKerOptions
 
-                            val existingMarker = markersMap[feedId.toString()]
+                            val existingMarker = markersMap[feedId]
                             if (existingMarker != null) {
                                 animateMarkerTo(existingMarker, marKerOptions.position)
                             } else {
                                 val newMarker = mMap.addMarker(marKerOptions)!!
-                                markersMap[feedId.toString()] = newMarker
+                                markersMap[feedId] = newMarker
                             }
                         }
 
                         if (result != null) {
-                            markersMap.filterKeys { it != currentNickname && !result.any { feed -> feed.feedId.toString() == it } }
+                            markersMap.filterKeys { it != currentNickname && !result.any { feed -> "FEED:${feed.feedId}" == it } }
                                 .forEach { (nickname, marker) ->
                                     marker.remove()
                                     markersMap.remove(nickname)
                                 }
                         }
                         if (result != null) {
-                            markerOptionsMap.filterKeys { it != currentNickname && !result.any { feed -> feed.feedId.toString() == it } }
+                            markerOptionsMap.filterKeys { it != currentNickname && !result.any { feed -> "FEED:${feed.feedId}" == it } }
                                 .forEach { (nickname, _) ->
                                     markerOptionsMap.remove(nickname)
                                 }
