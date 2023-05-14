@@ -18,6 +18,7 @@ class LocationSocket(context: Context) {
     private var url = "ws://k8b305.p.ssafy.io/location"
     private val sharedManager: SharedManager by lazy { SharedManager(context) }
     private lateinit var webSocket: WebSocket
+    var isConnected = false
 
     fun connection() {
         val request = Request.Builder()
@@ -27,6 +28,7 @@ class LocationSocket(context: Context) {
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 Log.d("LocationSocket", "****onOpen****")
+                isConnected = true
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -63,6 +65,9 @@ class LocationSocket(context: Context) {
     }
 
     fun sendLocation(userLocation: UserLocation) {
+        if (!isConnected) {
+            return
+        }
         val nickname = userLocation.nickname
         val latitude = userLocation.latitude
         val longitude = userLocation.longitude
@@ -80,6 +85,7 @@ class LocationSocket(context: Context) {
     }
 
     fun disconnect() {
+        isConnected = false
         webSocket.close(1000, "disconnect")
         Log.d("LocationSocket", "****disconnect****")
     }
