@@ -27,6 +27,7 @@ const val SLEEP_IMG_URL =
 const val MAP_MODE = 1
 const val FEED_MODE = 2
 const val FRIEND_FEED_MODE = 3
+const val DIALOG_MODE = 4
 
 // Camera Mode
 const val ZOOM_LEVEL = 15f

@@ -21,8 +21,6 @@ import retrofit2.Response
 
 
 class FriendListBottomSheetFragment : BottomSheetDialogFragment() {
-    private lateinit var mapProfileAdapter: MapProfileAdapter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -47,7 +45,9 @@ class FriendListBottomSheetFragment : BottomSheetDialogFragment() {
                     val layoutManager = LinearLayoutManager(context)
                     recyclerView.layoutManager = layoutManager
                     recyclerView.setHasFixedSize(true)
-                    mapProfileAdapter = MapProfileAdapter(friendList)
+                    val mapProfileAdapter = MapProfileAdapter(friendList) { clickedItem ->
+                        (parentFragment as? MapFragment)?.onItemClicked(clickedItem)
+                    }
                     recyclerView.adapter = mapProfileAdapter
 
                     recyclerView.post {

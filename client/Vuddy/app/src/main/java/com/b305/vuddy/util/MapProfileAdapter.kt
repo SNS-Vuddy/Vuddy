@@ -11,7 +11,7 @@ import com.b305.vuddy.R
 import com.b305.vuddy.model.FriendProfile
 import com.bumptech.glide.Glide
 
-class MapProfileAdapter(private val profileList: ArrayList<FriendProfile>) : RecyclerView.Adapter<MapProfileAdapter.CustomViewHolder>() {
+class MapProfileAdapter(private val profileList: ArrayList<FriendProfile>, private val onItemClicked: (String) -> Unit) : RecyclerView.Adapter<MapProfileAdapter.CustomViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_list_item, parent, false)
@@ -26,6 +26,9 @@ class MapProfileAdapter(private val profileList: ArrayList<FriendProfile>) : Rec
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         val currentItem = profileList[position]
+        holder.itemView.setOnClickListener {
+            onItemClicked(currentItem.nickname)
+        }
         val defaultProfile = R.drawable.man
         Glide.with(holder.itemView)
             .load(currentItem.profileImage) // 불러올 이미지 url
@@ -35,10 +38,6 @@ class MapProfileAdapter(private val profileList: ArrayList<FriendProfile>) : Rec
             .circleCrop() // 동그랗게 자르기
             .into(holder.profileImage) // 이미지를 넣을 뷰
         holder.nickname.text = currentItem.nickname
-
-        holder.itemView.setOnClickListener {
-            Toast.makeText(holder.itemView.context, "닉네임: ${currentItem.nickname}", Toast.LENGTH_SHORT).show()
-        }
     }
 
     override fun getItemCount(): Int {
