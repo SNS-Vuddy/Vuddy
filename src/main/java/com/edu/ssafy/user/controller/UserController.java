@@ -89,4 +89,12 @@ public class UserController {
         return new CommonRes(200, "프로필 이미지 수정 성공");
     }
 
+    // 피드 공개 여부 수정 api
+    @PostMapping("/profile/edit/privacy")
+    public CommonRes editPrivacy(@RequestHeader("x_nickname") String encodedNickname) {
+        String userNickname = NicknameUtil.decodeNickname(encodedNickname);
+        userService.changeUserPrivacy(userNickname);
+        return new CommonRes(200, "피드 공개 여부 수정 성공");
+    }
+
 }

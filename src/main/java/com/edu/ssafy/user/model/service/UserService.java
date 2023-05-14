@@ -6,12 +6,14 @@ import com.edu.ssafy.user.model.dto.UserWithFriendDto;
 import com.edu.ssafy.user.model.dto.response.UserFeedsSummaryRes;
 import com.edu.ssafy.user.model.dto.response.UserProfileWithFeedsRes;
 import com.edu.ssafy.user.model.entity.User;
+import com.edu.ssafy.user.model.entity.enums.FeedPrivacy;
 import com.edu.ssafy.user.model.repository.FeedRepository;
 import com.edu.ssafy.user.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,6 +43,7 @@ public class UserService {
                 .profileImage(user.getProfileImage())
                 .statusMessage(user.getStatusMessage())
                 .has_new_alarm(hasNewAlarm)
+                .canISeeFeeds(user.getFeedPrivacy() == FeedPrivacy.PUBLIC)
                 .feeds(briefFeedIngoDtoList)
                 .build();
     }
@@ -59,12 +62,14 @@ public class UserService {
 
         List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(targetUser.getId());
 
+        boolean canISeeFeeds = targetUser.getFeedPrivacy() == FeedPrivacy.PUBLIC;
+
         return UserProfileWithFeedsRes.builder()
                 .nickname(userWithFriendDto.getTargetUser().getNickname())
                 .profileImage(userWithFriendDto.getTargetUser().getProfileImage())
                 .statusMessage(userWithFriendDto.getTargetUser().getStatusMessage())
-                .feeds(briefFeedIngoDtoList)
-                .canISeeFeeds(true)
+                .feeds(canISeeFeeds ? briefFeedIngoDtoList : new ArrayList<>())
+                .canISeeFeeds(canISeeFeeds)
                 .isFriend(friendStatus)
                 .build();
     }
@@ -88,5 +93,11 @@ public class UserService {
         User user = userRepository.findByNickname(userNickname);
         user.changeProfileImage(imgUrl);
 
+    }
+
+    @Transactional
+    public void changeUserPrivacy(String userNickname) {
+        User user = userRepository.findByNickname(userNickname);
+        user.changePrivacy();
     }
 }
