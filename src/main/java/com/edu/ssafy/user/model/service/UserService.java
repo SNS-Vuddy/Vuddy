@@ -62,7 +62,7 @@ public class UserService {
 
         List<BriefFeedIngoDto> briefFeedIngoDtoList = feedRepository.findAllBriefInfoByUserId(targetUser.getId());
 
-        boolean canISeeFeeds = targetUser.getFeedPrivacy() == FeedPrivacy.PUBLIC;
+        boolean canISeeFeeds = targetUser.getFeedPrivacy() == FeedPrivacy.PUBLIC || friendStatus.equals("Yes");
 
         return UserProfileWithFeedsRes.builder()
                 .nickname(userWithFriendDto.getTargetUser().getNickname())
