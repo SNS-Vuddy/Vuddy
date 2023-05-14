@@ -10,12 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
+import com.b305.vuddy.model.FriendProfile
 import com.b305.vuddy.model.MapFeedResponse
 import com.b305.vuddy.model.User
 import com.b305.vuddy.model.UserLocation
@@ -381,75 +385,80 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             binding.fabFeedMode.backgroundTintList = fabUnselect
             binding.fabFriendFeedMode.backgroundTintList = fabSelect
 
+
+            val friendListBottomSheetFragment = FriendListBottomSheetFragment()
+            friendListBottomSheetFragment.show(childFragmentManager, friendListBottomSheetFragment.tag)
+
+
             //Todo API 테스트 인자 지금 admin1인데 나중에 바꿔야 함
             val call = RetrofitAPI.mapFeedService
-            call.getOneFriendFeed("admin1").enqueue(object : Callback<MapFeedResponse> {
-                override fun onResponse(call: Call<MapFeedResponse>, response: Response<MapFeedResponse>) {
-                    if (response.isSuccessful) {
-                        val result = response.body()?.mapFeedList
-                        result?.forEach { mapFeed ->
-                            val feedId = "FEED:${mapFeed.feedId}"
-                            val imgUrl = mapFeed.imgUrl
-                            val location = mapFeed.location
-                            val (latitudeStr, longitudeStr) = location.split(",")
-                            val latitude: Double = latitudeStr.trim().toDouble()
-                            val longitude: Double = longitudeStr.trim().toDouble()
-                            val latLng = LatLng(latitude, longitude)
-                            Log.d("MapFragment", "****FriendFeedMode result : $feedId, $imgUrl, $latLng")
-
-                            if (!::locationProvider.isInitialized) {
-                                locationProvider = LocationProvider(requireContext())
-                            }
-                            if (!::markersMap.isInitialized) {
-                                markersMap = mutableMapOf<String, Marker>()
-                            }
-                            if (!::markerOptionsMap.isInitialized) {
-                                markerOptionsMap = mutableMapOf<String, MarkerOptions>()
-                            }
-                            if (!::markerBitmapMap.isInitialized) {
-                                markerBitmapMap = mutableMapOf<String, Bitmap>()
-                            }
-                            val statusImgUrl = BASIC_IMG_URL
-                            val marKerOptions = makeMarkerOptions(feedId, latLng, imgUrl, statusImgUrl)
-                            markerOptionsMap[feedId] = marKerOptions
-
-                            val existingMarker = markersMap[feedId]
-                            if (existingMarker != null) {
-                                animateMarkerTo(existingMarker, marKerOptions.position)
-                            } else {
-                                val newMarker = mMap.addMarker(marKerOptions)!!
-                                markersMap[feedId] = newMarker
-                            }
-                        }
-
-                        if (result != null) {
-                            markersMap.filterKeys { it != currentNickname && !result.any { feed -> "FEED:${feed.feedId}" == it } }
-                                .forEach { (nickname, marker) ->
-                                    marker.remove()
-                                    markersMap.remove(nickname)
-                                }
-                        }
-                        if (result != null) {
-                            markerOptionsMap.filterKeys { it != currentNickname && !result.any { feed -> "FEED:${feed.feedId}" == it } }
-                                .forEach { (nickname, _) ->
-                                    markerOptionsMap.remove(nickname)
-                                }
-                        }
-
-                        refreshMap(ANIMATE_CAMERA)
-                    } else {
-                        val errorMessage = JSONObject(response.errorBody()?.string()!!)
-                        Log.d("MapFragment", "****FriendFeedMode errorMessage : $errorMessage")
-                        Toast.makeText(context, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<MapFeedResponse>, t: Throwable) {
-                    Log.d("MapFragment", "****FriendFeedMode onFailure : ${t.message}")
-                    Toast.makeText(context, "피드 불러오기 실패", Toast.LENGTH_SHORT).show()
-                }
-
-            })
+//            call.getOneFriendFeed("admin1").enqueue(object : Callback<MapFeedResponse> {
+//                override fun onResponse(call: Call<MapFeedResponse>, response: Response<MapFeedResponse>) {
+//                    if (response.isSuccessful) {
+//                        val result = response.body()?.mapFeedList
+//                        result?.forEach { mapFeed ->
+//                            val feedId = "FEED:${mapFeed.feedId}"
+//                            val imgUrl = mapFeed.imgUrl
+//                            val location = mapFeed.location
+//                            val (latitudeStr, longitudeStr) = location.split(",")
+//                            val latitude: Double = latitudeStr.trim().toDouble()
+//                            val longitude: Double = longitudeStr.trim().toDouble()
+//                            val latLng = LatLng(latitude, longitude)
+//                            Log.d("MapFragment", "****FriendFeedMode result : $feedId, $imgUrl, $latLng")
+//
+//                            if (!::locationProvider.isInitialized) {
+//                                locationProvider = LocationProvider(requireContext())
+//                            }
+//                            if (!::markersMap.isInitialized) {
+//                                markersMap = mutableMapOf<String, Marker>()
+//                            }
+//                            if (!::markerOptionsMap.isInitialized) {
+//                                markerOptionsMap = mutableMapOf<String, MarkerOptions>()
+//                            }
+//                            if (!::markerBitmapMap.isInitialized) {
+//                                markerBitmapMap = mutableMapOf<String, Bitmap>()
+//                            }
+//                            val statusImgUrl = BASIC_IMG_URL
+//                            val marKerOptions = makeMarkerOptions(feedId, latLng, imgUrl, statusImgUrl)
+//                            markerOptionsMap[feedId] = marKerOptions
+//
+//                            val existingMarker = markersMap[feedId]
+//                            if (existingMarker != null) {
+//                                animateMarkerTo(existingMarker, marKerOptions.position)
+//                            } else {
+//                                val newMarker = mMap.addMarker(marKerOptions)!!
+//                                markersMap[feedId] = newMarker
+//                            }
+//                        }
+//
+//                        if (result != null) {
+//                            markersMap.filterKeys { it != currentNickname && !result.any { feed -> "FEED:${feed.feedId}" == it } }
+//                                .forEach { (nickname, marker) ->
+//                                    marker.remove()
+//                                    markersMap.remove(nickname)
+//                                }
+//                        }
+//                        if (result != null) {
+//                            markerOptionsMap.filterKeys { it != currentNickname && !result.any { feed -> "FEED:${feed.feedId}" == it } }
+//                                .forEach { (nickname, _) ->
+//                                    markerOptionsMap.remove(nickname)
+//                                }
+//                        }
+//
+//                        refreshMap(ANIMATE_CAMERA)
+//                    } else {
+//                        val errorMessage = JSONObject(response.errorBody()?.string()!!)
+//                        Log.d("MapFragment", "****FriendFeedMode errorMessage : $errorMessage")
+//                        Toast.makeText(context, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<MapFeedResponse>, t: Throwable) {
+//                    Log.d("MapFragment", "****FriendFeedMode onFailure : ${t.message}")
+//                    Toast.makeText(context, "피드 불러오기 실패", Toast.LENGTH_SHORT).show()
+//                }
+//
+//            })
         }
 
         binding.ivFriend.setOnClickListener {
@@ -496,3 +505,4 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         supportMapFragment.getMapAsync(this)
     }
 }
+
