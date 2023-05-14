@@ -1,22 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
+    android:id="@+id/feed_detail_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.FeedDetailFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+        <View
+            android:id="@+id/view"
+            android:layout_width="100dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/light_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <LinearLayout
+            android:id="@+id/linearLayout5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view">
 
-    <View
-        android:background="@color/grey"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_marginBottom="5dp"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/myfeed_user_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="16dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/man"
+                app:civ_border_color="#A286DB"
+                app:civ_border_overlay="true"
+                app:civ_border_width="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="65dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toEndOf="@+id/myfeed_user_image"
+                tools:layout_editor_absoluteY="87dp">
+
+                <TextView
+                    android:id="@+id/myfeed_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="29dp"
+                    android:layout_marginStart="16dp"
+                    android:text="nickname" />
+
+                <TextView
+                    android:id="@+id/myfeed_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="주소" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/myfeed_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="56dp"
+                android:text="날짜2023.05.15" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="56dp"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/icon_feed_udbtn" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/myfeed_image"
+            android:layout_width="320dp"
+            android:layout_height="240dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+
+        <LinearLayout
+            android:id="@+id/title_like_box"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/myfeed_image">
+
+            <TextView
+                android:id="@+id/myfeed_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="제목이 길어집니다 미리 써놓음"
+                tools:layout_editor_absoluteX="46dp"
+                tools:layout_editor_absoluteY="434dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:paddingRight="5dp"
+                android:visibility="visible"
+                android:id="@+id/myfeed_like_false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_like" />
+
+            <ImageView
+                android:paddingRight="5dp"
+                android:visibility="gone"
+                android:id="@+id/myfeed_like_true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_like_purple" />
+
+            <TextView
+                android:id="@+id/myfeed_like_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/myfeed_content"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="내용"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_like_box" />
+
+        <TextView
+            android:id="@+id/myfeed_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="44dp"
+            android:text="댓글 0개"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/myfeed_content" />
+
+        <View
+            android:layout_width="320dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/light_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/myfeed_comment" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

@@ -103,6 +103,9 @@
         <action
             android:id="@+id/action_profileFragment_to_writeFeedFragment"
             app:destination="@id/writeFeedFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_alarmFragment"
+            app:destination="@id/alarmFragment" />
     </fragment>
     <activity
         android:id="@+id/signupActivity"
@@ -127,4 +130,9 @@
             android:id="@+id/action_writeFeedFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/alarmFragment"
+        android:name="com.b305.vuddy.fragment.AlarmFragment"
+        android:label="fragment_alarm"
+        tools:layout="@layout/fragment_alarm" />
 </navigation>

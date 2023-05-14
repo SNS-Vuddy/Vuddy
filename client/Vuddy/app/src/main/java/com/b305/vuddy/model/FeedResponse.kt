@@ -10,6 +10,7 @@ data class FeedResponse(
 data class FeedData(
     val feedId: Int,
     val nickname: String,
+    val title: String,
     val content: String,
     val location: String,
     val mainImg: String,
@@ -33,6 +34,10 @@ data class Comment(
 
 data class Feeds(
     val feedId : Int,
-    val content : String,
-    val mainImg : String,
+    val imgUrl : String,
+    val location : String,
+)
+data class Alarm(
+    val nickname: String,
+    val profileImage : String,
 )

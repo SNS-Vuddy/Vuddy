@@ -5,6 +5,7 @@ import com.b305.vuddy.service.AuthService
 import com.b305.vuddy.service.FeedService
 import com.b305.vuddy.service.FriendService
 import com.b305.vuddy.service.MapFeedService
+import com.b305.vuddy.service.UserService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -71,5 +72,9 @@ object RetrofitAPI {
 
     val mapFeedService: MapFeedService by lazy {
         retrofit.create((MapFeedService::class.java))
+    }
+
+    val userService: UserService by lazy {
+        retrofit.create((UserService::class.java))
     }
 }
