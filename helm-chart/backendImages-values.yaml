@@ -10,7 +10,7 @@ backend:
   user:
     image:
       pullPolicy: Always
-      tag: "9fa08be82dd6cf6e79fc4e1be81353965d51661d"
+      tag: "fe5bfb38cba7f11e88be35bb60c883ea6209bb62"
   feed:
     image:
       pullPolicy: Always
