@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.b305.vuddy.R
@@ -24,14 +25,29 @@ class FriendMarkerBottomSheetFragment : BottomSheetDialogFragment() {
         val nickname = arguments?.getString(ARG_NICKNAME)
         val iconBitmap = arguments?.getParcelable<Bitmap>(ARG_ICON_BITMAP)
         super.onViewCreated(view, savedInstanceState)
-        val imageView: ImageView = view.findViewById(R.id.iv_profile_img)
+        val imageViewProfileImg: ImageView = view.findViewById(R.id.iv_profile_img)
         val textViewNickname: TextView = view.findViewById(R.id.tv_profile_nickname)
 
         if (iconBitmap != null) {
-            imageView.setImageBitmap(iconBitmap)
+            imageViewProfileImg.setImageBitmap(iconBitmap)
         }
 
         textViewNickname.text = nickname
+
+
+        val buttonGoToProfile = view.findViewById<Button>(R.id.btn_go_to_profile)
+        buttonGoToProfile.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("nickname", nickname)
+            val friendProfileFragment = FriendProfileFragment()
+            friendProfileFragment.arguments = bundle
+
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, friendProfileFragment)
+                .addToBackStack(null)
+                .commit()
+            dismiss()
+        }
     }
 
     companion object {

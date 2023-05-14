@@ -116,7 +116,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             //Todo 피드 마커 클릭시 : 피드 바텀 시트
             if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && clickedMarkerNickname.startsWith("FEED:")) {
-                Toast.makeText(requireContext(), clickedMarkerNickname, Toast.LENGTH_SHORT).show()
+                val feedId = clickedMarkerNickname.split(":")[1].toInt()
+                val feedMarkerBottomSheetFragment = FeedMarkerBottomSheetFragment.newInstance(feedId)
+                feedMarkerBottomSheetFragment.show(requireActivity().supportFragmentManager, feedMarkerBottomSheetFragment.tag)
             }
 
             if (clickedMarkerNickname == currentNickname) {
