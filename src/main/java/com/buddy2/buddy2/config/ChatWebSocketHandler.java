@@ -281,7 +281,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 //        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 //            chatMessage.setTime(formatDateTime(timeNow));
             System.out.println(objectMapper.writeValueAsString(chatMessage));
-            chatService.sendMessage(chatMessage.getNickname(), objectMapper.writeValueAsString(chatMessage));
+
+            System.out.println("------- 3 --------");
+            System.out.println(message);
+            System.out.println("------- 3 --------");
+            System.out.println(chatMessage.getChatId());
+            CurrentChatrooms currentChatroom = currentChatroomsMap.get(chatMessage.getChatId());
+            currentChatroom.chatroomSendMessage(objectMapper.writeValueAsString(chatMessage));
+
+//            chatService.sendMessage(chatMessage.getNickname(), objectMapper.writeValueAsString(chatMessage));
         }
     }
 
