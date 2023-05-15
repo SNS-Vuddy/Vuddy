@@ -19,4 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE (uf.requester_id = :userId OR uf.receiver_id = :userId) AND uf.uf_status = \"ACCEPTED\" " +
             "AND u.user_id != :userId ", nativeQuery = true)
     List<String> findFriends(@Param("userId") Long userId);
+
+    @Query(value = "SELECT u.u_nickname FROM user u", nativeQuery = true)
+    List<String> findAllUsers();
 }

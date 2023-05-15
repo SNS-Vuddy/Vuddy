@@ -1,6 +1,7 @@
 package com.buddy3.buddy3.config;
 
 import com.buddy3.buddy3.data.LocationMessageData;
+import com.buddy3.buddy3.distance.GPS;
 import com.buddy3.buddy3.domain.CurrentFriends;
 import com.buddy3.buddy3.dto.LocationMessageReceive;
 import com.buddy3.buddy3.entity.User;
@@ -38,6 +39,9 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
     @Autowired
     private RedisTemplate<String, String> redisLocationTemplate;
+
+    @Autowired
+    private GPS gps;
 
 
     private String formatDateTime(LocalDateTime dateTime) {
@@ -152,17 +156,24 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
             LocalDateTime timeNow2 = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
             locationMessage.setTime(formatDateTime(timeNow2));
             System.out.println("------- 3 --------");
-            System.out.println(locationMessage);
+            System.out.println(objectMapper.writeValueAsString(locationMessage));
             System.out.println("------- 3 --------");
             CurrentFriends currentFriends = currentUsersCurrentFriendsMap.get(locationMessage.getNickname());
             System.out.println(currentFriends);
-            currentFriends.currentFriendsSendMessage(objectMapper.writeValueAsString(locationMessage));
+            if (currentFriends != null) {
+                currentFriends.currentFriendsSendMessage(objectMapper.writeValueAsString(locationMessage));
+            }
+            else {
+                log.warn("currentFriends : null - {}", locationMessage.getNickname());
+            }
 //            locationService.sendMessage(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
-            redisLocationTemplate.opsForList().rightPush(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
+            String redisData = locationMessage.getLatitude() + " " + locationMessage.getLongitude() + " " + locationMessage.getTime();
+            redisLocationTemplate.opsForList().rightPush(locationMessage.getNickname(), redisData);
 //            List<String> locationMessageStringList = redisLocationTemplate.opsForList().range(locationMessage.getNickname(), 0, -1);
 
             // redis에 추가된 내용 제거
-            redisLocationTemplate.opsForList().rightPop(locationMessage.getNickname());
+//            redisLocationTemplate.opsForList().rightPop(locationMessage.getNickname());
+//            System.out.println(gps.getDistance("36.348094", "127.300050", locationMessage.getLatitude(), locationMessage.getLongitude()));
 //            log.warn(redisLocationTemplate.opsForList().rightPop(locationMessage.getNickname()));
         }
     }
