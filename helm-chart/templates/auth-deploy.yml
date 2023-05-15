@@ -35,15 +35,15 @@ spec:
           #   limits:
           #     cpu: 100m
           #     memory: 100Mi
-          # livenessProbe:
-          #   httpGet:
-          #     path: /auth/auth/health
-          #     port: 8080
-          #   initialDelaySeconds: 5
-          #   timeoutSeconds: 5
-          #   successThreshold: 1
-          #   failureThreshold: 3
-          #   periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /auth/health
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            periodSeconds: 10
           env:
             - name: MYSQL_URL
               value: {{ .Values.mysql.url }}
