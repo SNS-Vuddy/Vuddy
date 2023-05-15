@@ -44,6 +44,7 @@ public class FriendRepositoryImpl implements FriendRepositoryCustom {
                         (user.nickname.contains(nickname))
                         .and(user.id.ne(myUser.getId()))
                 )
+                .orderBy(user.nickname.asc())
                 .fetch();
 
         List<NicknameImgDto> friends = results.stream()
