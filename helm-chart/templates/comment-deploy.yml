@@ -33,7 +33,7 @@ spec:
           #     memory: 100Mi
           livenessProbe:
             httpGet:
-              path: /user/opened/health
+              path: /comment/opened/health
               port: 8080
             initialDelaySeconds: 5
             timeoutSeconds: 5
