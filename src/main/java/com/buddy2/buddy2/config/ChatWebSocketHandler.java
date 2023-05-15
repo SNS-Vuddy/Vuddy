@@ -2,6 +2,10 @@ package com.buddy2.buddy2.config;
 
 import com.buddy2.buddy2.data.ChatMessageData;
 import com.buddy2.buddy2.domain.CurrentChatrooms;
+import com.buddy2.buddy2.dto.MessageSendDTO;
+import com.buddy2.buddy2.dto.MessageSendInnerDTO;
+import com.buddy2.buddy2.dto.MessageSendJoin;
+import com.buddy2.buddy2.dto.MessageSendJoinInnerDTO;
 import com.buddy2.buddy2.entity.Chatroom;
 import com.buddy2.buddy2.entity.User;
 import com.buddy2.buddy2.entity.UserChatroom;
@@ -14,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
@@ -55,8 +60,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 //    @Autowired
 //    private RedisTemplate<String, Object> redisTemplate;
 //
-//    @Autowired
-//    private RedisTemplate<String, String> redisMessageTemplate;
+    @Autowired
+    private RedisTemplate<String, String> redisMessageTemplate;
 
     @Autowired
     private UserRepository userRepository;
@@ -127,15 +132,20 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         ChatMessageData clientMessageData = objectMapper.readValue(message.getPayload(), ChatMessageData.class);
 
         ChatMessageData chatMessage = new ChatMessageData();
-        chatMessage.setNickname(clientMessageData.getNickname());
-        chatMessage.setType(clientMessageData.getType());
 
+        MessageSendDTO messageSendDTO = new MessageSendDTO();
+        messageSendDTO.setType(clientMessageData.getType());
+
+        MessageSendInnerDTO messageSendInnerDTO = new MessageSendInnerDTO();
+        messageSendInnerDTO.setMessage(clientMessageData.getMessage());
+
+        MessageSendJoin messageSendJoin = new MessageSendJoin();
+        messageSendJoin.setType(clientMessageData.getType());
+        MessageSendJoinInnerDTO messageSendJoinInnerDTO = new MessageSendJoinInnerDTO();
 
         String messageType = chatMessage.getType();
-        System.out.println(messageType);
-        System.out.println(clientMessageData.getType());
-        System.out.println(messageType == "OPEN");
         String roomTitle = clientMessageData.getChatroomTitle();
+
         if (messageType.equals("OPEN")) {
             Long chatNumber = 0L;
             Chatroom lastChatroom = chatroomRepository.findFirstByOrderByChatIdDesc();
@@ -146,148 +156,129 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             CurrentChatrooms currentChatrooms = CurrentChatrooms.builder()
                     .chatroomTitle(clientMessageData.getChatroomTitle())
                     .chatId(chatNumber)
-                    .nickname(clientMessageData.getNickname())
+                    .nickname(clientMessageData.getNickname1())
                     .webSocketSession(session)
                     .build();
             currentChatroomsMap.put(chatNumber,currentChatrooms);
-            chatMessage.setChatId(chatNumber);
-            System.out.println(chatMessage.getChatId());
-            chatMessage.setMessage(clientMessageData.getMessage());
-            chatMessage.setNickname(clientMessageData.getNickname());
+            messageSendInnerDTO.setChatId(chatNumber);
+
             nowLocation = chatNumber;
 
             LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
-            chatMessage.setTime(formatDateTime(timeNow));
-            chatMessage.setChatroomTitle(clientMessageData.getChatroomTitle());
-            chatMessage.setType(clientMessageData.getType());
+            messageSendInnerDTO.setTime(formatDateTime(timeNow));
+            messageSendInnerDTO.setNickname(clientMessageData.getNickname2());
 
             Chatroom chatroom = Chatroom.builder()
-                    .lastChat(chatMessage.getMessage())
-                    .nickname(chatMessage.getNickname())
-                    .time(chatMessage.getTime())
-                    .title(chatMessage.getChatroomTitle())
+                    .lastChat(messageSendInnerDTO.getMessage())
+                    .nickname(clientMessageData.getNickname1())
+                    .time(messageSendInnerDTO.getTime())
+                    .title(clientMessageData.getNickname2())
                     .build();
             Chatroom savedChatroom = chatroomRepository.save(chatroom);
-            User user = userRepository.findByNickname(chatMessage.getNickname());
-            UserChatroom userChatroom = UserChatroom.builder()
+
+            User user1 = userRepository.findByNickname(clientMessageData.getNickname1());
+            UserChatroom userChatroom1 = UserChatroom.builder()
                     .chatId(savedChatroom.getChatId())
-                    .userId(user.getUserId())
+                    .userId(user1.getUserId())
                     .build();
-            userChatroomRepository.save(userChatroom);
+            User user2 = userRepository.findByNickname(clientMessageData.getNickname2());
+            UserChatroom userChatroom2 = UserChatroom.builder()
+                    .chatId(savedChatroom.getChatId())
+                    .userId(user2.getUserId())
+                    .build();
+            userChatroomRepository.save(userChatroom1);
+            userChatroomRepository.save(userChatroom2);
         }
         else if (messageType.equals("JOIN")) {
             CurrentChatrooms currentChatrooms = currentChatroomsMap.get(clientMessageData.getChatId());
             if (currentChatrooms == null) {
-                for (Chatroom room : chatroomRepository.findByChatId(clientMessageData.getChatId())) {
-                    if (Objects.equals(room.getChatId(), clientMessageData.getChatId())) {
-                        currentChatrooms = CurrentChatrooms.builder()
-                                .chatId(room.getChatId())
-                                .chatroomTitle(room.getTitle())
-                                .nickname(clientMessageData.getNickname())
-                                .webSocketSession(session)
-                                .build();
-                        chatMessage.setChatroomTitle(currentChatrooms.getChatroomTitle());
-                        currentChatroomsMap.put(room.getChatId(), currentChatrooms);
-                        nowLocation = room.getChatId();
-                        break;
-                    }
+                Chatroom room = chatroomRepository.findByChatId(clientMessageData.getChatId());
+                if (Objects.equals(room.getChatId(), clientMessageData.getChatId())) {
+                    currentChatrooms = CurrentChatrooms.builder()
+                            .chatId(room.getChatId())
+                            .chatroomTitle(room.getTitle())
+                            .nickname(clientMessageData.getNickname1())
+                            .webSocketSession(session)
+                            .build();
+                    currentChatroomsMap.put(room.getChatId(), currentChatrooms);
+                    nowLocation = room.getChatId();
                 }
             } else {
-                currentChatrooms.addChatMember(clientMessageData.getNickname(), session);
-                chatMessage.setChatroomTitle(currentChatrooms.getChatroomTitle());
+                currentChatrooms.addChatMember(clientMessageData.getNickname1(), session);
                 currentChatroomsMap.replace(clientMessageData.getChatId(), currentChatrooms);
                 nowLocation = clientMessageData.getChatId();
             }
             if (currentChatrooms == null) {
-//                log.debug("없는 방에 JOIN 요청");
+                log.warn("없는 방에 JOIN 요청");
                 return;
             }
 
-            chatMessage.setChatId(clientMessageData.getChatId());
-            chatMessage.setMessage(clientMessageData.getMessage());
 
 
 
             LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
-            chatMessage.setTime(formatDateTime(timeNow));
+            messageSendJoinInnerDTO.setChatId(clientMessageData.getChatId());
+            messageSendJoinInnerDTO.setNickname(clientMessageData.getNickname1());
 
-            User user = userRepository.findByNickname(chatMessage.getNickname());
 
-            UserChatroom userChatroom = UserChatroom.builder()
-                    .userId(user.getUserId())
-                    .chatId(currentChatrooms.getChatId())
-                    .build();
+            String redisKey = "chatroom-" + messageSendInnerDTO.getChatId();
+            List<MessageSendInnerDTO> messageList = new ArrayList<>();
+            for (String messageStr : redisMessageTemplate.opsForList().range(redisKey,-20,-1)) {
+                messageList.add(objectMapper.readValue(messageStr, MessageSendInnerDTO.class));
+            }
 
-            userChatroomRepository.save(userChatroom);
+            messageSendJoinInnerDTO.setMessageList(messageList);
+            messageSendJoin.setData(messageSendJoinInnerDTO);
 
-//            RedisMessageDTO messageNow = RedisMessageDTO.builder()
-//                    .chatId(chatMessage.getChatId())
-//                    .content(chatMessage.getMessage())
-//                    .time(chatMessage.getTime())
-//                    .nickname(chatMessage.getNickname())
-//                    .build();
-//            redisMessageTemplate.opsForList().rightPush("chatroomId-" + chatMessage.getChatId().toString(), objectMapper.writeValueAsString(messageNow));
         }
         else if (messageType.equals("LOAD")) {
-            System.out.println(clientMessageData.getNickname());
-            List<Chatroom> chatroomList = chatroomRepository.findWithNickname(clientMessageData.getNickname());
+            System.out.println(clientMessageData.getNickname1());
+            List<Chatroom> chatroomList = chatroomRepository.findWithNickname(clientMessageData.getNickname1());
             chatMessage.setChatId(clientMessageData.getChatId());
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatroomList)));
         }
         else if (messageType.equals("EXIT")) {
             CurrentChatrooms currentChatrooms = currentChatroomsMap.get(nowLocation);
-            currentChatrooms.removeChatMember(clientMessageData.getNickname());
+            currentChatrooms.removeChatMember(clientMessageData.getNickname1());
             nowLocation = 0L;
         }
         else if (messageType.equals("LEAVE")) {
             CurrentChatrooms currentChatrooms = currentChatroomsMap.get(nowLocation);
-            currentChatrooms.removeChatMember(clientMessageData.getNickname());
+            currentChatrooms.removeChatMember(clientMessageData.getNickname1());
             nowLocation = 0L;
         }
         else if (messageType.equals("CHAT")) {
-            chatMessage.setChatId(clientMessageData.getChatId());
-            chatMessage.setMessage(clientMessageData.getMessage());
 
             LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
-            chatMessage.setTime(formatDateTime(timeNow));
-//            RedisMessageDTO messageNow = RedisMessageDTO.builder()
-//                    .chatId(chatMessage.getChatId())
-//                    .content(chatMessage.getMessage())
-//                    .time(chatMessage.getTime())
-//                    .nickname(chatMessage.getNickname())
-//                    .build();
-//            redisMessageTemplate.opsForList().rightPush("chatroom-" + chatMessage.getChatId(), objectMapper.writeValueAsString(messageNow));
-//            List<String> chatroomMessageList = redisMessageTemplate.opsForList().range("chatroom-" + chatMessage.getChatId(), 0,-1);
-//            if (chatroomMessageList.size() >= 50) {
-//                List<Message> messageList = new ArrayList<>();
-//                for (String i : chatroomMessageList) {
-//                    RedisMessageDTO redisMessageDTO = objectMapper.readValue(i, RedisMessageDTO.class);
-//                    Message messageI = Message.builder()
-//                            .chatId(redisMessageDTO.getChatId())
-//                            .content(redisMessageDTO.getContent())
-//                            .nickname(redisMessageDTO.getNickname())
-//                            .time(redisMessageDTO.getTime())
-//                            .build();
-//                    messageList.add(messageI);
-//                }
-//                messageRepository.saveAll(messageList);
-//                redisMessageTemplate.delete("chatroom-" + chatMessage.getChatId());
-//            }
+            messageSendInnerDTO.setTime(formatDateTime(timeNow));
+            messageSendInnerDTO.setChatId(clientMessageData.getChatId());
+            messageSendInnerDTO.setNickname(clientMessageData.getNickname1());
+
+
+            String redisKey = "chatroom-" + messageSendInnerDTO.getChatId();
+            redisMessageTemplate.opsForList().rightPush(redisKey, objectMapper.writeValueAsString(messageSendInnerDTO));
+
         }
         if (!messageType.equals("LOAD")) {
 
-            // 현지 시각을 불러와서 형식에 맞게 집어넣는다.
-//            LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//            chatMessage.setTime(formatDateTime(timeNow));
-            System.out.println(objectMapper.writeValueAsString(chatMessage));
+            if (messageType.equals("JOIN")) {
 
+                System.out.println("------- 3 --------");
+                System.out.println(objectMapper.writeValueAsString(messageSendJoinInnerDTO));
+                System.out.println(objectMapper.writeValueAsString(messageSendJoin));
+                System.out.println("------- 3 --------");
+            }
+
+
+            messageSendDTO.setData(messageSendInnerDTO);
             System.out.println("------- 3 --------");
-            System.out.println(message);
+            System.out.println(objectMapper.writeValueAsString(messageSendInnerDTO));
+            System.out.println(objectMapper.writeValueAsString(messageSendDTO));
             System.out.println("------- 3 --------");
-            System.out.println(chatMessage.getChatId());
             CurrentChatrooms currentChatroom = currentChatroomsMap.get(chatMessage.getChatId());
-            currentChatroom.chatroomSendMessage(objectMapper.writeValueAsString(chatMessage));
+            if (currentChatroom != null) {
+                currentChatroom.chatroomSendMessage(objectMapper.writeValueAsString(messageSendDTO));
+            }
 
 //            chatService.sendMessage(chatMessage.getNickname(), objectMapper.writeValueAsString(chatMessage));
         }

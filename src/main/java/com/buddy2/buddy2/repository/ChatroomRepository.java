@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ChatroomRepository extends JpaRepository<Chatroom, Long> {
-    List<Chatroom> findByChatId(Long chatId);
+    Chatroom findByChatId(Long chatId);
 
 //    @Query(value = "SELECT * FROM chatroom ORDER BY chat_id DESC LIMIT 1", nativeQuery = true)
     Chatroom findFirstByOrderByChatIdDesc();
