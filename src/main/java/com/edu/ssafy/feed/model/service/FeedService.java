@@ -40,14 +40,9 @@ public class FeedService {
 
     public List<UserFeedsRes> changeAllFeedsToDto(List<Feed> allFeeds) {
 
-        List<UserFeedsRes> userFeedsResList = new ArrayList<>();
-
-        for (Feed feed : allFeeds) {
-            UserFeedsRes userFeedsRes = new UserFeedsRes(feed.getId(), feed.getMainImg(), feed.getLocation());
-            userFeedsResList.add(userFeedsRes);
-        }
-
-        return userFeedsResList;
+        return allFeeds.stream()
+                .map(feed -> new UserFeedsRes(feed.getId(), feed.getMainImg(), feed.getLocation()))
+                .collect(Collectors.toList());
     }
 
     public SingleFeedRes findOneByFeedId(Long feedId, String nickname) {
@@ -77,9 +72,12 @@ public class FeedService {
                 .map(FeedPictures::getImgUrl)
                 .collect(Collectors.toList());
 
+        User user = userRepository.findByNickname(nickname);
+
         return SingleFeedRes.builder()
                 .feedId(feed.getId())
                 .nickname(feed.getNickname())
+                .profileImg(user.getProfileImage())
                 .title(feed.getTitle())
                 .content(feed.getContent())
                 .location(feed.getLocation())
@@ -114,12 +112,9 @@ public class FeedService {
                 .collect(Collectors.toMap(User::getNickname, user -> user));
 
         List<TaggedFriends> newTaggedFriends = userNicknames.stream()
-                .map(tag -> {
-//                    User taggedUser = userRepository.findByNickname(tag);
-                    User taggedUser = userMap.get(tag);
-                    return req.toTagEntity(feed, taggedUser);
-                })
+                .map(tag -> req.toTagEntity(feed, userMap.get(tag)))
                 .collect(Collectors.toList());
+
         taggedFriendsRepository.saveAll(newTaggedFriends);
     }
 
