@@ -72,8 +72,6 @@ public class FeedService {
                 .map(FeedPictures::getImgUrl)
                 .collect(Collectors.toList());
 
-        User user = userRepository.findByNickname(nickname);
-
         return SingleFeedRes.builder()
                 .feedId(feed.getId())
                 .nickname(feed.getNickname())
