@@ -19,14 +19,15 @@ import com.bumptech.glide.Glide
 class ProfileAdapter(private val profileLsit: ArrayList<FriendProfile>) : RecyclerView.Adapter<ProfileAdapter.CustomViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_list_item, parent, false)
-        return CustomViewHolder(view).apply {
-            itemView.setOnClickListener {
-                val curPos : Int = bindingAdapterPosition
-                val profile : FriendProfile = profileLsit.get(curPos)
-                Toast.makeText(parent.context, "닉네임: ${profile.nickname}", Toast.LENGTH_SHORT).show()
-            }
-        }
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_friend_list, parent, false)
+        return CustomViewHolder(view)
+//        return CustomViewHolder(view).apply {
+//            itemView.setOnClickListener {
+//                val curPos : Int = bindingAdapterPosition
+//                val profile : FriendProfile = profileLsit.get(curPos)
+//                Toast.makeText(parent.context, "닉네임: ${profile.nickname}", Toast.LENGTH_SHORT).show()
+//            }
+//        }
     }
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {

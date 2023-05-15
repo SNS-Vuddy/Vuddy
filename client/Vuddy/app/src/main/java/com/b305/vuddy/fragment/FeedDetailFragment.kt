@@ -7,21 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentFeedDetailBinding
-import com.b305.vuddy.model.FeedData
 import com.b305.vuddy.model.FeedDetailViewModel
 import com.b305.vuddy.model.FeedResponse
-import com.b305.vuddy.model.UserResponse
+import com.b305.vuddy.model.FriendResponse
 import com.b305.vuddy.util.RetrofitAPI
 import com.b305.vuddy.util.feedDetailImageAdapter
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import okhttp3.ResponseBody
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -44,7 +41,7 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View {
         binding = FragmentFeedDetailBinding.inflate(inflater, container, false)
 
         viewModel = ViewModelProvider(this).get(FeedDetailViewModel::class.java)
@@ -119,7 +116,7 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
         val myFeednick : TextView = binding.myfeedNickname
         val myFeedContent : TextView = binding.myfeedContent
 //        val myFeedImage : ImageView = binding.myfeedImage
-        val myFeedLocation : TextView = binding.myfeedLocation
+//        val myFeedLocation : TextView = binding.myfeedLocation
         val myFeedDate : TextView = binding.myfeedDate
         val myFeedcommetCount = binding.myfeedComment
 
@@ -169,10 +166,10 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
             }
         })
         val data = viewModel.feedDetail.value ?: return
-        val nickname = data?.data?.nickname ?: return
+        val nickname = data.data.nickname
         val usercall = RetrofitAPI.userService
-        usercall.FriendDataGet(nickname).enqueue(object : Callback<UserResponse> {
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+        usercall.friendDataGet(nickname).enqueue(object : Callback<FriendResponse> {
+            override fun onResponse(call: Call<FriendResponse>, response: Response<FriendResponse>) {
                 if (response.isSuccessful) {
                     val result = response.body()
                     Log.d("디테일 유저 Get", "get successfully. Response: $result")
@@ -196,7 +193,7 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
                 }
             }
 
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+            override fun onFailure(call: Call<FriendResponse>, t: Throwable) {
                 Log.d("디테일 유저 Get", "get failed.")
             }
         })

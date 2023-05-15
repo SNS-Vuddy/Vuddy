@@ -2,11 +2,14 @@ package com.b305.vuddy.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.b305.vuddy.model.Chat
+import com.b305.vuddy.model.ChatList
 import com.b305.vuddy.model.Token
 import com.b305.vuddy.model.User
 import com.b305.vuddy.util.PreferenceHelper.get
 import com.b305.vuddy.util.PreferenceHelper.remove
 import com.b305.vuddy.util.PreferenceHelper.set
+import com.google.gson.Gson
 
 class SharedManager(context: Context) {
 
@@ -50,5 +53,62 @@ class SharedManager(context: Context) {
         prefs.remove("password")
         prefs.remove("profileImgUrl")
         prefs.remove("statusImgUrl")
+    }
+
+    fun saveChatRoomList(chatList: ArrayList<Chat>) {
+        val jsonString = Gson().toJson(chatList)
+        prefs["chatRoomList"] = jsonString
+    }
+
+    fun updataChatRoomList(chatRoom: Chat) {
+        val updateList = ArrayList<Chat>()
+        val chatId = chatRoom.chatId
+        val chatRoomList = getChatRoomList().toMutableList()
+
+        // chatId를 가진 인자를 삭제합니다.
+        chatRoomList.removeAll { it.chatId == chatId }
+
+        updateList.add(chatRoom)
+        updateList.addAll(chatRoomList)
+
+        val jsonString = Gson().toJson(updateList)
+        prefs["chatRoomList"] = jsonString
+    }
+
+    fun getChatRoomList(): ArrayList<Chat> {
+        val jsonString = prefs["chatRoomList", ""]
+        val array = Gson().fromJson(jsonString, Array<Chat>::class.java)
+        return ArrayList(array.toList())
+    }
+
+    fun removeChatRoomList() {
+        prefs.remove("chatRoomList")
+    }
+
+    fun saveChatList(chatList: ChatList) {
+        prefs["chatId"] = chatList.chatId?.toInt().toString()
+        val jsonString = Gson().toJson(chatList.chatList)
+        prefs["chatList"] = jsonString
+    }
+
+    fun addChat(chat: Chat) {
+        val chatId = chat.chatId
+        val chatList = getChatList().toMutableList()
+
+        if (chatList.any { it.chatId == chatId }) {
+            chatList.add(chat)
+            val jsonString = Gson().toJson(chatList)
+            prefs["chatList"] = jsonString
+        }
+    }
+
+    fun getChatList(): ArrayList<Chat> {
+        val jsonString = prefs["chatList", ""]
+        val array = Gson().fromJson(jsonString, Array<Chat>::class.java)
+        return ArrayList(array.toList())
+    }
+
+    fun removeChatList() {
+        prefs.remove("chatList")
     }
 }

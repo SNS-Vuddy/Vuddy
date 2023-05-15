@@ -419,6 +419,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.fabLogout.setOnClickListener {
             sharedManager.removeCurrentToken()
             sharedManager.removeCurrentUser()
+            sharedManager.removeChatRoomList()
+            sharedManager.removeChatList()
             requireActivity().stopService(Intent(requireContext(), ImmortalService::class.java))
             it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
         }

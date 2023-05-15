@@ -7,6 +7,7 @@
     <color name="unselected">#FFFFFFFF</color>
     <color name="input_box">#F3F3F3</color>
     <color name="light_grey">#D9D9D9</color>
+    <color name="yellow">#FDFF9A</color>
 
     <color name="auth_error">#FF0000</color>
     <color name="auth_success">#B59EE2</color>

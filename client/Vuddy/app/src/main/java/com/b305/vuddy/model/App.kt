@@ -1,7 +1,6 @@
 package com.b305.vuddy
 
 import android.app.Application
-import android.content.Context
 import com.b305.vuddy.util.SharedManager
 
 //class App : Application() {

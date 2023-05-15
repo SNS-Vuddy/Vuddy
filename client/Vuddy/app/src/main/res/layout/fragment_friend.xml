@@ -18,7 +18,7 @@
         android:gravity="center_vertical"
         android:layout_margin="20dp"
         android:padding="15dp"
-        android:background="@drawable/search_bar_shape"
+        android:background="@drawable/shape_search_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +46,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/friend_list_item"
+                tools:listitem="@layout/item_friend_list"
                 android:layout_marginTop="20dp"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
