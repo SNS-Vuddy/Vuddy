@@ -5,9 +5,8 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class MessageSendInnerDTO {
+public class MessageSendJoinInnerDTO {
     private String nickname;
-    private String message;
-    private String time;
     private Long chatId;
+    private List<MessageSendInnerDTO> messageList;
 }
