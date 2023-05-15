@@ -37,7 +37,7 @@ spec:
           #     memory: 100Mi
           livenessProbe:
             httpGet:
-              path: /auth/health
+              path: /auth/auth/health
               port: 8080
             initialDelaySeconds: 5
             timeoutSeconds: 5
