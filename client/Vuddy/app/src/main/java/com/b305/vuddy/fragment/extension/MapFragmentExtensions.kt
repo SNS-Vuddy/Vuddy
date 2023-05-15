@@ -1,8 +1,10 @@
 package com.b305.vuddy.fragment.extension
 
+import android.animation.ValueAnimator
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.util.Log
+import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.b305.vuddy.R
@@ -10,16 +12,22 @@ import com.b305.vuddy.fragment.MapFragment
 import com.b305.vuddy.model.MapFeedResponse
 import com.b305.vuddy.util.ANIMATE_CAMERA
 import com.b305.vuddy.util.BASIC_IMG_URL
+import com.b305.vuddy.util.DIALOG_MODE
 import com.b305.vuddy.util.FRIEND_FEED_MODE
 import com.b305.vuddy.util.GOTOHOME_IMG_URL
 import com.b305.vuddy.util.GOTOWORK_IMG_URL
 import com.b305.vuddy.util.HOME_IMG_URL
+import com.b305.vuddy.util.MOVE_CAMERA
+import com.b305.vuddy.util.NOT_MOVE_CAMERA
 import com.b305.vuddy.util.OFFICE_IMG_URL
 import com.b305.vuddy.util.RetrofitAPI
 import com.b305.vuddy.util.SLEEP_IMG_URL
+import com.b305.vuddy.util.ZOOM_LEVEL
 import com.bumptech.glide.Glide
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -126,16 +134,17 @@ private suspend fun MapFragment.makeProfileBitmap(imgUrl: String): Bitmap = with
         .get()
 }
 
-private suspend fun MapFragment.makeStatusBitmap(imgUrl: String): Bitmap = withContext(Dispatchers.IO) {
-    var statusUrl: String = BASIC_IMG_URL
-    when (imgUrl) {
-        "normal" -> statusUrl = BASIC_IMG_URL
-        "home" -> statusUrl = HOME_IMG_URL
-        "office" -> statusUrl = OFFICE_IMG_URL
-        "gotowork" -> statusUrl = GOTOWORK_IMG_URL
-        "gotohome" -> statusUrl = GOTOHOME_IMG_URL
-        "sleep" -> statusUrl = SLEEP_IMG_URL
-    }
+private val statusUrlMap = mapOf(
+    "normal" to BASIC_IMG_URL,
+    "home" to HOME_IMG_URL,
+    "office" to OFFICE_IMG_URL,
+    "gotowork" to GOTOWORK_IMG_URL,
+    "gotohome" to GOTOHOME_IMG_URL,
+    "sleep" to SLEEP_IMG_URL
+)
+
+private suspend fun MapFragment.makeStatusBitmap(imgStatus: String): Bitmap = withContext(Dispatchers.IO) {
+    val statusUrl = statusUrlMap[imgStatus] ?: BASIC_IMG_URL
 
     return@withContext Glide.with(requireContext())
         .asBitmap()
@@ -143,4 +152,52 @@ private suspend fun MapFragment.makeStatusBitmap(imgUrl: String): Bitmap = withC
         .override(220, 220)
         .submit()
         .get()
+}
+
+fun MapFragment.refreshMap(cameraMode: Int) {
+    if (markerMode == DIALOG_MODE) {
+        return
+    }
+    activity?.runOnUiThread {
+        markerOptionsMap.forEach { (nickname, markerOptions) ->
+            val marker = markersMap[nickname]
+            if (marker != null) {
+                animateMarkerTo(marker, markerOptions.position)
+            } else {
+                val newMarker = mMap.addMarker(markerOptions)!!
+                markersMap[nickname] = newMarker
+            }
+        }
+        val latLng = markersMap[sharedManager.getCurrentUser().nickname]!!.position
+        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL)
+        when (cameraMode) {
+            MOVE_CAMERA -> {
+                mMap.moveCamera(cameraUpdate)
+            }
+
+            ANIMATE_CAMERA -> {
+                mMap.animateCamera(cameraUpdate)
+            }
+
+            NOT_MOVE_CAMERA -> {
+                // do nothing
+            }
+        }
+    }
+    return
+}
+
+fun MapFragment.animateMarkerTo(marker: Marker, targetPosition: LatLng) {
+    activity?.runOnUiThread {
+        val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
+        valueAnimator.duration = 1000
+        valueAnimator.interpolator = LinearInterpolator()
+        valueAnimator.addUpdateListener { animation ->
+            val fraction = animation.animatedFraction
+            val lat = marker.position.latitude + (targetPosition.latitude - marker.position.latitude) * fraction
+            val lng = marker.position.longitude + (targetPosition.longitude - marker.position.longitude) * fraction
+            marker.position = LatLng(lat, lng)
+        }
+        valueAnimator.start()
+    }
 }

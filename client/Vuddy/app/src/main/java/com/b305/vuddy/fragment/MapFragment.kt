@@ -1,7 +1,6 @@
 package com.b305.vuddy.fragment
 
 
-import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -9,14 +8,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
+import com.b305.vuddy.fragment.extension.animateMarkerTo
 import com.b305.vuddy.fragment.extension.makeMarkerOptions
+import com.b305.vuddy.fragment.extension.refreshMap
 import com.b305.vuddy.model.MapFeedResponse
 import com.b305.vuddy.model.User
 import com.b305.vuddy.model.UserLocation
@@ -50,7 +50,7 @@ import retrofit2.Response
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     lateinit var binding: FragmentMapBinding
-    private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
+    val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
     private lateinit var locationProvider: LocationProvider
     lateinit var mMap: GoogleMap
     lateinit var markerOptionsMap: MutableMap<String, MarkerOptions>
@@ -76,9 +76,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val latitude = locationProvider.getLocationLatitude()!!
         val longitude = locationProvider.getLocationLongitude()!!
         val latLng = LatLng(latitude, longitude)
-        val marKerOptions = makeMarkerOptions(currentNickname, latLng, currentProfileImgUrl, currentStatusImgUrl)
 
-        markerOptionsMap[currentNickname] = marKerOptions
+        addOrUpdateMarker(currentNickname, latLng, currentProfileImgUrl, currentStatusImgUrl)
         refreshMap(MOVE_CAMERA)
 
         mMap.setOnMarkerClickListener {
@@ -86,7 +85,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 entry.value == it
             }?.key
 
-            if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && !clickedMarkerNickname.startsWith("FEED:")) {
+            if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && !clickedMarkerNickname.startsWith(FEED_PREFIX)) {
                 val clickedMarkerIcon = markerOptionsMap[clickedMarkerNickname]?.icon
                 if (clickedMarkerIcon != null) {
                     val clickedMarkerBitmap = markerBitmapMap[clickedMarkerNickname]!!
@@ -96,7 +95,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
 
             //Todo 피드 마커 클릭시 : 피드 바텀 시트
-            if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && clickedMarkerNickname.startsWith("FEED:")) {
+            if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && clickedMarkerNickname.startsWith(FEED_PREFIX)) {
                 val feedId = clickedMarkerNickname.split(":")[1].toInt()
                 val feedDetailFragment = FeedDetailFragment()
                 val bundle = Bundle()
@@ -113,57 +112,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             true
         }
     }
-
-    fun refreshMap(cameraMode: Int) {
-
-
-        if (markerMode == DIALOG_MODE) {
-            return
-        }
-        activity?.runOnUiThread {
-            markerOptionsMap.forEach { (nickname, markerOptions) ->
-                val marker = markersMap[nickname]
-                if (marker != null) {
-                    animateMarkerTo(marker, markerOptions.position)
-                } else {
-                    val newMarker = mMap.addMarker(markerOptions)!!
-                    markersMap[nickname] = newMarker
-                }
-            }
-            val latLng = markersMap[sharedManager.getCurrentUser().nickname]!!.position
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL)
-            when (cameraMode) {
-                MOVE_CAMERA -> {
-                    mMap.moveCamera(cameraUpdate)
-                }
-
-                ANIMATE_CAMERA -> {
-                    mMap.animateCamera(cameraUpdate)
-                }
-
-                NOT_MOVE_CAMERA -> {
-                    // do nothing
-                }
-            }
-        }
-        return
-    }
-
-    fun animateMarkerTo(marker: Marker, targetPosition: LatLng) {
-        activity?.runOnUiThread {
-            val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
-            valueAnimator.duration = 1000
-            valueAnimator.interpolator = LinearInterpolator()
-            valueAnimator.addUpdateListener { animation ->
-                val fraction = animation.animatedFraction
-                val lat = marker.position.latitude + (targetPosition.latitude - marker.position.latitude) * fraction
-                val lng = marker.position.longitude + (targetPosition.longitude - marker.position.longitude) * fraction
-                marker.position = LatLng(lat, lng)
-            }
-            valueAnimator.start()
-        }
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -262,18 +210,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             val latLng = LatLng(latitude, longitude)
                             Log.d("MapFragment", "****FeedMode result : $feedId, $imgUrl, $latLng")
 
-
                             val statusImgUrl = BASIC_IMG_URL
-                            val marKerOptions = makeMarkerOptions(feedId, latLng, imgUrl, statusImgUrl)
-                            markerOptionsMap[feedId] = marKerOptions
-
-                            val existingMarker = markersMap[feedId]
-                            if (existingMarker != null) {
-                                animateMarkerTo(existingMarker, marKerOptions.position)
-                            } else {
-                                val newMarker = mMap.addMarker(marKerOptions)!!
-                                markersMap[feedId] = newMarker
-                            }
+                            addOrUpdateMarker(feedId, latLng, imgUrl, statusImgUrl)
                         }
 
                         if (result != null) {
@@ -352,6 +290,23 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         val supportMapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         supportMapFragment.getMapAsync(this)
+    }
+
+    companion object {
+        private const val FEED_PREFIX = "FEED:"
+    }
+
+    fun addOrUpdateMarker(feedId: String, latLng: LatLng, imgUrl: String, statusImgUrl: String) {
+        val marKerOptions = makeMarkerOptions(feedId, latLng, imgUrl, statusImgUrl)
+        markerOptionsMap[feedId] = marKerOptions
+
+        val existingMarker = markersMap[feedId]
+        if (existingMarker != null) {
+            animateMarkerTo(existingMarker, marKerOptions.position)
+        } else {
+            val newMarker = mMap.addMarker(marKerOptions)!!
+            markersMap[feedId] = newMarker
+        }
     }
 }
 
