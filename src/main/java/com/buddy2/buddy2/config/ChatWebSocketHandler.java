@@ -270,20 +270,19 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 else {
                     log.warn("currentChatroom : null ---> {}", objectMapper.writeValueAsString(messageSendJoin));
                 }
-            }
-
-
-            messageSendDTO.setData(messageSendInnerDTO);
-            System.out.println("------- 3 --------");
-            System.out.println(objectMapper.writeValueAsString(messageSendInnerDTO));
-            System.out.println(objectMapper.writeValueAsString(messageSendDTO));
-            System.out.println("------- 3 --------");
-            CurrentChatrooms currentChatroom = currentChatroomsMap.get(messageSendInnerDTO.getChatId());
-            if (currentChatroom != null) {
-                currentChatroom.chatroomSendMessage(objectMapper.writeValueAsString(messageSendDTO));
-            }
-            else {
-                log.warn("currentChatroom : null ---> {}", objectMapper.writeValueAsString(messageSendDTO));
+            } else {
+                messageSendDTO.setData(messageSendInnerDTO);
+                System.out.println("------- 3 --------");
+                System.out.println(objectMapper.writeValueAsString(messageSendInnerDTO));
+                System.out.println(objectMapper.writeValueAsString(messageSendDTO));
+                System.out.println("------- 3 --------");
+                CurrentChatrooms currentChatroom = currentChatroomsMap.get(messageSendInnerDTO.getChatId());
+                if (currentChatroom != null) {
+                    currentChatroom.chatroomSendMessage(objectMapper.writeValueAsString(messageSendDTO));
+                }
+                else {
+                    log.warn("currentChatroom : null ---> {}", objectMapper.writeValueAsString(messageSendDTO));
+                }
             }
 
 //            chatService.sendMessage(chatMessage.getNickname(), objectMapper.writeValueAsString(chatMessage));
