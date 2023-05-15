@@ -66,9 +66,9 @@ public class GPS {
         double dLat = Math.toRadians(latitude2 - latitude1);
         double dLon = Math.toRadians(longitude2 - longitude1);
 
-        System.out.println(lat1 + "   " + lon1);
-        System.out.println(lat2 + "   " + lon2);
-        System.out.println();
+//        System.out.println(lat1 + "   " + lon1);
+//        System.out.println(lat2 + "   " + lon2);
+//        System.out.println();
 
         double a = Math.sin(dLat/2)* Math.sin(dLat/2)+ Math.cos(Math.toRadians(latitude1))* Math.cos(Math.toRadians(latitude2))* Math.sin(dLon/2)* Math.sin(dLon/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
