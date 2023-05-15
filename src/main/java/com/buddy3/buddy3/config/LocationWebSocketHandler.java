@@ -106,14 +106,12 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         // 보내온 시간
         LocalDateTime localDateTime = LocalDateTime.parse(locationMessageReceive.getLocalDateTime());
 
-        // 서버 시간
-        LocalDateTime timeNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
 
         LocationMessageData locationMessage = new LocationMessageData();
         locationMessage.setNickname(locationMessageReceive.getNickname());
         locationMessage.setLatitude(locationMessageReceive.getLatitude());
         locationMessage.setLongitude(locationMessageReceive.getLongitude());
-        locationMessage.setTime(formatDateTime(timeNow));
         locationMessage.setStatus("home");
         User userNow = userRepository.findByNickname(locationMessage.getNickname());
         log.warn("userImg : {}", userNow.getProfileImg());
@@ -153,8 +151,13 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                     }
                 }
             }
-            LocalDateTime timeNow2 = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-            locationMessage.setTime(formatDateTime(timeNow2));
+
+            // 서버 시간
+            LocalDateTime timeNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+            locationMessage.setTime(formatDateTime(timeNow));
+            if (true) {}
+            List<String> movingList = redisLocationTemplate.opsForList().range(locationMessage.getNickname(), -5,-1);
+
             System.out.println("------- 3 --------");
             System.out.println(objectMapper.writeValueAsString(locationMessage));
             System.out.println("------- 3 --------");
