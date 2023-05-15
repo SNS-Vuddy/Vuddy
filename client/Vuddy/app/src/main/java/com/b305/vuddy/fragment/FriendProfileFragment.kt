@@ -11,15 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentFriendProfileBinding
 import com.b305.vuddy.model.Feed
-import com.b305.vuddy.model.FeedResponse
-import com.b305.vuddy.model.Feeds
-import com.b305.vuddy.model.FeedsResponse
-import com.b305.vuddy.model.UserResponse
+import com.b305.vuddy.model.FriendResponse
 import com.b305.vuddy.util.FeedMineAdapter
 import com.b305.vuddy.util.RetrofitAPI
 import com.bumptech.glide.Glide
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,7 +35,7 @@ class FriendProfileFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         binding = FragmentFriendProfileBinding.inflate(layoutInflater, container, false)
 
@@ -55,47 +52,28 @@ class FriendProfileFragment : Fragment() {
         arguments?.let {
             nickname = it.getString("nickname", "")
         }
-
-        val call = RetrofitAPI.feedService
-
-        call.FriendfeedGet(nickname).enqueue(object : Callback<FeedsResponse> {
-            override fun onResponse(call: Call<FeedsResponse>, response: Response<FeedsResponse>) {
+        val usercall = RetrofitAPI.userService
+        usercall.friendDataGet(nickname).enqueue(object : Callback<FriendResponse> {
+            override fun onResponse(call: Call<FriendResponse>, response: Response<FriendResponse>) {
                 if (response.isSuccessful) {
                     val result = response.body()
-                    Log.d("GET All", "get successfully. Response: $result")
-                    val feedList : ArrayList<Feeds> = result?.FeedList!!
-                    // 리사이클러뷰
-//                    val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-                    //격자 레이아웃
-                    val layoutManager = GridLayoutManager(context, 3)
 
+                    // 피드
+                    val feedList : ArrayList<Feed> = result?.data?.feeds as ArrayList<Feed>
+                    val layoutManager = GridLayoutManager(context, 3)
                     recyclerView = binding.friendFeedsList
                     recyclerView.layoutManager = layoutManager
 
                     feedMineAdapter = FeedMineAdapter(feedList)
                     recyclerView.adapter = feedMineAdapter
-                } else {
-                    Log.d("GET All", "get failed. Response: ${response.message()}")
-                }
-            }
 
-            override fun onFailure(call: Call<FeedsResponse>, t: Throwable) {
-                Log.d("GET All", "get failed.")
-            }
-
-        })
-        val usercall = RetrofitAPI.userService
-        usercall.FriendDataGet(nickname).enqueue(object : Callback<UserResponse> {
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
-                if (response.isSuccessful) {
-                    val result = response.body()
-                    Log.d("UserData Get", "get successfully. Response: $result")
+                    // 닉네임
                     val userNick = binding.friendProfileNickname
-                    userNick.text = result?.data?.nickname
+                    userNick.text = result.data.nickname
 
                     // 프로필 이미지
                     val profileImageUrl = binding.friendProfileImage
-                    val profileImage = result?.data?.profileImage
+                    val profileImage = result.data.profileImage
 
                     if (profileImage != null) {
                         // 프로필 이미지가 있을 경우 이미지 로드 및 표시
@@ -107,25 +85,54 @@ class FriendProfileFragment : Fragment() {
                         profileImageUrl.setImageResource(R.drawable.man)
                     }
 
+                    // 버튼 설정
+                    val isFriend = result.data.isFriend
+                    when (isFriend) {
+                        "Yes" -> {
+                            binding.btnAddFriend.visibility = View.GONE
+                            binding.btnDeleteFriend.visibility = View.VISIBLE
+                            binding.btnRequestFriend.visibility = View.GONE
+                            binding.btnGoChatting.visibility = View.VISIBLE
+                        }
+                        "Pending" -> {
+                            binding.btnAddFriend.visibility = View.GONE
+                            binding.btnDeleteFriend.visibility = View.GONE
+                            binding.btnRequestFriend.visibility = View.VISIBLE
+                            binding.btnGoChatting.visibility = View.GONE
+                        }
+                        "No" -> {
+                            binding.btnAddFriend.visibility = View.VISIBLE
+                            binding.btnDeleteFriend.visibility = View.GONE
+                            binding.btnRequestFriend.visibility = View.GONE
+                            binding.btnGoChatting.visibility = View.GONE
+                        }
+                    }
+
+
                 } else {
                     Log.d("UserData Get", "get failed. Response: ${response.message()}")
                 }
             }
 
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+            override fun onFailure(call: Call<FriendResponse>, t: Throwable) {
                 Log.d("UserData Get", "get failed.")
             }
         })
     }
 
     fun friendAdd() {
-        val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), "{\"friendNickname\":\"$nickname\"}")
+        val requestBody =
+            "{\"friendNickname\":\"$nickname\"}".toRequestBody("application/json".toMediaTypeOrNull())
 
-        var friendaddCall = RetrofitAPI.friendService
+        val friendaddCall = RetrofitAPI.friendService
         friendaddCall.friendAdd(requestBody).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
                     val result = response.body()
+                    binding.btnAddFriend.visibility = View.GONE
+                    binding.btnDeleteFriend.visibility = View.GONE
+                    binding.btnRequestFriend.visibility = View.VISIBLE
+                    binding.btnGoChatting.visibility = View.GONE
                     Log.d("친구추가 성공", "get successfully. Response: $result")
                 } else {
                     Log.d("친구추가 실패", "get failed. Response: ${response.message()}")

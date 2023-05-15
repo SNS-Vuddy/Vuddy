@@ -67,7 +67,7 @@
                 android:layout_width="360dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:background="@drawable/search_bar_shape"
+                android:background="@drawable/shape_search_bar"
                 android:gravity="center_vertical"
                 android:hint="댓글 작성"
                 android:padding="15dp"

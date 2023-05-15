@@ -215,11 +215,11 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
             }
         }
 
-    fun getMyLocation(): LatLng {
+    fun getMyLocation(): String {
         val locationProvider = LocationProvider(requireActivity())
         var latitude = locationProvider.getLocationLatitude()!!
         var longitude = locationProvider.getLocationLongitude()!!
-        return LatLng(latitude, longitude)
+        return "$latitude, $longitude"  // 36.35528344545768,127.29783622867265
     }
     fun sendImage() {
         // 이미지 보내는 코드
