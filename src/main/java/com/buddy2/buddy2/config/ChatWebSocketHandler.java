@@ -263,6 +263,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 System.out.println(objectMapper.writeValueAsString(messageSendJoinInnerDTO));
                 System.out.println(objectMapper.writeValueAsString(messageSendJoin));
                 System.out.println("------- 3 --------");
+                CurrentChatrooms currentChatroom = currentChatroomsMap.get(messageSendJoinInnerDTO.getChatId());
+                if (currentChatroom != null) {
+                    currentChatroom.chatroomSendMessage(objectMapper.writeValueAsString(messageSendJoin));
+                }
+                else {
+                    log.warn("currentChatroom : null ---> {}", objectMapper.writeValueAsString(messageSendJoin));
+                }
             }
 
 
@@ -271,9 +278,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             System.out.println(objectMapper.writeValueAsString(messageSendInnerDTO));
             System.out.println(objectMapper.writeValueAsString(messageSendDTO));
             System.out.println("------- 3 --------");
-            CurrentChatrooms currentChatroom = currentChatroomsMap.get(clientMessageData.getChatId());
+            CurrentChatrooms currentChatroom = currentChatroomsMap.get(messageSendInnerDTO.getChatId());
             if (currentChatroom != null) {
                 currentChatroom.chatroomSendMessage(objectMapper.writeValueAsString(messageSendDTO));
+            }
+            else {
+                log.warn("currentChatroom : null ---> {}", objectMapper.writeValueAsString(messageSendDTO));
             }
 
 //            chatService.sendMessage(chatMessage.getNickname(), objectMapper.writeValueAsString(chatMessage));
