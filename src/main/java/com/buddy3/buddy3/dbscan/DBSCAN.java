@@ -27,8 +27,13 @@ public class DBSCAN {
     @Autowired
     private GPS gps;
 
-    private final Double maxDist = 400000D;
-    private final int minCount = 2;
+    private final Double maxDist = 10D;
+    private final int minCount = 10;
+
+//    @Scheduled(cron = "0 1 * * * *", zone = "Asia/Seoul")
+//    public void statusUpdate() {
+//
+//    }
 
 
     @Scheduled(cron="0 30 * * * *", zone = "Asia/Seoul")
