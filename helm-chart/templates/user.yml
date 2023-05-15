@@ -35,8 +35,8 @@ spec:
             httpGet:
               path: /user/opened/health
               port: 8080
-          #   initialDelaySeconds: 5
-            timeoutSeconds: 2
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 3
             periodSeconds: 10
