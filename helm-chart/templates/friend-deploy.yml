@@ -10,11 +10,8 @@ spec:
     matchLabels:
       app: friend
   replicas: {{ .Values.backend.friend.replicaCount }}
-  # strategy:
-  #   rollingUpdate:
-  #     maxSurge: 25%
-  #     maxUnavailable: 25%
-  #   type: RollingUpdate
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:

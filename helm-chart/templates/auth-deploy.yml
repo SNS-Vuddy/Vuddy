@@ -10,11 +10,8 @@ spec:
     matchLabels:
       app: auth
   replicas: {{ .Values.backend.auth.replicaCount }}
-  # strategy:
-  #   rollingUpdate:
-  #     maxSurge: 25%
-  #     maxUnavailable: 25%
-  #   type: RollingUpdate
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:

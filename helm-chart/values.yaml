@@ -6,14 +6,14 @@ replicaCount: 1
 
 
 mysql:
-  url: "jdbc:mysql://k8b305.p.ssafy.io:3306/vuddy?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=true"
-  username: "ssafy"
+  url: "jdbc:mysql://mysql-develop.vuddy.co.kr:3306/vuddy?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=true"
+  username: "root"
   password: "b305b305"
 
 
 redis:
-  url: "k8b305.p.ssafy.io"
-  port: ""
+  url: "redis-develop.vuddy.co.kr:6379"
+  # port: ""
   password: "b305b305"
 
 kafka:
