@@ -160,7 +160,12 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
             System.out.println("------- 3 --------");
             CurrentFriends currentFriends = currentUsersCurrentFriendsMap.get(locationMessage.getNickname());
             System.out.println(currentFriends);
-            currentFriends.currentFriendsSendMessage(objectMapper.writeValueAsString(locationMessage));
+            if (currentFriends != null) {
+                currentFriends.currentFriendsSendMessage(objectMapper.writeValueAsString(locationMessage));
+            }
+            else {
+                log.warn("currentFriends : null - {}", locationMessage.getNickname());
+            }
 //            locationService.sendMessage(locationMessage.getNickname(), objectMapper.writeValueAsString(locationMessage));
             String redisData = locationMessage.getLatitude() + " " + locationMessage.getLongitude() + " " + locationMessage.getTime();
             redisLocationTemplate.opsForList().rightPush(locationMessage.getNickname(), redisData);
