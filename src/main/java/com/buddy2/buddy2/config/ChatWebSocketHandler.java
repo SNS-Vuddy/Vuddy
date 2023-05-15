@@ -2,10 +2,7 @@ package com.buddy2.buddy2.config;
 
 import com.buddy2.buddy2.data.ChatMessageData;
 import com.buddy2.buddy2.domain.CurrentChatrooms;
-import com.buddy2.buddy2.dto.MessageSendDTO;
-import com.buddy2.buddy2.dto.MessageSendInnerDTO;
-import com.buddy2.buddy2.dto.MessageSendJoin;
-import com.buddy2.buddy2.dto.MessageSendJoinInnerDTO;
+import com.buddy2.buddy2.dto.*;
 import com.buddy2.buddy2.entity.Chatroom;
 import com.buddy2.buddy2.entity.User;
 import com.buddy2.buddy2.entity.UserChatroom;
@@ -131,7 +128,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         ChatMessageData clientMessageData = objectMapper.readValue(message.getPayload(), ChatMessageData.class);
 
-        ChatMessageData chatMessage = new ChatMessageData();
 
         MessageSendDTO messageSendDTO = new MessageSendDTO();
         messageSendDTO.setType(clientMessageData.getType());
@@ -143,7 +139,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         messageSendJoin.setType(clientMessageData.getType());
         MessageSendJoinInnerDTO messageSendJoinInnerDTO = new MessageSendJoinInnerDTO();
 
-        String messageType = chatMessage.getType();
+        String messageType = clientMessageData.getType();
         String roomTitle = clientMessageData.getChatroomTitle();
 
         if (messageType.equals("OPEN")) {
@@ -232,10 +228,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         }
         else if (messageType.equals("LOAD")) {
-            System.out.println(clientMessageData.getNickname1());
+            MessageSendLoadDTO messageSendLoadDTO = new MessageSendLoadDTO();
             List<Chatroom> chatroomList = chatroomRepository.findWithNickname(clientMessageData.getNickname1());
-            chatMessage.setChatId(clientMessageData.getChatId());
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatroomList)));
+            messageSendLoadDTO.setChatroomList(chatroomList);
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(messageSendLoadDTO)));
         }
         else if (messageType.equals("EXIT")) {
             CurrentChatrooms currentChatrooms = currentChatroomsMap.get(nowLocation);
@@ -275,7 +271,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             System.out.println(objectMapper.writeValueAsString(messageSendInnerDTO));
             System.out.println(objectMapper.writeValueAsString(messageSendDTO));
             System.out.println("------- 3 --------");
-            CurrentChatrooms currentChatroom = currentChatroomsMap.get(chatMessage.getChatId());
+            CurrentChatrooms currentChatroom = currentChatroomsMap.get(clientMessageData.getChatId());
             if (currentChatroom != null) {
                 currentChatroom.chatroomSendMessage(objectMapper.writeValueAsString(messageSendDTO));
             }
