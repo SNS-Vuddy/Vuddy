@@ -4,7 +4,6 @@ package com.b305.vuddy.fragment
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentMapBinding
+import com.b305.vuddy.fragment.extension.makeMarkerOptions
 import com.b305.vuddy.model.MapFeedResponse
 import com.b305.vuddy.model.User
 import com.b305.vuddy.model.UserLocation
@@ -26,30 +26,20 @@ import com.b305.vuddy.util.BASIC_IMG_URL
 import com.b305.vuddy.util.DIALOG_MODE
 import com.b305.vuddy.util.FEED_MODE
 import com.b305.vuddy.util.FRIEND_FEED_MODE
-import com.b305.vuddy.util.GOTOHOME_IMG_URL
-import com.b305.vuddy.util.GOTOWORK_IMG_URL
-import com.b305.vuddy.util.HOME_IMG_URL
 import com.b305.vuddy.util.LocationProvider
 import com.b305.vuddy.util.MAP_MODE
 import com.b305.vuddy.util.MOVE_CAMERA
 import com.b305.vuddy.util.NOT_MOVE_CAMERA
-import com.b305.vuddy.util.OFFICE_IMG_URL
 import com.b305.vuddy.util.RetrofitAPI
-import com.b305.vuddy.util.SLEEP_IMG_URL
 import com.b305.vuddy.util.SharedManager
 import com.b305.vuddy.util.ZOOM_LEVEL
-import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.json.JSONObject
@@ -62,111 +52,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     lateinit var binding: FragmentMapBinding
     private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
     private lateinit var locationProvider: LocationProvider
-    private lateinit var mMap: GoogleMap
-    private lateinit var markerOptionsMap: MutableMap<String, MarkerOptions>
-    private lateinit var markersMap: MutableMap<String, Marker>
-    private lateinit var markerBitmapMap: MutableMap<String, Bitmap>
-    private var markerMode: Int = MAP_MODE
+    lateinit var mMap: GoogleMap
+    lateinit var markerOptionsMap: MutableMap<String, MarkerOptions>
+    lateinit var markersMap: MutableMap<String, Marker>
+    lateinit var markerBitmapMap: MutableMap<String, Bitmap>
+    var markerMode: Int = MAP_MODE
     private lateinit var currentUser: User
-    private lateinit var currentNickname: String
+    lateinit var currentNickname: String
     private lateinit var currentProfileImgUrl: String
     private lateinit var currentStatusImgUrl: String
-    private val friendListBottomSheetFragment = FriendListBottomSheetFragment()
+    val friendListBottomSheetFragment = FriendListBottomSheetFragment()
 
-    fun onItemClicked(nickname: String) {
-        Log.d("MapFragment", "****FriendFeedMode")
-        friendListBottomSheetFragment.dismiss()
-        markerMode = FRIEND_FEED_MODE
-        binding.fabMapMode.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.unselected)
-        binding.fabFeedMode.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.unselected)
-        binding.fabFriendFeedMode.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.selected)
-
-        val call = RetrofitAPI.mapFeedService
-        call.getOneFriendFeed(nickname).enqueue(object : Callback<MapFeedResponse> {
-            override fun onResponse(call: Call<MapFeedResponse>, response: Response<MapFeedResponse>) {
-                if (response.isSuccessful) {
-                    val result = response.body()?.mapFeedList
-                    result?.forEach { mapFeed ->
-                        val feedId = "FEED:${mapFeed.feedId}"
-                        val imgUrl = mapFeed.imgUrl
-                        val location = mapFeed.location
-                        val (latitudeStr, longitudeStr) = location.split(",")
-                        val latitude: Double = latitudeStr.trim().toDouble()
-                        val longitude: Double = longitudeStr.trim().toDouble()
-                        val latLng = LatLng(latitude, longitude)
-                        Log.d("MapFragment", "****FriendFeedMode result : $feedId, $imgUrl, $latLng")
-
-                        if (!::locationProvider.isInitialized) {
-                            locationProvider = LocationProvider(requireContext())
-                        }
-                        if (!::markersMap.isInitialized) {
-                            markersMap = mutableMapOf<String, Marker>()
-                        }
-                        if (!::markerOptionsMap.isInitialized) {
-                            markerOptionsMap = mutableMapOf<String, MarkerOptions>()
-                        }
-                        if (!::markerBitmapMap.isInitialized) {
-                            markerBitmapMap = mutableMapOf<String, Bitmap>()
-                        }
-                        val statusImgUrl = BASIC_IMG_URL
-                        val marKerOptions = makeMarkerOptions(feedId, latLng, imgUrl, statusImgUrl)
-                        markerOptionsMap[feedId] = marKerOptions
-
-                        val existingMarker = markersMap[feedId]
-                        if (existingMarker != null) {
-                            animateMarkerTo(existingMarker, marKerOptions.position)
-                        } else {
-                            val newMarker = mMap.addMarker(marKerOptions)!!
-                            markersMap[feedId] = newMarker
-                        }
-                    }
-
-                    if (result != null) {
-                        markersMap.filterKeys { it != currentNickname && !result.any { feed -> "FEED:${feed.feedId}" == it } }
-                            .forEach { (nickname, marker) ->
-                                marker.remove()
-                                markersMap.remove(nickname)
-                            }
-                    }
-                    if (result != null) {
-                        markerOptionsMap.filterKeys { it != currentNickname && !result.any { feed -> "FEED:${feed.feedId}" == it } }
-                            .forEach { (nickname, _) ->
-                                markerOptionsMap.remove(nickname)
-                            }
-                    }
-
-                    refreshMap(ANIMATE_CAMERA)
-                } else {
-                    val errorMessage = JSONObject(response.errorBody()?.string()!!)
-                    Log.d("MapFragment", "****FriendFeedMode errorMessage : $errorMessage")
-                    Toast.makeText(context, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onFailure(call: Call<MapFeedResponse>, t: Throwable) {
-                Log.d("MapFragment", "****FriendFeedMode onFailure : ${t.message}")
-                Toast.makeText(context, "피드 불러오기 실패", Toast.LENGTH_SHORT).show()
-            }
-
-        })
-    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d("MapFragment", "****onMapReady")
         mMap = googleMap
 
-        if (!::locationProvider.isInitialized) {
-            locationProvider = LocationProvider(requireContext())
-        }
-        if (!::markersMap.isInitialized) {
-            markersMap = mutableMapOf<String, Marker>()
-        }
-        if (!::markerOptionsMap.isInitialized) {
-            markerOptionsMap = mutableMapOf<String, MarkerOptions>()
-        }
-        if (!::markerBitmapMap.isInitialized) {
-            markerBitmapMap = mutableMapOf<String, Bitmap>()
-        }
         currentUser = sharedManager.getCurrentUser()
         currentNickname = currentUser.nickname!!
         currentProfileImgUrl = currentUser.profileImgUrl!!
@@ -213,10 +114,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun refreshMap(cameraMode: Int) {
-        if (!::mMap.isInitialized) {
-            return
-        }
+    fun refreshMap(cameraMode: Int) {
+
 
         if (markerMode == DIALOG_MODE) {
             return
@@ -250,7 +149,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return
     }
 
-    private fun animateMarkerTo(marker: Marker, targetPosition: LatLng) {
+    fun animateMarkerTo(marker: Marker, targetPosition: LatLng) {
         activity?.runOnUiThread {
             val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
             valueAnimator.duration = 1000
@@ -265,69 +164,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun makeMarkerOptions(nickname: String, latLng: LatLng, profileImgUrl: String, statusImgUrl: String): MarkerOptions =
-        runBlocking {
-            val profileBitmap = makeProfileBitmap(profileImgUrl)
-            val statusBitmap = makeStatusBitmap(statusImgUrl)
-
-            val resultBitmap = Bitmap.createBitmap(statusBitmap.width, statusBitmap.height, statusBitmap.config)
-            val canvas = Canvas(resultBitmap)
-            canvas.drawBitmap(statusBitmap, 0f, 0f, null)
-            val profileTop = (resultBitmap.height - profileBitmap.height + 30f) / 2f
-            val profileLeft = (resultBitmap.width - profileBitmap.width) / 2f
-            canvas.drawBitmap(profileBitmap, profileLeft, profileTop, null)
-            val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resultBitmap)
-            markerBitmapMap[nickname] = resultBitmap
-            val markerOptions = MarkerOptions()
-            markerOptions.position(latLng)
-                .icon(bitmapDescriptor)
-            return@runBlocking markerOptions
-        }
-
-    private suspend fun makeProfileBitmap(imgUrl: String): Bitmap = withContext(Dispatchers.IO) {
-        return@withContext Glide.with(requireContext())
-            .asBitmap()
-            .load(imgUrl)
-            .circleCrop()
-            .override(150, 150)
-            .submit()
-            .get()
-    }
-
-    private suspend fun makeStatusBitmap(imgUrl: String): Bitmap = withContext(Dispatchers.IO) {
-        var statusUrl: String = BASIC_IMG_URL
-        when (imgUrl) {
-            "home" -> statusUrl = HOME_IMG_URL
-            "office" -> statusUrl = OFFICE_IMG_URL
-            "gotowork" -> statusUrl = GOTOWORK_IMG_URL
-            "gotohome" -> statusUrl = GOTOHOME_IMG_URL
-            "sleep" -> statusUrl = SLEEP_IMG_URL
-        }
-
-        return@withContext Glide.with(requireContext())
-            .asBitmap()
-            .load(statusUrl)
-            .override(220, 220)
-            .submit()
-            .get()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         EventBus.getDefault().register(this)
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
-
-    @Subscribe
-    fun onLocationEvent(userLocation: UserLocation) {
         if (!::locationProvider.isInitialized) {
             locationProvider = LocationProvider(requireContext())
         }
-
         if (!::markersMap.isInitialized) {
             markersMap = mutableMapOf<String, Marker>()
         }
@@ -337,7 +181,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (!::markerBitmapMap.isInitialized) {
             markerBitmapMap = mutableMapOf<String, Bitmap>()
         }
+        if (!::mMap.isInitialized) {
+            return
+        }
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe
+    fun onLocationEvent(userLocation: UserLocation) {
         if (markerMode != MAP_MODE && userLocation.nickname != currentNickname) {
             return
         }
@@ -407,18 +262,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             val latLng = LatLng(latitude, longitude)
                             Log.d("MapFragment", "****FeedMode result : $feedId, $imgUrl, $latLng")
 
-                            if (!::locationProvider.isInitialized) {
-                                locationProvider = LocationProvider(requireContext())
-                            }
-                            if (!::markersMap.isInitialized) {
-                                markersMap = mutableMapOf<String, Marker>()
-                            }
-                            if (!::markerOptionsMap.isInitialized) {
-                                markerOptionsMap = mutableMapOf<String, MarkerOptions>()
-                            }
-                            if (!::markerBitmapMap.isInitialized) {
-                                markerBitmapMap = mutableMapOf<String, Bitmap>()
-                            }
 
                             val statusImgUrl = BASIC_IMG_URL
                             val marKerOptions = makeMarkerOptions(feedId, latLng, imgUrl, statusImgUrl)
@@ -493,9 +336,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
 
         binding.fabMoveCurrentLocation.setOnClickListener {
-            if (!::locationProvider.isInitialized) {
-                locationProvider = LocationProvider(requireContext())
-            }
+
             val location = locationProvider.getLocation()
             if (location != null) {
                 val latLng = LatLng(location.latitude, location.longitude)
