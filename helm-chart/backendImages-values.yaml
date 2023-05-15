@@ -30,7 +30,7 @@ backend:
   chatting:
     image:
       pullPolicy: Always
-      tag: "5abc56aa72605d4dcd6277ebe5bc667497ff8c95"
+      tag: "721fbdf21b57ab252b7c6c841a0325025265bc03"
   test:
     image:
       tag: "9db5e321876804c7e056a0023b362d28cb42cad0"
