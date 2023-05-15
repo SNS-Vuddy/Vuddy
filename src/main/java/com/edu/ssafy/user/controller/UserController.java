@@ -3,10 +3,11 @@ package com.edu.ssafy.user.controller;
 import com.edu.ssafy.user.model.dto.UserAlarmDto;
 import com.edu.ssafy.user.model.dto.common.CommonRes;
 import com.edu.ssafy.user.model.dto.common.SingleRes;
+import com.edu.ssafy.user.model.dto.request.UserHomeSaveReq;
+import com.edu.ssafy.user.model.dto.request.UserOfficeSaveReq;
 import com.edu.ssafy.user.model.dto.request.UserStatusChangeReq;
 import com.edu.ssafy.user.model.dto.response.UserFeedsSummaryRes;
 import com.edu.ssafy.user.model.dto.response.UserProfileWithFeedsRes;
-import com.edu.ssafy.user.model.entity.User;
 import com.edu.ssafy.user.model.service.S3UploaderService;
 import com.edu.ssafy.user.model.service.UserService;
 import com.edu.ssafy.user.util.NicknameUtil;
@@ -95,6 +96,22 @@ public class UserController {
         String userNickname = NicknameUtil.decodeNickname(encodedNickname);
         userService.changeUserPrivacy(userNickname);
         return new CommonRes(200, "피드 공개 여부 수정 성공");
+    }
+
+    // 유저 집 주소 저장 api
+    @PostMapping("/address/home")
+    public CommonRes saveHomeAddress(@RequestHeader("x_nickname") String encodedNickname, @RequestBody UserHomeSaveReq req) {
+        String userNickname = NicknameUtil.decodeNickname(encodedNickname);
+        userService.saveHomeAddress(userNickname, req.getHomeAddress());
+        return new CommonRes(200, "유저 집 주소 저장 성공");
+    }
+
+    // 유저 회사 주소 저장 api
+    @PostMapping("/address/office")
+    public CommonRes saveOfficeAddress(@RequestHeader("x_nickname") String encodedNickname, @RequestBody UserOfficeSaveReq req) {
+        String userNickname = NicknameUtil.decodeNickname(encodedNickname);
+        userService.saveOfficeAddress(userNickname, req.getOfficeAddress());
+        return new CommonRes(200, "유저 회사 주소 저장 성공");
     }
 
 }

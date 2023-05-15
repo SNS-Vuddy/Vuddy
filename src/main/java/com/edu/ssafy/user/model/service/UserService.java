@@ -6,8 +6,10 @@ import com.edu.ssafy.user.model.dto.UserWithFriendDto;
 import com.edu.ssafy.user.model.dto.response.UserFeedsSummaryRes;
 import com.edu.ssafy.user.model.dto.response.UserProfileWithFeedsRes;
 import com.edu.ssafy.user.model.entity.User;
+import com.edu.ssafy.user.model.entity.UserLocation;
 import com.edu.ssafy.user.model.entity.enums.FeedPrivacy;
 import com.edu.ssafy.user.model.repository.FeedRepository;
+import com.edu.ssafy.user.model.repository.UserLocationRepository;
 import com.edu.ssafy.user.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
+    private final UserLocationRepository userLocationRepository;
 
     public User findById(String nickname) {
         return userRepository.findByNickname(nickname);
@@ -100,4 +103,23 @@ public class UserService {
         User user = userRepository.findByNickname(userNickname);
         user.changePrivacy();
     }
+
+    @Transactional
+    public void saveHomeAddress(String userNickname, String homeAddress) {
+        User user = userRepository.findByNickname(userNickname);
+        UserLocation userLocation = userLocationRepository.findById(user.getId())
+                .orElseGet(UserLocation::new);
+        userLocation.setHomeAddress(user.getId(), homeAddress);
+        userLocationRepository.save(userLocation);
+    }
+
+    @Transactional
+    public void saveOfficeAddress(String userNickname, String officeAddress) {
+        User user = userRepository.findByNickname(userNickname);
+        UserLocation userLocation = userLocationRepository.findById(user.getId())
+                .orElseGet(UserLocation::new);
+        userLocation.setOfficeAddress(user.getId(), officeAddress);
+        userLocationRepository.save(userLocation);
+    }
+
 }
