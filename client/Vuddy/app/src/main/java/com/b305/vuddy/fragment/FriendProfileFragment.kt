@@ -5,18 +5,29 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentFriendProfileBinding
 import com.b305.vuddy.model.Feed
+import com.b305.vuddy.model.FeedDetailViewModel
 import com.b305.vuddy.model.FeedResponse
 import com.b305.vuddy.model.Feeds
 import com.b305.vuddy.model.FeedsResponse
+import com.b305.vuddy.model.FriendResponse
+import com.b305.vuddy.model.FriendViewModel
 import com.b305.vuddy.model.UserResponse
+import com.b305.vuddy.util.CommentAdapter
 import com.b305.vuddy.util.FeedMineAdapter
 import com.b305.vuddy.util.RetrofitAPI
+import com.b305.vuddy.util.feedDetailImageAdapter
 import com.bumptech.glide.Glide
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -26,7 +37,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class FriendProfileFragment : Fragment() {
+class FriendProfileFragment : Fragment(){
 
     private var nickname: String = ""
     lateinit var binding : FragmentFriendProfileBinding
@@ -34,6 +45,8 @@ class FriendProfileFragment : Fragment() {
     private lateinit var feedMineAdapter: FeedMineAdapter
     private lateinit var recyclerView: RecyclerView
 
+    private lateinit var viewModel: FriendViewModel
+    private lateinit var myAdapter: CommentAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -42,11 +55,75 @@ class FriendProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentFriendProfileBinding.inflate(layoutInflater, container, false)
 
+        viewModel = ViewModelProvider(this).get(FriendViewModel::class.java)
+        viewModel.friendData.observe(viewLifecycleOwner) { result ->
+            result?.let {
+                updateUI(it)
+                // 클래스 전역 변수에 데이터를 할당
+            }
+        }
+
+        binding.backBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+
+        }
+        binding.btnDeleteFriend.setOnClickListener {
+            friendDelete()
+        }
+//        val navController = Navigation.findNavController(binding.root)
+//
+        binding.ivMap.setOnClickListener {
+            val fragmentB = MapFragment()
+            val fragmentManager = requireActivity().supportFragmentManager
+            fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, fragmentB).commit()
+//            it.findNavController().navigate(R.id.action_friendProfileFragment_to_mapFragment)
+        }
+
+//    binding.ivMessage.setOnClickListener {
+//        val fragmentB = MessageFragment()
+//        val fragmentManager = requireActivity().supportFragmentManager
+//        fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, fragmentB).commit()
+//    }
+//    binding.ivProfile.setOnClickListener {
+//        val fragmentB = ProfileFragment()
+//        val fragmentManager = requireActivity().supportFragmentManager
+//        fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, fragmentB).commit()
+//    }
+//    binding.ivFriend.setOnClickListener {
+//        val fragmentB = FriendFragment()
+//        val fragmentManager = requireActivity().supportFragmentManager
+//        fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, fragmentB).commit()
+//    }
+        binding.ivWrite.setOnClickListener {
+            val bottomSheetFragment = WriteFeedFragment()
+            bottomSheetFragment.show(parentFragmentManager, "bottomSheetTag")
+        }
+
+
         binding.btnAddFriend.setOnClickListener {
             friendAdd()
         }
-
         return binding.root
+    }
+
+    private fun updateUI(data: FriendResponse) {
+        if (data?.data?.isFriend == "Pending") {
+            binding.btnRequestFriend.visibility = View.VISIBLE
+            binding.btnAddFriend.visibility = GONE
+            binding.btnDeleteFriend.visibility = GONE
+            binding.btnDeleteFriend.visibility = GONE
+        } else if (data?.data?.isFriend == "Yes") {
+            binding.btnDeleteFriend.visibility = View.VISIBLE
+            binding.btnAddFriend.visibility = GONE
+            binding.btnRequestFriend.visibility = GONE
+            binding.messageFriendBtn.visibility = View.VISIBLE
+        } else if (data?.data?.isFriend == "No") {
+            binding.btnAddFriend.visibility = View.VISIBLE
+            binding.btnRequestFriend.visibility = GONE
+            binding.btnDeleteFriend.visibility = GONE
+            binding.btnDeleteFriend.visibility = GONE
+
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,6 +132,13 @@ class FriendProfileFragment : Fragment() {
         arguments?.let {
             nickname = it.getString("nickname", "")
         }
+
+        viewModel.friendData.observe(viewLifecycleOwner) { result ->
+            result?.let {
+                updateUI(it)
+            }
+        }
+        viewModel.loadFriendData(nickname)
 
         val call = RetrofitAPI.feedService
 
@@ -85,13 +169,31 @@ class FriendProfileFragment : Fragment() {
 
         })
         val usercall = RetrofitAPI.userService
-        usercall.FriendDataGet(nickname).enqueue(object : Callback<UserResponse> {
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+        usercall.FriendDataGet(nickname).enqueue(object : Callback<FriendResponse> {
+            override fun onResponse(call: Call<FriendResponse>, response: Response<FriendResponse>) {
                 if (response.isSuccessful) {
                     val result = response.body()
                     Log.d("UserData Get", "get successfully. Response: $result")
                     val userNick = binding.friendProfileNickname
                     userNick.text = result?.data?.nickname
+
+                    if (result?.data?.isFriend == "Pending") {
+                        binding.btnRequestFriend.visibility = View.VISIBLE
+                        binding.btnAddFriend.visibility = GONE
+                        binding.btnDeleteFriend.visibility = GONE
+                        binding.messageFriendBtn.visibility = GONE
+                    } else if (result?.data?.isFriend == "Yes") {
+                        binding.btnDeleteFriend.visibility = View.VISIBLE
+                        binding.btnAddFriend.visibility = GONE
+                        binding.btnRequestFriend.visibility = GONE
+                        binding.messageFriendBtn.visibility = View.VISIBLE
+                    } else if (result?.data?.isFriend == "No") {
+                        binding.btnAddFriend.visibility = View.VISIBLE
+                        binding.btnRequestFriend.visibility = GONE
+                        binding.btnDeleteFriend.visibility = GONE
+                        binding.messageFriendBtn.visibility = GONE
+
+                    }
 
                     // 프로필 이미지
                     val profileImageUrl = binding.friendProfileImage
@@ -107,12 +209,12 @@ class FriendProfileFragment : Fragment() {
                         profileImageUrl.setImageResource(R.drawable.man)
                     }
 
+                    viewModel.loadFriendData(nickname)
                 } else {
                     Log.d("UserData Get", "get failed. Response: ${response.message()}")
                 }
             }
-
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+            override fun onFailure(call: Call<FriendResponse>, t: Throwable) {
                 Log.d("UserData Get", "get failed.")
             }
         })
@@ -127,13 +229,37 @@ class FriendProfileFragment : Fragment() {
                 if (response.isSuccessful) {
                     val result = response.body()
                     Log.d("친구추가 성공", "get successfully. Response: $result")
+                    viewModel.loadFriendData(nickname)
                 } else {
                     Log.d("친구추가 실패", "get failed. Response: ${response.message()}")
+
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Log.d("친구추가 실패", "get failed")
+            }
+        }
+
+        )
+    }
+    fun friendDelete() {
+        val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), "{\"friendNickname\":\"$nickname\"}")
+
+        var friendaddCall = RetrofitAPI.friendService
+        friendaddCall.friendDelete(requestBody).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    val result = response.body()
+                    Log.d("친구삭제 성공", "get successfully. Response: $result")
+                    viewModel.loadFriendData(nickname)
+                } else {
+                    Log.d("친구삭제 실패", "get failed. Response: ${response.message()}")
+
+                }
+            }
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.d("친구삭제 실패", "get failed")
             }
         }
 

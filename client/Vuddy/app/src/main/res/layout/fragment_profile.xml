@@ -36,7 +36,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profile_alarm_btn"
         app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -77,6 +76,7 @@
                     tools:layout_editor_absoluteX="77dp"
                     tools:layout_editor_absoluteY="66dp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <TextView
                 android:id="@+id/profile_user"
                 android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.276"
+                app:layout_constraintHorizontal_bias="0.201"
                 app:layout_constraintStart_toEndOf="@+id/profile_box"
                 tools:layout_editor_absoluteY="32dp" />
 

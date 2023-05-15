@@ -49,7 +49,8 @@ class SearchFragment : Fragment() {
             it.findNavController().navigate(R.id.action_searchFragment_to_friendFragment)
         }
         binding.ivWrite.setOnClickListener {
-            it.findNavController().navigate(R.id.action_searchFragment_to_writeFeedFragment)
+            val bottomSheetFragment = WriteFeedFragment()
+            bottomSheetFragment.show(parentFragmentManager, "bottomSheetTag")
         }
         binding.ivMessage.setOnClickListener {
             it.findNavController().navigate(R.id.action_searchFragment_to_messageFragment)

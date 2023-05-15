@@ -10,6 +10,7 @@ data class FeedResponse(
 data class FeedData(
     val feedId: Int,
     val nickname: String,
+    val profileImg: String,
     val title: String,
     val content: String,
     val location: String,
@@ -24,12 +25,10 @@ data class FeedData(
 )
 
 data class Comment(
-    val id: Int,
-    val userId: Int,
+    val profileImg: String,
     val nickname: String,
     val content: String,
-    val createdAt: String,
-    val updatedAt: String
+    val createdAt: String
 )
 
 data class Feeds(

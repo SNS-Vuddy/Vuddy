@@ -66,41 +66,69 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.276"
+                app:layout_constraintHorizontal_bias="0.115"
                 app:layout_constraintStart_toEndOf="@+id/friend_profile_image"
-                tools:layout_editor_absoluteY="32dp" />
+                tools:layout_editor_absoluteY="41dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <Button
             android:id="@+id/btn_add_friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#A286DB"
-            android:text="친구추가요청"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="32dp"
+            android:background="@drawable/button_friend_add"
+            android:text="    친구추가요청    "
+            android:drawableRight="@drawable/icon_friendadd"
             android:textColor="@color/white"
             android:visibility="visible" />
-
         <Button
             android:id="@+id/btn_request_friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#BCBBBB"
-            android:text="친구요청보냄"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="32dp"
+            android:background="@drawable/button_friend_request"
+            android:text="   친구 요청 보냄   "
             android:textColor="@color/white"
-            android:visibility="gone" />
+            android:visibility="gone"/>
+<!--        </FrameLayout>-->
 
         <Button
             android:id="@+id/btn_delete_friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#FF0000"
-            android:text="친구삭제"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="32dp"
+            android:background="@drawable/button_friend_delete"
+            android:text="   친구 삭제   "
             android:textColor="@color/white"
             android:visibility="gone" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/message_friend_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="32dp"
+            android:background="@drawable/button_friend_add"
+            android:drawableRight="@drawable/icon_message_btn"
+            android:text="    메세지 보내기    "
+            android:textColor="@color/white" />
+        </LinearLayout>
 
         <View
             android:layout_width="390dp"
