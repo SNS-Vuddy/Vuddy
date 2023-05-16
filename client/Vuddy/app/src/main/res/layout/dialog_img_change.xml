@@ -16,7 +16,7 @@
         android:id="@+id/profile_change_box"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/man"
+        android:src="@drawable/bird"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="20dp" />
