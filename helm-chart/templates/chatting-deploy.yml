@@ -42,8 +42,8 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 5
             successThreshold: 1
-            failureThreshold: 3
-            periodSeconds: 10
+            failureThreshold: 10
+            periodSeconds: 30
           env:
             - name: MYSQL_URL
               value: {{ .Values.mysql.url }}
