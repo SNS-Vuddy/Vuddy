@@ -32,9 +32,11 @@ spec:
           #     cpu: 100m
           #     memory: 100Mi
           readinessProbe:
-            httpGet:
-              path: /user/opened/health
+            tcpSocket:
               port: 8080
+            # httpGet:
+            #   path: /user/opened/health
+            #   port: 8080
             initialDelaySeconds: 60
             timeoutSeconds: 5
             successThreshold: 1
