@@ -46,7 +46,7 @@ backend:
     replicaCount: 1
 
   test:
-    replicaCount: 50
+    replicaCount: 1
 
 
 
