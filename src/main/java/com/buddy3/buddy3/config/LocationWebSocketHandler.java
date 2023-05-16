@@ -114,8 +114,14 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         locationMessage.setLongitude(locationMessageReceive.getLongitude());
         locationMessage.setStatus("normal");
         User userNow = userRepository.findByNickname(locationMessage.getNickname());
-        log.warn("userImg : {}", userNow.getProfileImg());
-        locationMessage.setImgUrl(userNow.getProfileImg());
+        if (userNow != null) {
+            locationMessage.setImgUrl(userNow.getProfileImg());
+        }
+        else {
+            log.warn("userImg : {} is not exists", locationMessage.getNickname());
+            return;
+        }
+
 
         if (!locationMessage.getNickname().equals("")) {
             if(currentSessionIdsUsersMap.get(session.getId()) == null) {
@@ -157,7 +163,7 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
             locationMessage.setTime(formatDateTime(timeNow));
             boolean hasOffice = redisLocationTemplate.opsForHash().get(locationMessage.getNickname() + "-location", "office") != null;
             boolean hasHome = redisLocationTemplate.opsForHash().get(locationMessage.getNickname() + "-location", "home") != null;
-            if (hasOffice && hasHome) {
+            if (hasOffice || hasHome) {
                 List<String> movingList = redisLocationTemplate.opsForList().range(locationMessage.getNickname(), -4,-1);
                 if (movingList != null && movingList.size() >= 4) {
                     String[] homeLocation = String.valueOf(redisLocationTemplate.opsForHash().get(locationMessage.getNickname() + "-location", "home")).split(" ");
@@ -166,27 +172,33 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
                     double[] officeDistance = new double[4];
                     for (int i = 0; i < 4; i++) {
                         String[] movingArr = movingList.get(i).split(" ");
-                        homeDistance[i] = gps.getDistance(movingArr[0], movingArr[1], homeLocation[0], homeLocation[1]);
-                        officeDistance[i] = gps.getDistance(movingArr[0], movingArr[1], officeLocation[0], officeLocation[1]);
-                        if (homeDistance[i] < 10D) {
-                            locationMessage.setStatus("home");
-                            break;
-                        }
-                        if (officeDistance[i] < 10D) {
-                            locationMessage.setStatus("office");
-                            break;
-                        }
-                        if (i > 0) {
-                            if ((homeDistance[i] - homeDistance[i-1]) * (officeDistance[i] - officeDistance[i-1]) > 0) {
+                        if (hasHome) {
+                            homeDistance[i] = gps.getDistance(movingArr[0], movingArr[1], homeLocation[0], homeLocation[1]);
+                            if (homeDistance[i] < 10D) {
+                                locationMessage.setStatus("home");
                                 break;
                             }
                         }
-                        if (i == 3) {
-                            if ((homeDistance[3] - homeDistance[0]) < 0) {
-                                locationMessage.setStatus("gotohome");
+                        if (hasOffice) {
+                            officeDistance[i] = gps.getDistance(movingArr[0], movingArr[1], officeLocation[0], officeLocation[1]);
+                            if (officeDistance[i] < 10D) {
+                                locationMessage.setStatus("office");
+                                break;
                             }
-                            else if ((officeDistance[3] - officeDistance[0]) < 0) {
-                                locationMessage.setStatus("gotowork");
+                        }
+                        if (hasHome && hasOffice) {
+                            if (i > 0) {
+                                if ((homeDistance[i] - homeDistance[i-1]) * (officeDistance[i] - officeDistance[i-1]) > 0) {
+                                    break;
+                                }
+                            }
+                            if (i == 3) {
+                                if ((homeDistance[3] - homeDistance[0]) < 0) {
+                                    locationMessage.setStatus("gotohome");
+                                }
+                                else if ((officeDistance[3] - officeDistance[0]) < 0) {
+                                    locationMessage.setStatus("gotowork");
+                                }
                             }
                         }
                     }
