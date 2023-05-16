@@ -59,7 +59,7 @@ spec:
             httpGet:
               path: /test/hello
               port: 8080
-            initialDelaySeconds: 10
+            initialDelaySeconds: 120
             timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 10
@@ -68,7 +68,7 @@ spec:
             httpGet:
               path: /test/hello
               port: 8080
-            initialDelaySeconds: 5
+            initialDelaySeconds: 120
             timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 3
