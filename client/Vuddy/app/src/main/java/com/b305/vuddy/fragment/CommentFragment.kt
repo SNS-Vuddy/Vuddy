@@ -29,6 +29,7 @@ class CommentFragment(private val feedResponse: FeedResponse) : BottomSheetDialo
     private var feedId = feedResponse.data.feedId
 
     private val commentList = feedResponse.data.comments
+//    private val userData = feedResponse.data.
     private var rvAdapter = CommentAdapter(commentList)
 
     private val binding by lazy { FragmentCommentBinding.inflate(layoutInflater) }
@@ -63,6 +64,7 @@ class CommentFragment(private val feedResponse: FeedResponse) : BottomSheetDialo
         binding.commentBtn.setOnClickListener {
             sendComment()
         }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

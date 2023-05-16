@@ -49,6 +49,11 @@ class AlarmFragment : Fragment(), AlarmAdapter.AlarmCallback {
         alarmAdapter = AlarmAdapter(arrayListOf(), this@AlarmFragment)
         recyclerView.adapter = alarmAdapter
 
+        binding.commentBackBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
+
         return binding.root
     }
 

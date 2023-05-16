@@ -11,9 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
 import com.b305.vuddy.fragment.FeedDetailFragment
 import com.b305.vuddy.model.Feed
+import com.b305.vuddy.model.Feeds
 import com.bumptech.glide.Glide
 
-class FeedMineAdapter(private val feedsMineList: ArrayList<Feed>) :
+class FeedMineAdapter(private val feedsMineList: ArrayList<Feeds>) :
     RecyclerView.Adapter<FeedMineAdapter.ViewHolder>() {
 
     @SuppressLint("MissingInflatedId")
@@ -30,12 +31,12 @@ class FeedMineAdapter(private val feedsMineList: ArrayList<Feed>) :
         holder.feedimageViewRecyclerView.layoutParams = layoutParams
 
         Glide.with(holder.itemView)
-            .load(item.imageUrl)
+            .load(item.imgUrl)
             .into(holder.feedimageViewRecyclerView)
 
         holder.itemView.setOnClickListener {
             val bundle = Bundle()
-            bundle.putInt("feedId", item.id)
+            bundle.putInt("feedId", item.feedId)
             val detailFragment = FeedDetailFragment()
             detailFragment.arguments = bundle
 

@@ -13,7 +13,7 @@ import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentFeedDetailBinding
 import com.b305.vuddy.model.FeedDetailViewModel
 import com.b305.vuddy.model.FeedResponse
-import com.b305.vuddy.model.FriendResponse
+import com.b305.vuddy.model.UserResponse
 import com.b305.vuddy.util.RetrofitAPI
 import com.b305.vuddy.util.feedDetailImageAdapter
 import com.bumptech.glide.Glide
@@ -26,10 +26,12 @@ import retrofit2.Response
 class FeedDetailFragment : BottomSheetDialogFragment() {
 
     private var feedId: Int = 0
+
     //    private val binding by lazy { FragmentFeedDetailBinding.inflate(layoutInflater) }
     private lateinit var binding: FragmentFeedDetailBinding
     private lateinit var viewModel: FeedDetailViewModel
     private lateinit var data: FeedResponse
+    private lateinit var userdata: UserResponse
 
     private lateinit var feedDetailImageAdapter: feedDetailImageAdapter
     private lateinit var recyclerView: RecyclerView
@@ -41,7 +43,7 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentFeedDetailBinding.inflate(inflater, container, false)
 
         viewModel = ViewModelProvider(this).get(FeedDetailViewModel::class.java)
@@ -52,6 +54,19 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
                 // 클래스 전역 변수에 데이터를 할당
             }
         }
+        binding.myfeedUserImage.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("nickname", data.data.nickname)
+            val friendprofileFragment = FriendProfileFragment()
+            friendprofileFragment.arguments = bundle
+
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, friendprofileFragment)
+                .addToBackStack("null")
+                .commit()
+
+            fragmentManager?.popBackStack()
+        }
 
         binding.myfeedLikeFalse.setOnClickListener {
             FeedLikeCount()
@@ -60,7 +75,8 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
             FeedLikeCount()
         }
 
-        binding.myfeedComment.setOnClickListener{
+
+        binding.myfeedComment.setOnClickListener {
             val bottomSheetFragment = CommentFragment(data)
             bottomSheetFragment.show(parentFragmentManager, "bottomSheetTag")
         }
@@ -69,6 +85,7 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
     }
 
     private fun updateUI(data: FeedResponse) {
+
         binding.myfeedTitle.text = data.data.title
         binding.myfeedNickname.text = data.data.nickname
         binding.myfeedContent.text = data.data.content
@@ -81,7 +98,7 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
         feedDetailImageAdapter = feedDetailImageAdapter(feedimageList)
         binding.myfeedImage.adapter = feedDetailImageAdapter
 
-        binding.myfeedComment.setOnClickListener{
+        binding.myfeedComment.setOnClickListener {
             val bottomSheetFragment = CommentFragment(data)
             bottomSheetFragment.show(parentFragmentManager, "bottomSheetTag")
         }
@@ -92,7 +109,7 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
         if (data.data.isLiked) {
             binding.myfeedLikeTrue.visibility = View.VISIBLE
             binding.myfeedLikeFalse.visibility = View.GONE
-        }else {
+        } else {
             binding.myfeedLikeTrue.visibility = View.GONE
             binding.myfeedLikeFalse.visibility = View.VISIBLE
         }
@@ -112,12 +129,12 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
         }
         viewModel.loadFeedDetail(feedId)
 
-        val myFeedTitle : TextView = binding.myfeedTitle
-        val myFeednick : TextView = binding.myfeedNickname
-        val myFeedContent : TextView = binding.myfeedContent
+        val myFeedTitle: TextView = binding.myfeedTitle
+        val myFeednick: TextView = binding.myfeedNickname
+        val myFeedContent: TextView = binding.myfeedContent
 //        val myFeedImage : ImageView = binding.myfeedImage
 //        val myFeedLocation : TextView = binding.myfeedLocation
-        val myFeedDate : TextView = binding.myfeedDate
+        val myFeedDate: TextView = binding.myfeedDate
         val myFeedcommetCount = binding.myfeedComment
 
         val call = RetrofitAPI.feedService
@@ -134,8 +151,21 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
                     myFeedcommetCount.text = "댓글 ${feedresult?.data?.commentsCount}개"
                     binding.myfeedLikeCount.text = feedresult?.data?.likesCount.toString()
 
+                    // 이미지 작업
+                    val myFeedUserImageUrl = binding.myfeedUserImage
+                    val myFeedUserImage = feedresult?.data?.profileImg
+                    if (myFeedUserImage != null) {
+                        // 프로필 이미지가 있을 경우 이미지 로드 및 표시
+                        Glide.with(requireContext())
+                            .load(myFeedUserImage)
+                            .into(myFeedUserImageUrl)
+                    } else {
+                        // 프로필 이미지가 없을 경우 기본 이미지 표시
+                        myFeedUserImageUrl.setImageResource(R.drawable.man)
+                    }
+
                     // 이미지 리사이클러 뷰
-                    val feedimageList : List<String> = feedresult?.data?.images!!
+                    val feedimageList: List<String> = feedresult?.data?.images!!
                     val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 //
                     recyclerView = binding.myfeedImage
@@ -150,7 +180,7 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
 
                     //
 
-                    binding.myfeedComment.setOnClickListener{
+                    binding.myfeedComment.setOnClickListener {
 //            it.findNavController().navigate(R.id.action_feedDetailFragment_to_commentFragment)
                         val bottomSheetFragment = CommentFragment(feedresult)
                         bottomSheetFragment.show(parentFragmentManager, "bottomSheetTag")
@@ -163,38 +193,6 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
 
             override fun onFailure(call: Call<FeedResponse>, t: Throwable) {
                 Log.e("GET Detail", "get failed.", t)
-            }
-        })
-        val data = viewModel.feedDetail.value ?: return
-        val nickname = data.data.nickname
-        val usercall = RetrofitAPI.userService
-        usercall.friendDataGet(nickname).enqueue(object : Callback<FriendResponse> {
-            override fun onResponse(call: Call<FriendResponse>, response: Response<FriendResponse>) {
-                if (response.isSuccessful) {
-                    val result = response.body()
-                    Log.d("디테일 유저 Get", "get successfully. Response: $result")
-
-                    // 프로필 이미지
-                    val profileImageUrl = binding.myfeedUserImage
-                    val profileImage = result?.data?.profileImage
-
-                    if (profileImage != null) {
-                        // 프로필 이미지가 있을 경우 이미지 로드 및 표시
-                        Glide.with(requireContext())
-                            .load(profileImage)
-                            .into(profileImageUrl)
-                    } else {
-                        // 프로필 이미지가 없을 경우 기본 이미지 표시
-                        profileImageUrl.setImageResource(R.drawable.man)
-                    }
-
-                } else {
-                    Log.d("디테일 유저 Get", "get failed. Response: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<FriendResponse>, t: Throwable) {
-                Log.d("디테일 유저 Get", "get failed.")
             }
         })
     }
@@ -210,13 +208,7 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
                 if (response.isSuccessful) {
                     val result = response.body()
                     Log.d("좋아요 시도 성공", "get successfully. Response: $result")
-//                    if (data.data.isLiked) {
-//                        binding.myfeedLikeTrue.visibility = View.GONE
-//                        binding.myfeedLikeFalse.visibility = View.VISIBLE
-//                    }else {
-//                        binding.myfeedLikeTrue.visibility = View.VISIBLE
-//                        binding.myfeedLikeFalse.visibility = View.GONE
-//                    }
+
                     viewModel.loadFeedDetail(feedId) // 데이터를 다시 새로고침
                 } else {
                     Log.d("좋아요 시도 실패", "get failed. Response: ${response.message()}")

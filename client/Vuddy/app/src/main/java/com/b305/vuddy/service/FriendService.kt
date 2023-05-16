@@ -29,6 +29,12 @@ interface FriendService {
     ): Call<ResponseBody>
 
     @Headers("Content-Type: application/json")
+    @POST("/friend/delete")
+    fun friendDelete(
+        @Body friendNickname : RequestBody,
+    ): Call<ResponseBody>
+
+    @Headers("Content-Type: application/json")
     @GET("/friend/request")
     fun friendRequest(): Call<AlarmResponse>
 

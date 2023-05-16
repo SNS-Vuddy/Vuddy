@@ -18,7 +18,7 @@ data class UserData(
     val profileImage: String?,
     val statusMessage: String?,
     val hasNewAlarm: Boolean,
-    val canISeeFeeds : Boolean,
+    val canISeeFeeds: Boolean,
     val feeds: ArrayList<Feed>
 )
 
@@ -37,7 +37,7 @@ data class FriendData(
     val nickname: String,
     val profileImage: String?,
     val statusMessage: String?,
-    val canISeeFeeds : Boolean,
+    val canISeeFeeds: Boolean,
     val feeds: ArrayList<Feed>,
     val isFriend: String,
 )

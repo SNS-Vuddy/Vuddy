@@ -17,11 +17,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentWriteFeedBinding
 import com.b305.vuddy.model.FeedResponse
@@ -118,6 +121,8 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.findViewById<LinearLayout>(R.id.wirte_feed_layout).background = ContextCompat.getDrawable(requireContext(), R.drawable.bottom_sheet_border)
+
         if (deviceSdkVersion >= 33) {
             requestMultiplePermission.launch(permissionList33)
         } else {
@@ -125,7 +130,7 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
         }
 
         // 리사이클러뷰
-        val layoutManager = LinearLayoutManager(requireContext())
+        val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         binding.rvPhoto.layoutManager = layoutManager
 
         photoList.clear() // photoList 초기화
@@ -141,46 +146,48 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
         }
         val dialog = dialogBuild.create().apply { show() }
 
-        val cameraAddBtn = dialogLayout.findViewById<Button>(R.id.buttonCamera)
+//        val cameraAddBtn = dialogLayout.findViewById<Button>(R.id.buttonCamera)
         val fileAddBtn = dialogLayout.findViewById<Button>(R.id.buttonGallery)
 
         fileAddBtn.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
 
             intent.type = "image/*"
+//            intent.data = MediaStore.Images.Media.CONTENT_TYPE
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             intent.action = Intent.ACTION_PICK
             activityResult.launch(intent)
 
             dialog.dismiss()
         }
-
-        cameraAddBtn.setOnClickListener {
-            // 카메라로 새로운 사진을 찍어서 추가하는 경우의 코드 작성
-            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                takePictureIntent.resolveActivity(context.packageManager)?.also {
-                    val photoFile: File? = try {
-                        createImageFile()
-                    } catch (ex: IOException) {
-                        // Error occurred while creating the File
-                        null
-                    }
-                    // Continue only if the File was successfully created
-                    photoFile?.also {
-                        val photoURI: Uri = FileProvider.getUriForFile(
-                            context,
-                            "com.example.android.fileprovider",
-                            it
-                        )
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                        activityResultCamera.launch(takePictureIntent)
-                    }
-                }
-            }
-            dialog.dismiss()
-        }
-
     }
+
+//        cameraAddBtn.setOnClickListener {
+//            // 카메라로 새로운 사진을 찍어서 추가하는 경우의 코드 작성
+//            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+//                takePictureIntent.resolveActivity(context.packageManager)?.also {
+//                    val photoFile: File? = try {
+//                        createImageFile()
+//                    } catch (ex: IOException) {
+//                        // Error occurred while creating the File
+//                        null
+//                    }
+//                    // Continue only if the File was successfully created
+//                    photoFile?.also {
+//                        val photoURI: Uri = FileProvider.getUriForFile(
+//                            context,
+//                            "com.example.android.fileprovider",
+//                            it
+//                        )
+//                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+//                        activityResultCamera.launch(takePictureIntent)
+//                    }
+//                }
+//            }
+//            dialog.dismiss()
+//        }
+//
+//    }
 
     private val activityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
