@@ -58,7 +58,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintTop_toBottomOf="@+id/top_bar"
         app:layout_constraintVertical_bias="1.0"
         tools:layout_editor_absoluteX="0dp">
@@ -124,60 +124,75 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="3" />
+                app:spanCount="3"
+                tools:listitem="@layout/item_feeds"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@color/grey"
+        android:layout_height="110dp"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:id="@+id/iv_map"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="15dp"
-            android:src="@drawable/icon_map" />
+            android:layout_height="80dp"
+            android:background="@drawable/shape_nav_bar"
+            android:layout_alignParentBottom="true">
+            <ImageView
+                android:id="@+id/iv_map"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="12dp"
+                android:src="@drawable/icon_map"
+                android:layout_weight="1"/>
 
-        <ImageView
-            android:id="@+id/iv_friend"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="15dp"
-            android:src="@drawable/icon_friend" />
+            <ImageView
+                android:id="@+id/iv_friend"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="12dp"
+                android:src="@drawable/icon_friend"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/icon_write"
+                android:layout_weight="1"
+                android:visibility="invisible"/>
+
+            <ImageView
+                android:id="@+id/iv_message"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="12dp"
+                android:src="@drawable/icon_message"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:padding="12dp"
+                android:src="@drawable/icon_profile_purple"
+                android:layout_weight="1"/>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/iv_write"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/shape_feed_write_btn"
+            android:padding="8dp"
+            android:layout_marginBottom="30dp"
             android:src="@drawable/icon_write" />
-
-        <ImageView
-            android:id="@+id/iv_message"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="15dp"
-            android:src="@drawable/icon_message" />
-
-        <ImageView
-            android:id="@+id/iv_profile"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="15dp"
-            android:src="@drawable/icon_profile" />
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
@@ -206,5 +221,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.9" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="80dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

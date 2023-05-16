@@ -95,7 +95,7 @@ class SharedManager(context: Context) {
         val chatId = chat.chatId
         val chatList = getChatList().toMutableList()
 
-        if (chatList.any { it.chatId == chatId }) {
+        if (!chatList.any { it.chatId == chatId }) {
             chatList.add(chat)
             val jsonString = Gson().toJson(chatList)
             prefs["chatList"] = jsonString

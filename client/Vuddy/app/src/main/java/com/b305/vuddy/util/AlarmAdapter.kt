@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
-import com.b305.vuddy.fragment.AlarmFragment
 import com.b305.vuddy.model.Alarm
 import com.bumptech.glide.Glide
 
@@ -20,7 +19,7 @@ class AlarmAdapter(var alarmList: ArrayList<Alarm>, val callback: AlarmCallback)
         notifyDataSetChanged()
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_alarm_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_friend_alarm, parent, false)
         return ViewHolder(view).apply {
         }
     }
