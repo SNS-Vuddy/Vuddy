@@ -114,8 +114,8 @@ class SplashActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
         if (hasFineLocationPermission != PackageManager.PERMISSION_GRANTED || hasCoarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
             AlertDialog.Builder(this)
-                .setTitle("위치 권한 필요")
-                .setMessage("Vuddy의 친구 위치 추적 기능을 사용하려면 위치 권한을 항상 허용으로 설정해 주세요. 백그라운드에서 수집한 위치 정보는 저장되지 않습니다.")
+                .setTitle("Vuddy는 친구와 위치를 공유하는 소셜 네트워크 서비스입니다.")
+                .setMessage("사용자의 현재 위치를 기반으로 친구 관계에서 서로의 위치를 확인하기 위해 어플이 닫혀있을 때나 사용되지 않을 때도 위치 데이터를 수집합니다. 수집한 위치 데이터는 영구 저장되지 않으며 명시한 목적 외에는 사용되지 않습니다.")
                 .setPositiveButton("확인") { _, _ ->
                     ActivityCompat.requestPermissions(this, REQUIRED_LOCAION_PERMISSION, LOCATION_PERMISSIONS_REQUEST_CODE)
                 }
