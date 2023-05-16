@@ -72,7 +72,7 @@ spec:
             timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 3
-            periodSeconds: 10
+            periodSeconds: 1
 
           env:
             - name: MYSQL_URL
