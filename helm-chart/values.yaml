@@ -45,6 +45,9 @@ backend:
   chatting:
     replicaCount: 1
 
+  test:
+    replicaCount: 100
+
 
 
 imagePullSecrets: []
