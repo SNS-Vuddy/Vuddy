@@ -21,9 +21,8 @@ spring:
         max-active: 10
         max-idle: 10
         min-idle: 2
-    port: 6379
-    host: ${REDIS_HOST_NAME:127.0.0.1}
     port: ${REDIST_PORT:6379}
+    host: ${REDIS_HOST_NAME:127.0.0.1}
     password: ${REDIS_PASSWORD:}
 logging:
   file:
