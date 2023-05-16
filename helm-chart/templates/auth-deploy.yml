@@ -41,7 +41,7 @@ spec:
             # httpGet:
             #   path: /auth/health
             #   port: 8080
-            initialDelaySeconds: 10
+            initialDelaySeconds: 60
             timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 10
