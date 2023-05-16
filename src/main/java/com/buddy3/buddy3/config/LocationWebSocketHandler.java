@@ -114,8 +114,14 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         locationMessage.setLongitude(locationMessageReceive.getLongitude());
         locationMessage.setStatus("normal");
         User userNow = userRepository.findByNickname(locationMessage.getNickname());
-        log.warn("userImg : {}", userNow.getProfileImg());
-        locationMessage.setImgUrl(userNow.getProfileImg());
+        if (userNow != null) {
+            locationMessage.setImgUrl(userNow.getProfileImg());
+        }
+        else {
+            log.warn("userImg : {} is not exists", locationMessage.getNickname());
+            return;
+        }
+
 
         if (!locationMessage.getNickname().equals("")) {
             if(currentSessionIdsUsersMap.get(session.getId()) == null) {

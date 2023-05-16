@@ -101,7 +101,7 @@ public class DBSCAN {
             sumArr[clusterGroup[j]][1] += Double.parseDouble(locationArr[1]);
             countArr[clusterGroup[j]] += 1;
             int hours = Integer.parseInt(locationArr[3].split(":")[0]);
-            if (hours > 18 || hours <= 8) {
+            if (hours > 21 || hours <= 7) {
                 hoursArr[1][clusterGroup[j]]++;
 //                System.out.println(hoursArr[1][clusterGroup[j]]);
             }
