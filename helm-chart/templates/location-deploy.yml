@@ -23,12 +23,12 @@ spec:
       # - Each init container must complete successfully before the next one starts.
       containers:
         - name: location
-          {{ if (empty .Values.backend.location.image.tag) }}
-          image: itmagician/b305-vuddy-location
-          {{ else }}
-          image: {{ printf "itmagician/b305-vuddy-location:%s" .Values.backend.location.image.tag }}
-          {{ end }}
-          # image: itmagician/b305-vuddy-location:f2150ec191d9cc415dc94dbae9a84abf95b53956
+          # {{ if (empty .Values.backend.location.image.tag) }}
+          # image: itmagician/b305-vuddy-location
+          # {{ else }}
+          # image: {{ printf "itmagician/b305-vuddy-location:%s" .Values.backend.location.image.tag }}
+          # {{ end }}
+          image: itmagician/b305-vuddy-location:f2150ec191d9cc415dc94dbae9a84abf95b53956
 
           # resources:
           #   requests:
