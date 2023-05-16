@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 class MapProfileAdapter(private val profileList: ArrayList<FriendProfile>, private val onItemClicked: (String) -> Unit) : RecyclerView.Adapter<MapProfileAdapter.CustomViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.friend_list_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_friend_list, parent, false)
         return CustomViewHolder(view).apply {
             itemView.setOnClickListener {
                 val curPos: Int = bindingAdapterPosition

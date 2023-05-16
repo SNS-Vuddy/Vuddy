@@ -93,8 +93,6 @@ class ImmortalService : LifecycleService() {
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
 
-            Log.d("ImmortalService", "****locationSocket $result****")
-
             if (!::locationSocket.isInitialized) {
                 locationSocket = LocationSocket(applicationContext)
                 locationSocket.connection()
