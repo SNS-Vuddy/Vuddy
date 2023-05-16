@@ -52,6 +52,28 @@ spec:
           #   successThreshold: 1
           #   failureThreshold: 3
           #   periodSeconds: 10
+
+
+
+          readinessProbe:
+            httpGet:
+              path: /test/hello
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /test/hello
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            periodSeconds: 10
+
           env:
             - name: MYSQL_URL
               value: {{ .Values.mysql.url }}
