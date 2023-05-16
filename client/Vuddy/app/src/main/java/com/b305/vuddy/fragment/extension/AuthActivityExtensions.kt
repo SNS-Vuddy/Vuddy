@@ -1,8 +1,8 @@
 package com.b305.vuddy.fragment.extension
 
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.b305.vuddy.R
 import com.b305.vuddy.activity.AuthActivity
@@ -81,6 +81,24 @@ fun AuthActivity.confirmSignupByInput(nickname: String, password: String, passwo
     return true
 }
 
+fun AuthActivity.changeProfileImgDialog() {
+    val builder = AlertDialog.Builder(this)
+    builder.setTitle("프로필 사진 설정")
+    builder.setMessage("프로필 사진을 설정하시겠습니까?")
+    builder.setPositiveButton("예") { _, _ ->
+        //Todo 여기서 프로필 사진 변경
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+    builder.setNegativeButton("아니오") { _, _ ->
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+    builder.show()
+}
+
 fun AuthActivity.signupService(authRequest: AuthRequest) {
     service.signup(authRequest).enqueue(object : Callback<AuthResponse> {
         override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
@@ -99,13 +117,10 @@ fun AuthActivity.signupService(authRequest: AuthRequest) {
                 val token: Token = Token(accessToken, refreshToken)
                 sharedManager.saveCurrentToken(token)
 
-
                 val message: String = result?.message.toString()
                 Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
 
-                val intent = Intent(applicationContext, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+                changeProfileImgDialog()
             } else {
                 val errorMessage = JSONObject(response.errorBody()?.string()!!)
                 Toast.makeText(applicationContext, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
