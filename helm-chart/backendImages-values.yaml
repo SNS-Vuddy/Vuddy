@@ -33,4 +33,4 @@ backend:
       tag: "72241da5153f05477462799a9b76d9fa7b631679"
   test:
     image:
-      tag: "9db5e321876804c7e056a0023b362d28cb42cad0"
+      tag: "aa2eded109ec9043c9f3abac6787a1631ab8be5f"
