@@ -52,6 +52,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<CommonRes> login(@RequestBody @Valid LoginReq loginReq) {
         User loginUser = userService.findByNickname(loginReq.getNickname());
+
         if (loginUser == null) {
             return new ResponseEntity<>(new CommonRes(400, "이 회원은 존재하지 않습니다."), HttpStatus.BAD_REQUEST);
         }
