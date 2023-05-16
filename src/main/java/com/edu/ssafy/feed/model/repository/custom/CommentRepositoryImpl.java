@@ -27,7 +27,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom{
                 .from(comments)
                 .join(user).on(comments.user.id.eq(user.id))
                 .where(comments.feed.id.eq(feed.getId()))
-                .orderBy(comments.createdAt.desc())
+                .orderBy(comments.createdAt.asc())
                 .fetch();
 
         if (result.isEmpty()) {
