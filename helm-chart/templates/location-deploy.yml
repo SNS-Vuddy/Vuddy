@@ -67,6 +67,8 @@ spec:
               value: {{ .Values.redis.url }}
             - name: REDIS_PASSWORD
               value: {{ .Values.redis.password }}
+            - name: REDIS_PORT
+              value: {{ .Values.redis.port }}
             - name: KAFKA_HOST_NAME
               value: {{ printf "%s" .Values.kafka.hostname }}
           ports:
