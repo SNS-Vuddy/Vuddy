@@ -14,7 +14,7 @@ mysql:
 
 redis:
   url: "redis-develop.vuddy.co.kr"
-  port: 6379
+  port: "6379"
   password: "b305b305"
 
 kafka:
