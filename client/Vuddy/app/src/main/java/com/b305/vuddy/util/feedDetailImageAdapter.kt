@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 class feedDetailImageAdapter(private val feedimageList : List<String>) :
     RecyclerView.Adapter<feedDetailImageAdapter.ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup,viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.feed_detail_images_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_detail_images, parent, false)
         return ViewHolder(view)
     }
 

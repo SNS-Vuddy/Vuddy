@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.b305.vuddy.App
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentFriendProfileBinding
 import com.b305.vuddy.model.Feed
@@ -31,7 +32,10 @@ import com.b305.vuddy.util.feedDetailImageAdapter
 import com.bumptech.glide.Glide
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
+import okhttp3.WebSocket
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -44,6 +48,7 @@ class FriendProfileFragment : Fragment() {
 
     private lateinit var feedMineAdapter: FeedMineAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var webSocket: WebSocket
 
     private lateinit var viewModel: FriendViewModel
     private lateinit var myAdapter: CommentAdapter
@@ -103,6 +108,29 @@ class FriendProfileFragment : Fragment() {
         binding.btnAddFriend.setOnClickListener {
             friendAdd()
         }
+        binding.btnDeleteFriend.setOnClickListener {
+            friendDelete()
+        }
+        binding.btnGoChatting.setOnClickListener {
+            goChatting()
+        }
+        binding.ivMap.setOnClickListener {
+            it.findNavController().navigate(R.id.action_friendProfileFragment_to_mapFragment)
+        }
+        binding.ivFriend.setOnClickListener {
+            it.findNavController().navigate(R.id.action_friendProfileFragment_to_friendFragment)
+        }
+        binding.ivWrite.setOnClickListener {
+            val bottomSheetFragment = WriteFeedFragment()
+            bottomSheetFragment.show(parentFragmentManager, "bottomSheetTag")
+        }
+        binding.ivMessage.setOnClickListener {
+            it.findNavController().navigate(R.id.action_friendProfileFragment_to_messageFragment)
+        }
+        binding.ivProfile.setOnClickListener {
+            it.findNavController().navigate(R.id.action_friendProfileFragment_to_profileFragment)
+        }
+
         return binding.root
     }
 
@@ -221,10 +249,11 @@ class FriendProfileFragment : Fragment() {
         })
     }
 
-    fun friendAdd() {
-        val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), "{\"friendNickname\":\"$nickname\"}")
+    private fun friendAdd() {
+        val requestBody =
+            "{\"friendNickname\":\"$nickname\"}".toRequestBody("application/json".toMediaTypeOrNull())
 
-        var friendaddCall = RetrofitAPI.friendService
+        val friendaddCall = RetrofitAPI.friendService
         friendaddCall.friendAdd(requestBody).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
@@ -236,19 +265,16 @@ class FriendProfileFragment : Fragment() {
 
                 }
             }
-
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 Log.d("친구추가 실패", "get failed")
             }
-        }
-
-        )
+        })
     }
 
-    fun friendDelete() {
+    private fun friendDelete() {
         val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), "{\"friendNickname\":\"$nickname\"}")
 
-        var friendaddCall = RetrofitAPI.friendService
+        val friendaddCall = RetrofitAPI.friendService
         friendaddCall.friendDelete(requestBody).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
@@ -269,4 +295,22 @@ class FriendProfileFragment : Fragment() {
         )
     }
 
+    private fun goChatting() {
+        val chatRoomList = App.instance.getChatRoomList()
+        if (chatRoomList.any { it.nickname == nickname }) {
+            val jsonObject = JSONObject()
+                .put("nickname1", App.instance.getCurrentUser().nickname)
+                .put("nickname2", nickname)
+                .put("type", "OPEN")
+
+            webSocket.send(jsonObject.toString())
+        } else {
+            val jsonObject = JSONObject()
+                .put("nickname1", App.instance.getCurrentUser().nickname)
+                .put("nickname2", nickname)
+                .put("type", "JOIN")
+
+            webSocket.send(jsonObject.toString())
+        }
+    }
 }

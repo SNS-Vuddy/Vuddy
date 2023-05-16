@@ -14,6 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitAPI {
+//    private const val BASE_URL = "http://k8b305.p.ssafy.io"
     private const val BASE_URL = "http://develop.vuddy.co.kr"
 
     class TokenInterceptor : Interceptor {

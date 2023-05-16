@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
 import com.b305.vuddy.fragment.FeedDetailFragment
-import com.b305.vuddy.model.Feed
 import com.b305.vuddy.model.Feeds
 import com.bumptech.glide.Glide
 
@@ -19,7 +18,7 @@ class FeedMineAdapter(private val feedsMineList: ArrayList<Feeds>) :
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.feeds_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feeds, parent, false)
         return ViewHolder(view)
     }
 

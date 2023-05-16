@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/friend_profile"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -25,7 +25,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/man" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/man"
+            app:civ_border_color="@color/yellow"
+            app:civ_border_overlay="true"
+            app:civ_border_width="5dp"/>
 
         <TextView
             android:id="@+id/friend_name"
