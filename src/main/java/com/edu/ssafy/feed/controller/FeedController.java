@@ -1,5 +1,6 @@
 package com.edu.ssafy.feed.controller;
 
+import com.edu.ssafy.feed.annotation.LogExecutionTime;
 import com.edu.ssafy.feed.model.dto.common.CommonRes;
 import com.edu.ssafy.feed.model.dto.common.ListRes;
 import com.edu.ssafy.feed.model.dto.common.SingleRes;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -187,6 +189,7 @@ public class FeedController {
 
 
     // 내 피드 전체 조회
+    @LogExecutionTime
     @GetMapping("/feeds/mine")
     public ResponseEntity<ListRes<UserFeedsRes>> getMyAllFeed(@RequestHeader("x_nickname") String encodedNickname) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
@@ -195,8 +198,10 @@ public class FeedController {
         List<Feed> allFeeds = feedService.findAllByUserId(user.getId());
 
         List<UserFeedsRes> allUserFeedsRes = feedService.changeAllFeedsToDto(allFeeds);
-        return new ResponseEntity<>(new ListRes<>(200, "피드 조회 성공", allUserFeedsRes), HttpStatus.OK);
+
+        return new ResponseEntity<>(new ListRes<>(200, "Feed retrieval successful", allUserFeedsRes), HttpStatus.OK);
     }
+
 
     // 특정 유저 피드 전체 조회
     @GetMapping("/feeds/nickname/{targetNickname}")
