@@ -8,6 +8,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/auth-url: {{ printf "http://auth-svc.%s.svc.cluster.local/auth/validate" .Release.Namespace }}
     nginx.ingress.kubernetes.io/auth-response-headers: x_nickname # nickname,x-nickname,X-nickname,X_nickname
+    nginx.ingress.kubernetes.io/proxy-body-size: "1tb"
 
 spec:
   ingressClassName: nginx
