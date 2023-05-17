@@ -7,8 +7,8 @@ replicaCount: 1
 
 mysql:
   # url: "jdbc:mysql://mysql-develop.vuddy.co.kr:3306/vuddy?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=true"
-  url: "jdbc:mysql://k8b305.p.ssafy.io:3306/vuddy?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=true"
-  username: "ssafy"
+  url: "jdbc:mysql://aee70d24b3e574abd81cd8f9883cd3d0-315833008.us-east-2.elb.amazonaws.com:3306/vuddy?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=true"
+  username: "root"
   password: "b305b305"
 
 
