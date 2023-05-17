@@ -228,8 +228,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
 
             LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
-            messageSendJoinInnerDTO.setChatId(clientMessageData.getChatId());
-            messageSendJoinInnerDTO.setNickname(clientMessageData.getNickname1());
+            messageSendJoinInnerDTO.setChatId(joinChatId.get(0));
+            messageSendJoinInnerDTO.setNickname(clientMessageData.getNickname2());
 
 
             String redisKey = "chatroom-" + messageSendInnerDTO.getChatId();
