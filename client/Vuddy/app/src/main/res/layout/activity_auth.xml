@@ -79,7 +79,7 @@
                 android:layout_height="30dp"
                 android:gravity="center_vertical"
                 android:text="@string/auth_nickname_empty"
-                android:textColor="@color/auth_error"
+                android:textColor="@color/error"
                 android:textSize="12sp"
                 android:visibility="visible" />
 
@@ -89,7 +89,7 @@
                 android:layout_height="30dp"
                 android:layout_marginTop="30dp"
                 android:background="@color/selected"
-                android:text="OK" />
+                android:text="@string/common_okay" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

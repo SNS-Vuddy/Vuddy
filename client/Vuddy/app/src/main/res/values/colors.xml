@@ -9,7 +9,5 @@
 
     <color name="selected">#83cceb</color>
     <color name="unselected">#FFFFFFFF</color>
-
-    <color name="auth_error">#FF0000</color>
-    <color name="auth_success">#83cceb</color>
+    <color name="error">#FF0000</color>
 </resources>
