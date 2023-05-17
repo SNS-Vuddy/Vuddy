@@ -86,7 +86,7 @@ fun AuthActivity.changeProfileImgDialog() {
     builder.setTitle(R.string.auth_profile_img_dialog_title)
     builder.setMessage(R.string.auth_profile_img_dialog_message)
     builder.setPositiveButton(R.string.common_okay) { _, _ ->
-        //Todo 여기서 프로필 사진 변경
+        //TODO: 여기서 프로필 사진 변경
         val intent = Intent(applicationContext, MainActivity::class.java)
         startActivity(intent)
         finish()

@@ -94,7 +94,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
             }
 
-            //Todo 피드 마커 클릭시 : 피드 바텀 시트
             if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && clickedMarkerNickname.startsWith(FEED_PREFIX)) {
                 val feedId = clickedMarkerNickname.split(":")[1].toInt()
                 val feedDetailFragment = FeedDetailFragment()
