@@ -73,6 +73,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
 
     Map<Long, CurrentChatrooms> currentChatroomsMap = new ConcurrentHashMap<>();
+    Map<String, String> userProfileImgMap = new ConcurrentHashMap<>();
 //    Map<String, Integer> chatNumberMap = new ConcurrentHashMap<>();
 
 //    Long chatNum = chatroomRepository.findWithChatId().getChatId();
@@ -112,7 +113,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        System.out.println(session.getId());
+        System.out.println("접속종료 sessionId : " + session.getId());
 //        sessionsList.remove(session);
     }
 
@@ -134,6 +135,17 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         MessageSendInnerDTO messageSendInnerDTO = new MessageSendInnerDTO();
         messageSendInnerDTO.setMessage(clientMessageData.getMessage());
+
+        String profileImg = userProfileImgMap.get(clientMessageData.getNickname1());
+        if (profileImg == null) {
+            User userNow = userRepository.findByNickname(clientMessageData.getNickname1());
+            profileImg = userNow.getProfileImg();
+            if (profileImg == null) {
+                profileImg = "";
+            }
+            userProfileImgMap.put(clientMessageData.getNickname1(), profileImg);
+        }
+        messageSendInnerDTO.setProfileImg(profileImg);
 
         MessageSendJoin messageSendJoin = new MessageSendJoin();
         messageSendJoin.setType(clientMessageData.getType());
@@ -186,7 +198,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             userChatroomRepository.save(userChatroom2);
         }
         else if (messageType.equals("JOIN")) {
-            CurrentChatrooms currentChatrooms = currentChatroomsMap.get(clientMessageData.getChatId());
+            User user1 = userRepository.findByNickname(clientMessageData.getNickname1());
+            User user2 = userRepository.findByNickname(clientMessageData.getNickname1());
+            Long joinChatId = userChatroomRepository.findChatroomId(user1.getUserId(), user2.getUserId());
+            CurrentChatrooms currentChatrooms = currentChatroomsMap.get(joinChatId);
             if (currentChatrooms == null) {
                 Chatroom room = chatroomRepository.findByChatId(clientMessageData.getChatId());
                 if (Objects.equals(room.getChatId(), clientMessageData.getChatId())) {
@@ -219,7 +234,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
             String redisKey = "chatroom-" + messageSendInnerDTO.getChatId();
             List<MessageSendInnerDTO> messageList = new ArrayList<>();
-            for (String messageStr : redisMessageTemplate.opsForList().range(redisKey,-20,-1)) {
+            List<String> redisMessageList = redisMessageTemplate.opsForList().range(redisKey,-20,-1);
+            if (redisMessageList == null) {
+                redisMessageList = new ArrayList<>();
+            }
+            for (String messageStr : redisMessageList) {
                 messageList.add(objectMapper.readValue(messageStr, MessageSendInnerDTO.class));
             }
 
