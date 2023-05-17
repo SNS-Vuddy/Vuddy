@@ -1,5 +1,6 @@
 package com.edu.ssafy.feed.controller;
 
+import com.edu.ssafy.feed.annotation.LogExecutionTime;
 import com.edu.ssafy.feed.model.dto.common.CommonRes;
 import com.edu.ssafy.feed.model.dto.common.ListRes;
 import com.edu.ssafy.feed.model.dto.common.SingleRes;
@@ -65,6 +66,7 @@ public class FeedController {
     }
 
     //피드 작성
+    @LogExecutionTime
     @PostMapping(value = "/write", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonRes writeFeed(
             @RequestHeader("x_nickname") String encodedNickname,
@@ -123,6 +125,7 @@ public class FeedController {
     }
 
     //피드 작성 토큰 없이
+    @LogExecutionTime
     @PostMapping(value = "/opened/write/{nickname}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonRes writeFeedTest(
             @PathVariable String nickname,
@@ -187,6 +190,7 @@ public class FeedController {
 
 
     // 내 피드 전체 조회
+    @LogExecutionTime
     @GetMapping("/feeds/mine")
     public ResponseEntity<ListRes<UserFeedsRes>> getMyAllFeed(@RequestHeader("x_nickname") String encodedNickname) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
@@ -199,6 +203,7 @@ public class FeedController {
     }
 
     // 특정 유저 피드 전체 조회
+    @LogExecutionTime
     @GetMapping("/feeds/nickname/{targetNickname}")
     public ResponseEntity<ListRes<UserFeedsRes>> getUserAllFeed(@RequestHeader("x_nickname") String encodedNickname, @PathVariable String targetNickname) {
         User targetUser = userService.findByNickname(targetNickname);
@@ -210,6 +215,7 @@ public class FeedController {
     }
 
     // 내 친구들의 모든 피드 조회
+    @LogExecutionTime
     @GetMapping("/feeds/friends")
     public ResponseEntity<?> getMyFriendsAllFeed(@RequestHeader("x_nickname") String encodedNickname) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
@@ -222,6 +228,7 @@ public class FeedController {
     }
 
     // 피드 상세 조회
+    @LogExecutionTime
     @GetMapping("/{feedId}")
     public SingleRes<SingleFeedRes> getFeedDetail(@RequestHeader("x_nickname") String encodedNickname, @PathVariable Long feedId) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
@@ -230,6 +237,7 @@ public class FeedController {
     }
 
     // 피드 수정
+    @LogExecutionTime
     @PutMapping("/edit/{feedId}")
     public CommonRes editFeed(@PathVariable Long feedId, @RequestHeader("x_nickname") String encodedNickname, @RequestBody FeedEditReq req) {
         feedService.editFeed(feedId, req);
@@ -237,6 +245,7 @@ public class FeedController {
     }
 
     // 피드 좋아요 / 좋아요 취소
+    @LogExecutionTime
     @PostMapping("/like/{feedId}")
     public ResponseEntity<?> likeFeed(@PathVariable Long feedId, @RequestHeader("x_nickname") String encodedNickname) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
@@ -245,6 +254,7 @@ public class FeedController {
     }
 
     // 이미지 테스트 api
+    @LogExecutionTime
     @PostMapping("/opened/image")
     public List<String> testImage(@RequestPart(value = "images") List<MultipartFile> images) {
 
