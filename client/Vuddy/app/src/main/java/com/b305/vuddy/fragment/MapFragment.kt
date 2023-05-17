@@ -68,6 +68,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d("MapFragment", "****onMapReady")
         mMap = googleMap
 
+        if (!::locationProvider.isInitialized) {
+            locationProvider = LocationProvider(requireContext())
+        }
+        if (!::markersMap.isInitialized) {
+            markersMap = mutableMapOf<String, Marker>()
+        }
+        if (!::markerOptionsMap.isInitialized) {
+            markerOptionsMap = mutableMapOf<String, MarkerOptions>()
+        }
+        if (!::markerBitmapMap.isInitialized) {
+            markerBitmapMap = mutableMapOf<String, Bitmap>()
+        }
+
         currentUser = sharedManager.getCurrentUser()
         currentNickname = currentUser.nickname!!
         currentProfileImgUrl = currentUser.profileImgUrl!!
@@ -127,9 +140,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
         if (!::markerBitmapMap.isInitialized) {
             markerBitmapMap = mutableMapOf<String, Bitmap>()
-        }
-        if (!::mMap.isInitialized) {
-            return
         }
     }
 

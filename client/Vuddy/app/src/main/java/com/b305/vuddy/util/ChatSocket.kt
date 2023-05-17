@@ -15,7 +15,7 @@ import org.json.JSONObject
 
 class ChatSocket(context: Context) {
     private var client = OkHttpClient()
-    private var url = "ws://k8b305.p.ssafy.io/chatting"
+    private var url = "ws://develop.vuddy.co.kr/chatting"
     private val sharedManager: SharedManager by lazy { SharedManager(context) }
     private lateinit var webSocket: WebSocket
     var isConnected = false
