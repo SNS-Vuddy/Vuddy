@@ -200,8 +200,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         else if (messageType.equals("JOIN")) {
             User user1 = userRepository.findByNickname(clientMessageData.getNickname1());
             User user2 = userRepository.findByNickname(clientMessageData.getNickname1());
-            Long joinChatId = userChatroomRepository.findChatroomId(user1.getUserId(), user2.getUserId());
-            CurrentChatrooms currentChatrooms = currentChatroomsMap.get(joinChatId);
+            List<Long> joinChatId = userChatroomRepository.findChatroomId(user1.getUserId(), user2.getUserId());
+            CurrentChatrooms currentChatrooms = currentChatroomsMap.get(joinChatId.get(0));
             if (currentChatrooms == null) {
                 Chatroom room = chatroomRepository.findByChatId(clientMessageData.getChatId());
                 if (Objects.equals(room.getChatId(), clientMessageData.getChatId())) {
