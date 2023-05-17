@@ -68,6 +68,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d("MapFragment", "****onMapReady")
         mMap = googleMap
 
+        if (!::locationProvider.isInitialized) {
+            locationProvider = LocationProvider(requireContext())
+        }
+        if (!::markersMap.isInitialized) {
+            markersMap = mutableMapOf<String, Marker>()
+        }
+        if (!::markerOptionsMap.isInitialized) {
+            markerOptionsMap = mutableMapOf<String, MarkerOptions>()
+        }
+        if (!::markerBitmapMap.isInitialized) {
+            markerBitmapMap = mutableMapOf<String, Bitmap>()
+        }
+
         currentUser = sharedManager.getCurrentUser()
         currentNickname = currentUser.nickname!!
         currentProfileImgUrl = currentUser.profileImgUrl!!
@@ -94,7 +107,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
             }
 
-            //Todo 피드 마커 클릭시 : 피드 바텀 시트
             if (clickedMarkerNickname != null && clickedMarkerNickname != currentNickname && clickedMarkerNickname.startsWith(FEED_PREFIX)) {
                 val feedId = clickedMarkerNickname.split(":")[1].toInt()
                 val feedDetailFragment = FeedDetailFragment()
@@ -128,9 +140,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
         if (!::markerBitmapMap.isInitialized) {
             markerBitmapMap = mutableMapOf<String, Bitmap>()
-        }
-        if (!::mMap.isInitialized) {
-            return
         }
     }
 

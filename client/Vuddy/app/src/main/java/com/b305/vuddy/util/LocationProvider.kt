@@ -4,11 +4,10 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
 import androidx.core.app.ActivityCompat
 
-class LocationProvider(val context: Context) : LocationListener {
+class LocationProvider(val context: Context) {
     private var location: Location? = null
     private var locationManager: LocationManager? = null
 
@@ -16,7 +15,7 @@ class LocationProvider(val context: Context) : LocationListener {
         getLocation()
     }
 
-     fun getLocation(): Location? {
+    fun getLocation(): Location? {
         try {
             locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
@@ -54,10 +53,10 @@ class LocationProvider(val context: Context) : LocationListener {
                         location = gpsLocation
                     } else {
 
-                        //Todo 모바일 환경에서는 아래 주석 해제하고 사용
-//                        location = networkLocation
+                        //TODO: 모바일 환경
+                        location = networkLocation
 
-                        //Todo 에뮬레이터 환경에서는 아래 주석 해제하고 사용
+                        //TODO: 에뮬레이터 환경
                         location = gpsLocation
                     }
                 } else { // Case 2
@@ -77,9 +76,5 @@ class LocationProvider(val context: Context) : LocationListener {
 
     fun getLocationLongitude(): Double? {
         return location?.longitude
-    }
-
-    override fun onLocationChanged(location: Location) {
-        TODO("Not yet implemented")
     }
 }

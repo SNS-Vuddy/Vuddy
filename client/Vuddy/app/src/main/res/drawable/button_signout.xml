@@ -9,6 +9,6 @@
         android:height="30dp" tools:ignore="StateListReachable" />
 
     <corners android:radius="5dp" />
-    <solid android:color="@color/auth_error" />
+    <solid android:color="@color/error" />
 
 </shape>
