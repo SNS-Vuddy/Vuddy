@@ -50,7 +50,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         Tuple tuple = queryFactory
                 .select(user, userFriends.status)
                 .from(user)
-                .leftJoin(userFriends).on((userFriends.receiveUser.eq(user)).and(userFriends.status.eq(UserFriendStatus.PENDING)))
+                .join(userFriends).on((userFriends.receiveUser.eq(user)).and(userFriends.status.eq(UserFriendStatus.PENDING)))
                 .where(user.nickname.eq(nickname))
                 .fetchFirst();
 
