@@ -1,7 +1,6 @@
 package com.b305.vuddy.fragment
 
 import android.annotation.SuppressLint
-import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,24 +11,24 @@ import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.b305.vuddy.App
 import com.b305.vuddy.R
-import com.b305.vuddy.util.SharedManager
 import com.b305.vuddy.databinding.FragmentChatBinding
 import com.b305.vuddy.model.Chat
 import com.b305.vuddy.util.ChatAdapter
+import com.b305.vuddy.util.ChatSocket
 import com.google.android.material.textfield.TextInputEditText
-import java.util.Date
 
 @Suppress("DEPRECATION")
 class ChatFragment: Fragment() {
+    private lateinit var chatSocket: ChatSocket
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     lateinit var binding: FragmentChatBinding
-    private val sharedManager: SharedManager by lazy { SharedManager(requireContext()) }
-//    private val chatList = sharedManager.getChatList() as ArrayList<Chat>
-//    private val myNick = sharedManager.getCurrentUser().nickname
+    private val chatList = App.instance.getChatList()
+    private val myNick = App.instance.getCurrentUser().nickname
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var inputChatText: TextInputEditText
@@ -55,7 +54,7 @@ class ChatFragment: Fragment() {
         binding.sendBtn.setOnClickListener {
             val chatText = inputChatText.text.toString()
             if (chatText.isNotEmpty()) {
-                sendMessage(chatText)
+                chat?.let { it.chatId?.let { it1 -> chatSocket.sendMessage(it1, chatText) } }
                 Toast.makeText(context, chatText, Toast.LENGTH_SHORT).show()
             }
         }
@@ -80,30 +79,8 @@ class ChatFragment: Fragment() {
         recyclerView = view.findViewById(R.id.chat_list)
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
-//        chatAdapter = ChatAdapter(chatList)
-        chatAdapter = ChatAdapter(testLsit)
+        chatAdapter = ChatAdapter(chatList)
+//        chatAdapter = ChatAdapter(testLsit)
         recyclerView.adapter = chatAdapter
-    }
-
-
-    @SuppressLint("SimpleDateFormat")
-    private fun sendMessage(chatText: String) {
-        val now = System.currentTimeMillis()
-        val date = Date(now)
-        //나중에 바꿔줄것 밑의 yyyy-MM-dd는 그냥 20xx년 xx월 xx일만 나오게 하는 식
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
-        val getTime = sdf.format(date)
-
-//        val nickname= myNick
-//        val chatId = sharedManager.getChatList()[0].chatId
-        val type = "CHAT"
-
-        //example에는 원래는 이미지 url이 들어가야할 자리
-//        val item = Chat(preferences.getString("name",""),chating_Text.text.toString(),"example", getTime)
-//        chatAdapter.addItem(item)
-//        chatAdapter.notifyDataSetChanged()
-
-        //채팅 입력창 초기화
-        inputChatText.setText("")
     }
 }

@@ -83,7 +83,7 @@
                         android:layout_height="80dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/man"
-                        app:civ_border_color="@color/auth_success"
+                        app:civ_border_color="@color/selected"
                         app:civ_border_overlay="true"
                         app:civ_border_width="5dp"
                         android:layout_gravity="center_vertical"/>
@@ -178,7 +178,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:padding="12dp"
-                android:src="@drawable/icon_profile_purple"
+                android:src="@drawable/icon_profile_selected"
                 android:layout_weight="1"/>
         </LinearLayout>
 

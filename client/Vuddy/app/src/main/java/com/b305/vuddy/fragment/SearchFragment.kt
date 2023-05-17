@@ -2,11 +2,14 @@ package com.b305.vuddy.fragment
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -25,9 +28,11 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class SearchFragment : Fragment() {
+    private lateinit var imm: InputMethodManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
     lateinit var binding: FragmentSearchBinding
@@ -58,6 +63,13 @@ class SearchFragment : Fragment() {
         binding.ivProfile.setOnClickListener {
             it.findNavController().navigate(R.id.action_searchFragment_to_profileFragment)
         }
+
+        // EditText에 포커스를 주어 키보드를 올리도록 함
+        binding.searchInputText.requestFocus()
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+
+
+
         binding.searchInputText.doOnTextChanged { text, _, _, _ ->
             val nickname = text?.toString()
             if (nickname?.length == 0) {
@@ -74,6 +86,7 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -85,7 +98,7 @@ class SearchFragment : Fragment() {
         recyclerView.adapter = searchAdapter
 
         val otherLayoutManager = LinearLayoutManager(context)
-        otherRecyclerView = view.findViewById<RecyclerView>(R.id.no_friend_list)
+        otherRecyclerView = view.findViewById(R.id.no_friend_list)
         otherRecyclerView.layoutManager = otherLayoutManager
         otherRecyclerView.setHasFixedSize(true)
         otherSearchAdapter = SearchAdapter(noFriendList)

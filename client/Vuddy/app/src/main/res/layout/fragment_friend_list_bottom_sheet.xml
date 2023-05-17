@@ -32,7 +32,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:listitem="@layout/friend_list_item"
+                    tools:listitem="@layout/item_friend_list"
                     android:layout_marginTop="20dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

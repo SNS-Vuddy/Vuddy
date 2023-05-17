@@ -52,7 +52,7 @@ class MessageFragment : Fragment() {
         recyclerView = view.findViewById(R.id.chat_room_list)
         recyclerView.layoutManager = layoutManager
         recyclerView.setHasFixedSize(true)
-        chatRoomAdapter = ChatRoomAdapter(chatRoomList, this)
+        chatRoomAdapter = ChatRoomAdapter(chatRoomList)
         recyclerView.adapter = chatRoomAdapter
     }
 }
