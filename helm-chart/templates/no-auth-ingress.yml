@@ -6,7 +6,7 @@ metadata:
   name: vuddy-no-auth-ing
   namespace: {{ .Release.Namespace }}
   annotations:
-    nginx.org/websocket-services: "location-svc,chat-svc"
+    nginx.org/websocket-services: "location-svc,chatting-svc"
 spec:
   ingressClassName: nginx
   rules:
