@@ -87,7 +87,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         System.out.println("===================접속=====================");
-        System.out.println("접속시간 : " + formatDateTime(LocalDateTime.now()));
+        System.out.println("접속시간 : " + formatDateTime(LocalDateTime.now(ZoneId.of("Asia/Seoul"))));
         System.out.println(session.getId());  // 44a4e7cb-72a9-efce-f41f-a7ba84955b13
         System.out.println(session.toString());  // StandardWebSocketSession[id=44a4e7cb-72a9-efce-f41f-a7ba84955b13, uri=ws://localhost:8080/chat]
         System.out.println(session.getUri());  // ws://localhost:8080/chat
@@ -114,7 +114,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        System.out.println(formatDateTime(LocalDateTime.now()) + " | 접속 종료 sessionId : " + session.getId());
+        System.out.println(formatDateTime(LocalDateTime.now(ZoneId.of("Asia/Seoul"))) + " | 접속 종료 sessionId : " + session.getId());
 //        sessionsList.remove(session);
     }
 
@@ -123,7 +123,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         System.out.println("===================수신=====================");
         System.out.println(session.getId());
-        System.out.println(formatDateTime(LocalDateTime.now()) + " | 수신메시지 : " + message.getPayload());
+        System.out.println(formatDateTime(LocalDateTime.now(ZoneId.of("Asia/Seoul"))) + " | 수신메시지 : " + message.getPayload());
         System.out.println("===================수신=====================");
 
 
@@ -217,8 +217,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 }
             } else {
                 currentChatrooms.addChatMember(clientMessageData.getNickname1(), session);
-                currentChatroomsMap.replace(clientMessageData.getChatId(), currentChatrooms);
-                nowLocation = clientMessageData.getChatId();
+                currentChatroomsMap.replace(joinChatId.get(0), currentChatrooms);
+                nowLocation = joinChatId.get(0);
             }
             if (currentChatrooms == null) {
                 log.warn("없는 방에 JOIN 요청");
