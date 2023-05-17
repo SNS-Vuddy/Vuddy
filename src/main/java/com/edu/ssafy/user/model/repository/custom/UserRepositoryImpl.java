@@ -1,6 +1,8 @@
 package com.edu.ssafy.user.model.repository.custom;
 
 import com.edu.ssafy.user.model.dto.UserAlarmDto;
+import com.edu.ssafy.user.model.entity.User;
+import com.edu.ssafy.user.model.entity.UserFriends;
 import com.edu.ssafy.user.model.entity.enums.UserFriendStatus;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,29 +15,43 @@ import static com.edu.ssafy.user.model.entity.QUserFriends.userFriends;
 @Repository
 @RequiredArgsConstructor
 
-public class UserRepositoryImpl implements UserRepositoryCustom{
+public class UserRepositoryImpl implements UserRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public String existsByMyUserNicknameAndTargetUserNickname(String myUserNickname, String targetUserNickname) {
+    public String existsByMyUserNicknameAndTargetUserNickname(User myUser, User targetUser) {
 
-        Tuple tuple = queryFactory
-                .select(user, userFriends.status)
+        UserFriends userFriends1 = queryFactory
+                .select(userFriends)
                 .from(user)
-                .join(userFriends).on(userFriends.requestUser.eq(user))
-                .where((user.nickname.eq(myUserNickname).and(userFriends.receiveUser.nickname.eq(targetUserNickname)))
-                        .or(user.nickname.eq(targetUserNickname).and(userFriends.receiveUser.nickname.eq(myUserNickname))))
+                .leftJoin(userFriends)
+                .on(
+                        ((userFriends.requestUser.eq(myUser)).and(userFriends.receiveUser.eq(targetUser)))
+                                .or((userFriends.requestUser.eq(targetUser)).and(userFriends.receiveUser.eq(myUser)))
+                )
                 .fetchFirst();
 
         // 없는경우 No를 리턴
-        if (tuple == null) {
-            return "No";
+//        if (userFriends1 == null) {
+//            return "No";            
+//        } else if (userFriends1.getRequestUser() == null) {
+//            return "No";
+//        } else if (userFriends1.getReceiveUser() == null) {
+//            return "No";
+//        }
+
+        if (userFriends1 == null) {
+            return "NO";
+        } else if (userFriends1.getStatus() == UserFriendStatus.ACCEPTED) {
+            return "YES";
+        } else if (userFriends1.getRequestUser() == myUser) {
+            return "REQUESTED";
+        } else if (userFriends1.getReceiveUser() == myUser) {
+            return "RECEIVED";
         }
 
-        return (tuple.get(userFriends.status) == UserFriendStatus.ACCEPTED) ? "Yes" : "Pending";
-
-
+        return "에러발생";
     }
 
     @Override
@@ -51,5 +67,4 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
         return new UserAlarmDto(tuple.get(user), tuple.get(userFriends.status) != null);
 
     }
-
 }

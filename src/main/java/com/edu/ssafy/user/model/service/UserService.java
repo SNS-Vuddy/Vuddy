@@ -59,7 +59,7 @@ public class UserService {
         User myUser = userMap.get(myNickname);
         User targetUser = userMap.get(userNickname);
 
-        String friendStatus = userRepository.existsByMyUserNicknameAndTargetUserNickname(myNickname, userNickname);
+        String friendStatus = userRepository.existsByMyUserNicknameAndTargetUserNickname(myUser, targetUser);
 
         UserWithFriendDto userWithFriendDto = new UserWithFriendDto(myUser, targetUser, friendStatus);
 
