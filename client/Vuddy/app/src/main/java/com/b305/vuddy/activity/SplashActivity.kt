@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.b305.vuddy.R
 import com.b305.vuddy.databinding.ActivitySplashBinding
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -68,7 +69,7 @@ class SplashActivity : AppCompatActivity() {
 
                 for (result in grantResults) {
                     if (result != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(this, "위치 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, R.string.splash_need_location_permission, Toast.LENGTH_LONG).show()
                         finish()
                         return
                     }
@@ -82,7 +83,7 @@ class SplashActivity : AppCompatActivity() {
 
                 for (result in grantResults) {
                     if (result != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(this, "백그라운드 위치 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, R.string.splash_need_background_location_permission, Toast.LENGTH_LONG).show()
                         finish()
                         return
                     }
@@ -96,7 +97,7 @@ class SplashActivity : AppCompatActivity() {
 
                 for (result in grantResults) {
                     if (result != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(this, "알림 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, R.string.splash_need_notification_permission, Toast.LENGTH_LONG).show()
                         finish()
                         return
                     }
@@ -114,13 +115,13 @@ class SplashActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
         if (hasFineLocationPermission != PackageManager.PERMISSION_GRANTED || hasCoarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
             AlertDialog.Builder(this)
-                .setTitle("Vuddy는 친구와 위치를 공유하는 소셜 네트워크 서비스입니다.")
-                .setMessage("사용자의 현재 위치를 기반으로 친구 관계에서 서로의 위치를 확인하기 위해 백그라운드에서 위치 데이터를 수집합니다. 수집한 위치 데이터는 영구 저장되지 않으며 명시한 목적 외에는 사용되지 않습니다.")
-                .setPositiveButton("확인") { _, _ ->
+                .setTitle(R.string.splash_runtime_dialog_title)
+                .setMessage(R.string.splash_runtime_dialog_message)
+                .setPositiveButton(R.string.common_okay) { _, _ ->
                     ActivityCompat.requestPermissions(this, REQUIRED_LOCAION_PERMISSION, LOCATION_PERMISSIONS_REQUEST_CODE)
                 }
-                .setNegativeButton("취소") { _, _ ->
-                    Toast.makeText(this, "위치 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+                .setNegativeButton(R.string.common_cancel) { _, _ ->
+                    Toast.makeText(this, R.string.splash_need_location_permission, Toast.LENGTH_LONG).show()
                     finish()
                 }
                 .create()
@@ -175,7 +176,7 @@ class SplashActivity : AppCompatActivity() {
     @SuppressLint("BatteryLife")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun showDialogForBatterIgnoreSetting() {
-        val message = "앱의 정상적인 동작을 위해 배터리 최적화를 해제해주세요."
+        val message = R.string.splash_need_battery_ignore_permission
         getBatteryIgnoreLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (isBatterIgnoreAvailable()) {
@@ -193,7 +194,7 @@ class SplashActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun showDialogForLocationServiceSetting() {
-        val message = "앱의 정상적인 동작을 위해 위치 서비스를 사용해주세요"
+        val message = R.string.splash_need_location_permission
         getGPSPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (isLocationServicesAvailable()) {
@@ -204,22 +205,22 @@ class SplashActivity : AppCompatActivity() {
                 }
             }
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("위치 서비스 비활성화")
-        builder.setMessage("위치 서비스가 꺼져있습니다. 설정해야 앱을 사용할 수 있습니다.")
+        builder.setTitle(R.string.splash_location_dialog_title)
+        builder.setMessage(R.string.splash_location_dialog_message)
         builder.setCancelable(true)
-        builder.setPositiveButton("설정", DialogInterface.OnClickListener { dialog, id ->
+        builder.setPositiveButton(R.string.common_okay, DialogInterface.OnClickListener { dialog, id ->
             val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             getGPSPermissionLauncher.launch(callGPSSettingIntent)
         })
-        builder.setNegativeButton("취소", DialogInterface.OnClickListener { dialog, id ->
+        builder.setNegativeButton(R.string.common_cancel, DialogInterface.OnClickListener { dialog, id ->
             dialog.cancel()
-            Toast.makeText(this, "기기에서 위치서비스(GPS) 설정 후 사용해주세요.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.splash_need_location_permission, Toast.LENGTH_SHORT).show()
             finish()
         })
         builder.create().show()
     }
 
-    fun moveAuth() {
+    private fun moveAuth() {
         startActivity(Intent(this, AuthActivity::class.java))
         finish()
     }

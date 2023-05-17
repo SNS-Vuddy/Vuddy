@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Color
 import android.os.Looper
@@ -18,7 +19,7 @@ import com.b305.vuddy.util.ChatSocket
 import com.b305.vuddy.util.FASTEST_LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LocationSocket
-import com.b305.vuddy.util.NOTI_ID
+import com.b305.vuddy.util.LOCATION_NOTIFICATION_ID
 import com.b305.vuddy.util.SharedManager
 import com.b305.vuddy.util.TrackingUtility
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -65,6 +66,10 @@ class ImmortalService : LifecycleService() {
             chatSocket = ChatSocket(applicationContext)
             chatSocket.connection()
         }
+        if (!::locationSocket.isInitialized) {
+            locationSocket = LocationSocket(applicationContext)
+            locationSocket.connection()
+        }
 
         return START_NOT_STICKY
     }
@@ -93,11 +98,7 @@ class ImmortalService : LifecycleService() {
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
 
-            if (!::locationSocket.isInitialized) {
-                locationSocket = LocationSocket(applicationContext)
-                locationSocket.connection()
-                Log.d("ImmortalService", "****locationSocket****")
-            }
+
 
             if (!::sharedManager.isInitialized) {
                 sharedManager = SharedManager(applicationContext)
@@ -131,14 +132,14 @@ class ImmortalService : LifecycleService() {
         val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(
             NotificationChannel(
-                "default",
-                "기본 채널",
+                "tracking",
+                "위치 추적하는 채널",
                 NotificationManager.IMPORTANCE_DEFAULT
             )
         )
-        notificationManager.notify(NOTI_ID, builder.build()) // id : 정의해야하는 각 알림의 고유한 int값
+        notificationManager.notify(LOCATION_NOTIFICATION_ID, builder.build()) // id : 정의해야하는 각 알림의 고유한 int값
         val notification = builder.build()
-        startForeground(NOTI_ID, notification)
+        startForeground(LOCATION_NOTIFICATION_ID, notification)
     }
 
     override fun onDestroy() {
@@ -152,7 +153,7 @@ class ImmortalService : LifecycleService() {
         if (::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                 .addOnCompleteListener {
-                    Log.d("ImmortalService", "****stopLocationUpdates****")
+                    Log.d(ContentValues.TAG, "****stopLocationUpdates****")
                 }
         }
     }

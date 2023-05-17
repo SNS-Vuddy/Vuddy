@@ -18,6 +18,8 @@ class MainActivity : AppCompatActivity() {
         if (!isImmortalServiceRunning) {
             startService(Intent(this, ImmortalService::class.java))
         }
+        //TODO: 위치 공유하지 않고 받기만 하는 모드
+//        startService(Intent(this, ImmortalChatService::class.java))
     }
 
     private fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
