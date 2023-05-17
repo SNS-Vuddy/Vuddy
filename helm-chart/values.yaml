@@ -13,7 +13,7 @@ mysql:
 
 
 redis:
-  url: "redis-develop.vuddy.co.kr"
+  url: "k8b305.p.ssafy.io"
   port: "6379"
   password: "b305b305"
 
