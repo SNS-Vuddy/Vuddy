@@ -14,7 +14,7 @@ mysql:
 
 redis:
   # url: "k8b305.p.ssafy.io"
-  url: "redis-develop.vuddy.co.kr"
+  url: "a881fed91e906448ab290768b234cd6c-289936632.us-east-2.elb.amazonaws.com"
   port: "6379"
   password: "b305b305"
 
