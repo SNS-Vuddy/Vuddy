@@ -8,21 +8,26 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.b305.vuddy.App
 import com.b305.vuddy.R
 import com.b305.vuddy.model.Chat
 import com.bumptech.glide.Glide
+import okhttp3.WebSocket
+import org.json.JSONObject
 
-class ChatRoomAdapter(private val chatRoomList: ArrayList<Chat>, private val fragment: Fragment) : RecyclerView.Adapter<ChatRoomAdapter.CustomViewHolder>() {
+class ChatRoomAdapter(private val chatRoomList: ArrayList<Chat>) : RecyclerView.Adapter<ChatRoomAdapter.CustomViewHolder>() {
 
+    private lateinit var webSocket: WebSocket
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_room_list, parent, false)
         return CustomViewHolder(view).apply {
             itemView.setOnClickListener {
                 val curPos : Int = bindingAdapterPosition
                 val chatRoom : Chat = chatRoomList[curPos]
+
+                goChatting(chatRoom)
 
                 val bundle = Bundle()
                 bundle.putParcelable("chat", chatRoom)
@@ -54,9 +59,19 @@ class ChatRoomAdapter(private val chatRoomList: ArrayList<Chat>, private val fra
     }
 
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val profileImage = itemView.findViewById<ImageView>(R.id.friend_profile)
-        val nickname = itemView.findViewById<TextView>(R.id.friend_name)
-        val lastChat = itemView.findViewById<TextView>(R.id.last_chat)
-        val lastTime = itemView.findViewById<TextView>(R.id.last_time)
+        val profileImage: ImageView = itemView.findViewById(R.id.friend_profile)
+        val nickname: TextView = itemView.findViewById(R.id.friend_name)
+        val lastChat: TextView = itemView.findViewById(R.id.last_chat)
+        val lastTime: TextView = itemView.findViewById(R.id.last_time)
+    }
+
+    private fun goChatting(chatRoom: Chat) {
+        val jsonObject = JSONObject()
+            .put("nickname1", App.instance.getCurrentUser().nickname)
+            .put("nickname2", chatRoom.nickname)
+            .put("type", "JOIN")
+
+        webSocket.send(jsonObject.toString())
+        Log.d("ChatSocket", "****sendMessage JOIN!!!!!!****")
     }
 }

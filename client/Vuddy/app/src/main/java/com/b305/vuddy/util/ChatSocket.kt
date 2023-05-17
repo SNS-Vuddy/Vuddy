@@ -125,6 +125,7 @@ class ChatSocket(context: Context) {
             .put("type", "LOAD")
 
         webSocket.send(jsonObject.toString())
+        Log.d("ChatSocket", "****sendMessage LOAD!!!!!!!!!!****")
     }
 
     fun sendMessage(chatId: Int, message: String) {

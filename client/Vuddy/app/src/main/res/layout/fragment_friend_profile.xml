@@ -97,6 +97,22 @@
                     />
 
                 <Button
+                    android:id="@+id/btn_accept_friend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginStart="24dp"
+                    android:background="@drawable/shape_btn"
+                    android:backgroundTint="@color/auth_success"
+                    android:text="친구 요청 수락   "
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    android:drawableEnd="@drawable/icon_add_friend"
+                    />
+
+                <Button
                     android:id="@+id/btn_request_friend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

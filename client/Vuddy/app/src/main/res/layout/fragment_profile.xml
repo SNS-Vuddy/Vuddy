@@ -178,7 +178,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:padding="12dp"
-                android:src="@drawable/icon_profile_purple"
+                android:src="@drawable/icon_profile_selected"
                 android:layout_weight="1"/>
         </LinearLayout>
 

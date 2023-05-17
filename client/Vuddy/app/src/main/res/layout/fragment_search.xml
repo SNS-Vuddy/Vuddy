@@ -24,24 +24,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/search_bar"
+            <EditText
+                android:id="@+id/search_input_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableStart="@drawable/icon_search"
+                android:hint="Search"
+                android:inputType="text"
+                android:textSize="16sp"
                 android:layout_margin="20dp"
-                app:startIconDrawable="@drawable/icon_search"
-                app:endIconMode="clear_text">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/search_input_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_search_bar"
-                    android:gravity="center_vertical"
-                    android:padding="15dp"
-                    >
-                    <requestFocus />
-                </com.google.android.material.textfield.TextInputEditText>
-            </com.google.android.material.textfield.TextInputLayout>
+                android:padding="16dp"
+                android:background="@drawable/shape_search_bar"/>
 
             <TextView
                 android:id="@+id/my_friend"
@@ -55,7 +48,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/search_bar" />
+                app:layout_constraintTop_toBottomOf="@+id/search_input_text" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/friend_list"
