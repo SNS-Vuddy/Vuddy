@@ -66,6 +66,10 @@ class ImmortalService : LifecycleService() {
             chatSocket = ChatSocket(applicationContext)
             chatSocket.connection()
         }
+        if (!::locationSocket.isInitialized) {
+            locationSocket = LocationSocket(applicationContext)
+            locationSocket.connection()
+        }
 
         return START_NOT_STICKY
     }
@@ -94,11 +98,7 @@ class ImmortalService : LifecycleService() {
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
 
-            if (!::locationSocket.isInitialized) {
-                locationSocket = LocationSocket(applicationContext)
-                locationSocket.connection()
-                Log.d("ImmortalService", "****locationSocket****")
-            }
+
 
             if (!::sharedManager.isInitialized) {
                 sharedManager = SharedManager(applicationContext)
@@ -132,8 +132,8 @@ class ImmortalService : LifecycleService() {
         val notificationManager = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(
             NotificationChannel(
-                "default",
-                "기본 채널",
+                "tracking",
+                "위치 추적하는 채널",
                 NotificationManager.IMPORTANCE_DEFAULT
             )
         )
