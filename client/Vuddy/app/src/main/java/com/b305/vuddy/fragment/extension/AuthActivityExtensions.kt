@@ -25,31 +25,31 @@ fun AuthActivity.checkSignupByInput() {
 
     if (nickname.isEmpty()) {
         binding.tvConfirm.text = getString(R.string.auth_nickname_empty)
-        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_error))
+        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.error))
         return
     }
     if (nickname.length > 20 || nickname.length < 4) {
         binding.tvConfirm.text = getString(R.string.auth_nickname_length_error)
-        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_error))
+        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.error))
         return
     }
     if (password.isEmpty()) {
         binding.tvConfirm.text = getString(R.string.auth_password_empty)
-        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_error))
+        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.error))
         return
     }
     if (password.length > 20 || password.length < 8) {
         binding.tvConfirm.text = getString(R.string.auth_password_length_error)
-        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_error))
+        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.error))
         return
     }
     if (password != passwordConfirm) {
         binding.tvConfirm.text = getString(R.string.auth_password_confirm_error)
-        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_error))
+        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.error))
         return
     }
     binding.tvConfirm.text = getString(R.string.auth_success)
-    binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.auth_success))
+    binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.selected))
 }
 
 fun AuthActivity.confirmSignupByInput(nickname: String, password: String, passwordConfirm: String): Boolean {
