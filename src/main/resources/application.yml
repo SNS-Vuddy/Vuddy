@@ -9,6 +9,8 @@ spring:
     url: ${MYSQL_URL:jdbc:mysql://localhost:3306/vuddy}
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:abcd1234}
+    hikari:
+      max-lifetime: 1800000
   kafka:
     consumer:
       bootstrap-servers: ${KAFKA_HOST_NAME:localhost:9092}
