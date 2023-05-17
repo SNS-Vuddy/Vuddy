@@ -5,7 +5,8 @@ const val LOCATION_UPDATE_INTERVAL = 5000L
 const val FASTEST_LOCATION_UPDATE_INTERVAL = 5000L
 
 // Notification 옵션
-const val NOTI_ID = 1
+const val LOCATION_NOTIFICATION_ID = 1
+const val NO_LOCATION_NOTIFICATION_ID = 2
 
 // Img URL
 const val BASE_PROFILE_IMG_URL =

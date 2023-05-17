@@ -83,15 +83,15 @@ fun AuthActivity.confirmSignupByInput(nickname: String, password: String, passwo
 
 fun AuthActivity.changeProfileImgDialog() {
     val builder = AlertDialog.Builder(this)
-    builder.setTitle("프로필 사진 설정")
-    builder.setMessage("프로필 사진을 설정하시겠습니까?")
-    builder.setPositiveButton("예") { _, _ ->
+    builder.setTitle(R.string.auth_profile_img_dialog_title)
+    builder.setMessage(R.string.auth_profile_img_dialog_message)
+    builder.setPositiveButton(R.string.common_okay) { _, _ ->
         //Todo 여기서 프로필 사진 변경
         val intent = Intent(applicationContext, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
-    builder.setNegativeButton("아니오") { _, _ ->
+    builder.setNegativeButton(R.string.common_cancel) { _, _ ->
         val intent = Intent(applicationContext, MainActivity::class.java)
         startActivity(intent)
         finish()
