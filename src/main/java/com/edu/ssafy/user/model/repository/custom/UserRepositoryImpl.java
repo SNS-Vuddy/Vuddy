@@ -24,22 +24,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
         UserFriends userFriends1 = queryFactory
                 .select(userFriends)
-                .from(user)
-                .leftJoin(userFriends)
-                .on(
+                .from(userFriends)
+                .where(
                         ((userFriends.requestUser.eq(myUser)).and(userFriends.receiveUser.eq(targetUser)))
                                 .or((userFriends.requestUser.eq(targetUser)).and(userFriends.receiveUser.eq(myUser)))
                 )
                 .fetchFirst();
-
-        // 없는경우 No를 리턴
-//        if (userFriends1 == null) {
-//            return "No";            
-//        } else if (userFriends1.getRequestUser() == null) {
-//            return "No";
-//        } else if (userFriends1.getReceiveUser() == null) {
-//            return "No";
-//        }
 
         if (userFriends1 == null) {
             return "NO";
