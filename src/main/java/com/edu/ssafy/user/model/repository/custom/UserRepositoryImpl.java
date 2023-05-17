@@ -50,11 +50,21 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         Tuple tuple = queryFactory
                 .select(user, userFriends.status)
                 .from(user)
-                .join(userFriends).on((userFriends.receiveUser.eq(user)).and(userFriends.status.eq(UserFriendStatus.PENDING)))
+                .join(userFriends).on(
+                        (userFriends.receiveUser.eq(user)).and(userFriends.status.eq(UserFriendStatus.PENDING))
+                )
                 .where(user.nickname.eq(nickname))
                 .fetchFirst();
 
-        return new UserAlarmDto(tuple.get(user), tuple.get(userFriends.status) != null);
+        if (tuple == null) {
+            User user1 = queryFactory
+                    .selectFrom(user)
+                    .where(user.nickname.eq(nickname))
+                    .fetchFirst();
+            return new UserAlarmDto(user1, false);
+        }
+
+        return new UserAlarmDto(tuple.get(user), true);
 
     }
 }
