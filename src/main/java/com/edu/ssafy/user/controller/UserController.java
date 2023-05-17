@@ -1,5 +1,6 @@
 package com.edu.ssafy.user.controller;
 
+import com.edu.ssafy.user.annotation.LogExecutionTime;
 import com.edu.ssafy.user.model.dto.UserAlarmDto;
 import com.edu.ssafy.user.model.dto.common.CommonRes;
 import com.edu.ssafy.user.model.dto.common.SingleRes;
@@ -34,6 +35,7 @@ public class UserController {
     }
 
 //     내 프로필, 피드들 조회
+    @LogExecutionTime
     @GetMapping("/profile")
     public CommonRes getMyInfoAndFeeds(@RequestHeader("x_nickname") String encodedNickname) {
         String nickname = NicknameUtil.decodeNickname(encodedNickname);
@@ -43,6 +45,7 @@ public class UserController {
     }
 
     // 특정 유저 프로필, 피드들 조회
+    @LogExecutionTime
     @GetMapping("/profile/{targetUserNickname}")
     public CommonRes getUserInfoAndFeeds(@RequestHeader("x_nickname") String encodedNickname, @PathVariable String targetUserNickname) {
         String userNickname = NicknameUtil.decodeNickname(encodedNickname);
@@ -53,6 +56,7 @@ public class UserController {
     }
 
     // 상태메세지 수정
+    @LogExecutionTime
     @PutMapping("/profile/edit/status")
     public CommonRes editStatusMessage(@RequestHeader("x_nickname") String encodedNickname, @RequestBody UserStatusChangeReq userStatusChangeReq) {
         String userNickname = NicknameUtil.decodeNickname(encodedNickname);
@@ -62,6 +66,7 @@ public class UserController {
     }
 
     // 프로필 이미지 수정
+    @LogExecutionTime
     @PutMapping("/profile/edit/image")
     public CommonRes editProfileImage(@RequestHeader("x_nickname") String encodedNickname, @RequestPart(value = "images") List<MultipartFile> images) {
         String userNickname = NicknameUtil.decodeNickname(encodedNickname);
@@ -91,6 +96,7 @@ public class UserController {
     }
 
     // 피드 공개 여부 수정 api
+    @LogExecutionTime
     @PostMapping("/profile/edit/privacy")
     public CommonRes editPrivacy(@RequestHeader("x_nickname") String encodedNickname) {
         String userNickname = NicknameUtil.decodeNickname(encodedNickname);
@@ -99,6 +105,7 @@ public class UserController {
     }
 
     // 유저 집 주소 저장 api
+    @LogExecutionTime
     @PostMapping("/address/home")
     public CommonRes saveHomeAddress(@RequestHeader("x_nickname") String encodedNickname, @RequestBody UserHomeSaveReq req) {
         String userNickname = NicknameUtil.decodeNickname(encodedNickname);
@@ -107,6 +114,7 @@ public class UserController {
     }
 
     // 유저 회사 주소 저장 api
+    @LogExecutionTime
     @PostMapping("/address/office")
     public CommonRes saveOfficeAddress(@RequestHeader("x_nickname") String encodedNickname, @RequestBody UserOfficeSaveReq req) {
         String userNickname = NicknameUtil.decodeNickname(encodedNickname);
