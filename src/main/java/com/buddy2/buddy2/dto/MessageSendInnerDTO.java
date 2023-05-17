@@ -10,4 +10,5 @@ public class MessageSendInnerDTO {
     private String message;
     private String time;
     private Long chatId;
+    private String profileImg;
 }
