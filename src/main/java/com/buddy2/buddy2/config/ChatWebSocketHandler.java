@@ -266,7 +266,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                                 .lastChat(chatroom.getLastChat())
                                 .nickname(null)
                                 .time(chatroom.getTime())
-                                .profileImg(oppositeUser.getProfileImg())
+                                .profileImg(null)
                                 .build();
                     }
                     else {
