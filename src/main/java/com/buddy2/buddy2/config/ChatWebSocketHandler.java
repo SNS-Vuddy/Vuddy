@@ -251,14 +251,16 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             MessageSendLoadDTO messageSendLoadDTO = new MessageSendLoadDTO();
             messageSendLoadDTO.setType(clientMessageData.getType());
             List<Chatroom> chatroomList = chatroomRepository.findWithNickname(clientMessageData.getNickname1());
+            User userNow = userRepository.findByNickname(clientMessageData.getNickname1());
             List<MessageSendLoadInner> loadInnerList = new ArrayList<>();
             for (Chatroom chatroom : chatroomList) {
+                User oppositeUser = userRepository.findByUserId(userChatroomRepository.findwithChatIdAndUserId(chatroom.getChatId(), userNow.getUserId()));
                 MessageSendLoadInner messageSendLoadInner = MessageSendLoadInner.builder()
                         .chatId(chatroom.getChatId())
                         .lastChat(chatroom.getLastChat())
-                        .nickname(chatroom.getNickname())
+                        .nickname(oppositeUser.getNickname())
                         .time(chatroom.getTime())
-                        .profileImg(profileImg)
+                        .profileImg(oppositeUser.getProfileImg())
                         .build();
                 loadInnerList.add(messageSendLoadInner);
             }
