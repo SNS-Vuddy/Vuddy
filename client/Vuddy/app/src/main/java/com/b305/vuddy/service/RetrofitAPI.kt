@@ -10,7 +10,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitAPI {
 
+    // java.net.SocketTimeoutException
 //    private const val BASE_URL = "http://k8b305.p.ssafy.io"
+    // java.net.UnknownHostException
     private const val BASE_URL = "http://www.vuddy.co.kr"
 
     class TokenInterceptor : Interceptor {
