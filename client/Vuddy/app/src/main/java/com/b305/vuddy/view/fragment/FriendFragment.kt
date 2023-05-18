@@ -65,7 +65,9 @@ class FriendFragment : Fragment() {
                     val layoutManager = LinearLayoutManager(context)
                     recyclerView = view.findViewById(R.id.rv_profile)
                     recyclerView.layoutManager = layoutManager
-                    recyclerView.setHasFixedSize(true)
+                    //TODO
+//                    recyclerView.setHasFixedSize(true)
+                    recyclerView.setHasFixedSize(false)
                     profileAdapter = ProfileAdapter(friendList)
                     recyclerView.adapter = profileAdapter
                 } else {

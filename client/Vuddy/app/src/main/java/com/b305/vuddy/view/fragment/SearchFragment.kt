@@ -93,14 +93,18 @@ class SearchFragment : Fragment() {
         val myLayoutManager = LinearLayoutManager(context)
         recyclerView = view.findViewById(R.id.friend_list)
         recyclerView.layoutManager = myLayoutManager
-        recyclerView.setHasFixedSize(true)
+        //TODO
+//        recyclerView.setHasFixedSize(true)
+        recyclerView.setHasFixedSize(false)
         searchAdapter = SearchAdapter(friendList)
         recyclerView.adapter = searchAdapter
 
         val otherLayoutManager = LinearLayoutManager(context)
         otherRecyclerView = view.findViewById(R.id.no_friend_list)
         otherRecyclerView.layoutManager = otherLayoutManager
-        otherRecyclerView.setHasFixedSize(true)
+        //TODO
+//        recyclerView.setHasFixedSize(true)
+        recyclerView.setHasFixedSize(false)
         otherSearchAdapter = SearchAdapter(noFriendList)
         otherRecyclerView.adapter = otherSearchAdapter
     }

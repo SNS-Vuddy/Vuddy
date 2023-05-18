@@ -1,153 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".view.fragment.MessageFragment"
-    android:focusableInTouchMode="true"
-    android:focusable="true"
-    android:background="@color/white">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".view.fragment.MessageFragment"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:background="@color/white">
 
     <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Message"
-        android:gravity="center"
-        android:layout_margin="20dp"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline5"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        tools:layout_editor_absoluteX="0dp">
-
-        <LinearLayout
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="Message"
+            android:gravity="center"
+            android:fontFamily="@font/pretendard"
+            android:layout_margin="20dp"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/chat_room_list"
+    <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline5"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            tools:layout_editor_absoluteX="0dp">
+
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/item_room_list" />
+                android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/chat_room_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:listitem="@layout/item_room_list" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@drawable/shape_nav_bar"
-            android:layout_alignParentBottom="true">
-            <ImageView
-                android:id="@+id/iv_map"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="12dp"
-                android:src="@drawable/icon_map"
-                android:layout_weight="1"/>
-
-            <ImageView
-                android:id="@+id/iv_friend"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="12dp"
-                android:src="@drawable/icon_friend"
-                android:layout_weight="1"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/icon_write"
-                android:layout_weight="1"
-                android:visibility="invisible"/>
-
-            <ImageView
-                android:id="@+id/iv_message"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="12dp"
-                android:src="@drawable/icon_message"
-                android:layout_weight="1"
-                app:tint="@color/selected" />
-
-            <ImageView
-                android:id="@+id/iv_profile"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:padding="12dp"
-                android:src="@drawable/icon_profile"
-                android:layout_weight="1"/>
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:weightSum="5"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:background="@color/unselected"
+            app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
-            android:id="@+id/iv_write"
+                android:layout_marginStart="20dp"
+                android:id="@+id/iv_map"
+                android:layout_width="0dp"
+                android:scaleType="centerInside"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/icon_map_normal" />
+
+        <ImageView
+                android:id="@+id/iv_friend"
+                android:layout_width="0dp"
+                android:scaleType="centerInside"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/icon_contacts_normal" />
+
+        <ImageView
+                android:id="@+id/iv_write"
+                android:layout_width="0dp"
+                android:scaleType="centerInside"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/icon_plus_normal" />
+
+        <ImageView
+                android:id="@+id/iv_message"
+                android:layout_width="0dp"
+                android:scaleType="centerInside"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/icon_message_filled" />
+
+        <ImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="0dp"
+                android:scaleType="centerInside"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/icon_profile_normal" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/shape_feed_write_btn"
-            android:padding="8dp"
-            android:layout_marginBottom="30dp"
-            android:src="@drawable/icon_write" />
-    </RelativeLayout>
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1" />
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9" />
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.9" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.9" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="80dp"/>
+            android:id="@+id/guideline5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="80dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
