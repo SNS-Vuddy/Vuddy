@@ -102,7 +102,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:text="username"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="24sp"
                     android:textStyle="bold"
@@ -120,10 +120,12 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/feeds_mine_list"
-                android:layout_width="match_parent"
+                android:layout_width="390dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"
+               app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="3"
                 tools:listitem="@layout/item_feeds"/>
 

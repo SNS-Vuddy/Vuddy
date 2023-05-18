@@ -9,8 +9,7 @@
         android:scaleType="centerCrop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_margin="4dp"
+        android:layout_margin="2dp"
         android:src="@drawable/bird"/>
 
 </LinearLayout>

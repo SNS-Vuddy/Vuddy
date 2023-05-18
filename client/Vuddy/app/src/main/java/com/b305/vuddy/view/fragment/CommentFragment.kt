@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.databinding.FragmentCommentBinding
 import com.b305.vuddy.viewmodel.FeedDetailViewModel
 import com.b305.vuddy.model.FeedResponse
@@ -29,6 +30,7 @@ class CommentFragment(private val feedResponse: FeedResponse) : BottomSheetDialo
     private val commentList = feedResponse.data.comments
 //    private val userData = feedResponse.data.
     private var rvAdapter = CommentAdapter(commentList)
+    private lateinit var recyclerView: RecyclerView
 
     private val binding by lazy { FragmentCommentBinding.inflate(layoutInflater) }
 
@@ -69,11 +71,15 @@ class CommentFragment(private val feedResponse: FeedResponse) : BottomSheetDialo
         viewModel.loadFeedDetail(feedId)
 
 // 코멘트 Recyclerview
-        val recyclerview = binding.rvComment
+        recyclerView = binding.rvComment
 //        val rvAdapter = CommentAdapter(commentList)
-        recyclerview.adapter = rvAdapter
+        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+//        layoutManager.reverseLayout = false
 
-        recyclerview.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.layoutManager = layoutManager
+
+        recyclerView.adapter = rvAdapter
+
 
     }
 
