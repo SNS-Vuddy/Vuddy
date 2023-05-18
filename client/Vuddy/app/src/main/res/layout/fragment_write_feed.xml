@@ -48,7 +48,8 @@
 
                 <EditText
                         android:id="@+id/et_feed_title"
-                        android:textSize="15sp"
+                        android:textSize="20sp"
+                        android:background="@drawable/content_border"
                         android:layout_gravity="center"
                         android:textColor="@color/black"
                         android:fontFamily="@font/pretendard"
@@ -72,8 +73,9 @@
                         android:text="내용" />
 
                 <EditText
+                        android:background="@drawable/content_border"
                         android:id="@+id/et_feed_content"
-                        android:textSize="15sp"
+                        android:textSize="20sp"
                         android:layout_width="match_parent"
                         android:textColor="@color/black"
                         android:layout_height="wrap_content"
