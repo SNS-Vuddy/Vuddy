@@ -132,27 +132,34 @@ class FriendProfileFragment : Fragment() {
                 binding.btnAddFriend.visibility = GONE
                 binding.btnAcceptFriend.visibility = GONE
                 binding.btnRequestFriend.visibility = View.VISIBLE
+                binding.btnRefuseFriend.visibility = GONE
                 binding.btnDeleteFriend.visibility = GONE
                 binding.btnGoChatting.visibility = GONE
             }
+
             "YES" -> {
                 binding.btnAddFriend.visibility = GONE
                 binding.btnAcceptFriend.visibility = GONE
                 binding.btnRequestFriend.visibility = GONE
+                binding.btnRefuseFriend.visibility = GONE
                 binding.btnDeleteFriend.visibility = View.VISIBLE
                 binding.btnGoChatting.visibility = View.VISIBLE
             }
+
             "NO" -> {
                 binding.btnAddFriend.visibility = View.VISIBLE
                 binding.btnAcceptFriend.visibility = GONE
                 binding.btnRequestFriend.visibility = GONE
+                binding.btnRefuseFriend.visibility = GONE
                 binding.btnDeleteFriend.visibility = GONE
                 binding.btnGoChatting.visibility = GONE
             }
+
             "RECEIVED" -> {
                 binding.btnAddFriend.visibility = GONE
                 binding.btnAcceptFriend.visibility = View.VISIBLE
                 binding.btnRequestFriend.visibility = GONE
+                binding.btnRefuseFriend.visibility = View.VISIBLE
                 binding.btnDeleteFriend.visibility = GONE
                 binding.btnGoChatting.visibility = GONE
             }
@@ -212,27 +219,34 @@ class FriendProfileFragment : Fragment() {
                             binding.btnAddFriend.visibility = GONE
                             binding.btnAcceptFriend.visibility = GONE
                             binding.btnRequestFriend.visibility = View.VISIBLE
+                            binding.btnRefuseFriend.visibility = GONE
                             binding.btnDeleteFriend.visibility = GONE
                             binding.btnGoChatting.visibility = GONE
                         }
+
                         "YES" -> {
                             binding.btnAddFriend.visibility = GONE
                             binding.btnAcceptFriend.visibility = GONE
                             binding.btnRequestFriend.visibility = GONE
+                            binding.btnRefuseFriend.visibility = GONE
                             binding.btnDeleteFriend.visibility = View.VISIBLE
                             binding.btnGoChatting.visibility = View.VISIBLE
                         }
+
                         "NO" -> {
                             binding.btnAddFriend.visibility = View.VISIBLE
                             binding.btnAcceptFriend.visibility = GONE
                             binding.btnRequestFriend.visibility = GONE
+                            binding.btnRefuseFriend.visibility = GONE
                             binding.btnDeleteFriend.visibility = GONE
                             binding.btnGoChatting.visibility = GONE
                         }
+
                         "RECEIVED" -> {
                             binding.btnAddFriend.visibility = GONE
                             binding.btnAcceptFriend.visibility = View.VISIBLE
                             binding.btnRequestFriend.visibility = GONE
+                            binding.btnRefuseFriend.visibility = View.VISIBLE
                             binding.btnDeleteFriend.visibility = GONE
                             binding.btnGoChatting.visibility = GONE
                         }

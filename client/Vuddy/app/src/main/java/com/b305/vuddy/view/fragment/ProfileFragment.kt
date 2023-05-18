@@ -158,11 +158,12 @@ class ProfileFragment : Fragment() {
     @SuppressLint("ResourceAsColor")
     private fun updateUI(data: UserResponse) {
 
-        val alarmBtn = binding.profileAlarmBtn
-        if (data.data.hasNewAlarm) {
-            alarmBtn.setBackgroundColor(R.color.selected)
+        if (data?.data?.hasNewAlarm == true) {
+            binding.newAlarm.visibility = View.VISIBLE
+        } else {
+            binding.newAlarm.visibility = View.GONE
         }
-//        binding.profileImage.text = data.data.profileImage
+
         val profileImageUrl = binding.profileImage
         val profileImage = data.data.profileImage
 
