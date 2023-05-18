@@ -252,7 +252,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             messageSendLoadDTO.setType(clientMessageData.getType());
             List<Chatroom> chatroomList = chatroomRepository.findWithNickname(clientMessageData.getNickname1());
             messageSendLoadDTO.setChatroomList(chatroomList);
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(messageSendLoadDTO)));
+            String sendingMessage = objectMapper.writeValueAsString(messageSendLoadDTO);
+            log.info(sendingMessage);
+            session.sendMessage(new TextMessage(sendingMessage));
         }
         else if (messageType.equals("EXIT")) {
             CurrentChatrooms currentChatrooms = currentChatroomsMap.get(nowLocation);
