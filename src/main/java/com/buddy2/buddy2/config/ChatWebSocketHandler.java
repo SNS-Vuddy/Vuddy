@@ -251,7 +251,18 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             MessageSendLoadDTO messageSendLoadDTO = new MessageSendLoadDTO();
             messageSendLoadDTO.setType(clientMessageData.getType());
             List<Chatroom> chatroomList = chatroomRepository.findWithNickname(clientMessageData.getNickname1());
-            messageSendLoadDTO.setChatroomList(chatroomList);
+            List<MessageSendLoadInner> loadInnerList = new ArrayList<>();
+            for (Chatroom chatroom : chatroomList) {
+                MessageSendLoadInner messageSendLoadInner = MessageSendLoadInner.builder()
+                        .chatId(chatroom.getChatId())
+                        .lastChat(chatroom.getLastChat())
+                        .nickname(chatroom.getNickname())
+                        .time(chatroom.getTime())
+                        .profileImg(profileImg)
+                        .build();
+                loadInnerList.add(messageSendLoadInner);
+            }
+            messageSendLoadDTO.setInnerList(loadInnerList);
             String sendingMessage = objectMapper.writeValueAsString(messageSendLoadDTO);
             log.info(sendingMessage);
             session.sendMessage(new TextMessage(sendingMessage));

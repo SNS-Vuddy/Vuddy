@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 public class MessageSendLoadDTO {
     private String type;
-    private List<Chatroom> chatroomList;
+    private List<MessageSendLoadInner> innerList;
 }
