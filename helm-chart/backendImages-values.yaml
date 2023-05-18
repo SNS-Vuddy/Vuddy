@@ -6,7 +6,7 @@ backend:
   auth:
     image:
       pullPolicy: Always
-      tag: "7aa67f6fee26337831ed56d33f54fd1a5d9f1ce2"
+      tag: "5de24dcade1ff67b3c098fc566f2e0504170bdf1"
   user:
     image:
       pullPolicy: Always
