@@ -29,6 +29,17 @@ build-job:       # This job runs in the build stage, which runs first.
     - echo -e "\033[32mCompiling the code...\033[0m"
     - cd api-gateway
     - docker build -t itmagician/b305-vuddy:api-gateway .
+
+
+
+
+
+    - docker tag itmagician/b305-vuddy:api-gateway itmagician/b305-vuddy-api_gateway
+    - docker tag itmagician/b305-vuddy:api-gateway itmagician/b305-vuddy-api_gateway:$CI_COMMIT_SHA
+    - docker push itmagician/b305-vuddy-api_gateway
+    - docker push itmagician/b305-vuddy-api_gateway:$CI_COMMIT_SHA
+
+
     - echo "Compile complete."
 
 
