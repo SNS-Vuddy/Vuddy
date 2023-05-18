@@ -11,7 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300s"
     nginx.ingress.kubernetes.io/proxy-body-size: "100mb"
 spec:
-  ipAddressType: ipv4
+  # ipAddressType: ipv4
   ingressClassName: nginx
   rules:
     - {{ if or (eq .Release.Namespace "default") (.Release.Namespace | lower | eq  "production") }}

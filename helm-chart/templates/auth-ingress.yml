@@ -12,7 +12,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600s"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600s"
 spec:
-  ipAddressType: ipv4
+  # ipAddressType: ipv4
   ingressClassName: nginx
   rules:
     - {{ if or (eq .Release.Namespace "default") (.Release.Namespace | lower | eq  "production") }}
