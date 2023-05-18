@@ -22,7 +22,7 @@ backend:
   comment:
     image:
       pullPolicy: Always
-      tag: "99654c5df48afd9818f56eebd3cc656c6754de8a"
+      tag: "df916f6a376237f71d192589322d6accec541c33"
   location:
     image:
       pullPolicy: Always
