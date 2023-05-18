@@ -44,7 +44,9 @@ class FriendListBottomSheetFragment : BottomSheetDialogFragment() {
                     val friendList: ArrayList<FriendProfile> = result?.friendList!!
                     val layoutManager = LinearLayoutManager(context)
                     recyclerView.layoutManager = layoutManager
-                    recyclerView.setHasFixedSize(true)
+                    //TODO
+//                    recyclerView.setHasFixedSize(true)
+                    recyclerView.setHasFixedSize(false)
                     val mapProfileAdapter = MapProfileAdapter(friendList) { clickedItem ->
                         (parentFragment as? MapFragment)?.onItemClicked(clickedItem)
                     }

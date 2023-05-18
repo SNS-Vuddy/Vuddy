@@ -118,27 +118,6 @@
             android:id="@+id/action_profileFragment_to_settingFragment"
             app:destination="@id/settingFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/friendProfileFragment"
-        android:name="com.b305.vuddy.view.fragment.FriendProfileFragment"
-        android:label="fragment_friend_profile"
-        tools:layout="@layout/fragment_friend_profile">
-        <action
-            android:id="@+id/action_friendProfileFragment_to_messageFragment"
-            app:destination="@id/messageFragment" />
-        <action
-            android:id="@+id/action_friendProfileFragment_to_friendFragment"
-            app:destination="@id/friendFragment" />
-        <action
-            android:id="@+id/action_friendProfileFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_friendProfileFragment_to_mapFragment"
-            app:destination="@id/mapFragment" />
-        <action
-            android:id="@+id/action_friendProfileFragment_to_writeFeedFragment"
-            app:destination="@id/writeFeedFragment" />
-    </fragment>
     <activity
         android:id="@+id/signupActivity"
         android:name="com.b305.vuddy.view.activity.AuthActivity"
