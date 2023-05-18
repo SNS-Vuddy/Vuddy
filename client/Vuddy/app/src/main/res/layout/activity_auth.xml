@@ -54,12 +54,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:hint="닉네임 입력"
+                android:fontFamily="@font/pretendard"
                 android:textSize="12sp" />
 
         <EditText
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:fontFamily="@font/pretendard"
                 android:hint="패스워드 입력"
                 android:inputType="textPassword"
                 android:textSize="12sp" />
@@ -69,6 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:hint="패스워드 확인"
+                android:fontFamily="@font/pretendard"
                 android:inputType="textPassword"
                 android:textSize="12sp"
                 android:visibility="visible" />
@@ -79,6 +82,7 @@
                 android:layout_height="30dp"
                 android:gravity="center_vertical"
                 android:text="@string/auth_nickname_empty"
+                android:fontFamily="@font/pretendard"
                 android:textColor="@color/error"
                 android:textSize="12sp"
                 android:layout_marginBottom="10dp"
@@ -87,6 +91,7 @@
         <Button
                 android:id="@+id/btn_ok"
                 android:layout_width="match_parent"
+                android:fontFamily="@font/pretendard"
                 android:layout_height="40dp"
                 android:background="@color/selected"
                 android:text="@string/common_okay" />

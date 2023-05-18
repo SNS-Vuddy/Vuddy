@@ -16,13 +16,16 @@
 
         <ImageView
                 android:id="@+id/iv_profile_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_background" />
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/bird" />
 
         <TextView
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="50dp"
                 android:id="@+id/tv_profile_nickname"
+                android:textSize="20sp"
+                android:fontFamily="@font/pretendard"
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -37,14 +40,22 @@
 
         <Button
                 android:id="@+id/btn_go_to_profile"
+                android:background="@drawable/shape_btn_radius"
+                android:backgroundTint="@color/selected"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/pretendard"
+                android:layout_margin="10dp"
                 android:layout_height="wrap_content"
                 android:text="프로필" />
 
         <Button
                 android:layout_weight="1"
                 android:id="@+id/btn_send_message"
+                android:background="@drawable/shape_btn_radius"
+                android:layout_margin="10dp"
+                android:backgroundTint="@color/selected"
+                android:fontFamily="@font/pretendard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="메시지" />

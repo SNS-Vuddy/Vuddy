@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Search"
+            android:fontFamily="@font/pretendard"
             android:gravity="center_vertical"
             android:layout_margin="20dp"
             android:padding="15dp"
