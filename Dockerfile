@@ -10,4 +10,4 @@ ENV JAVA_OPTS="-Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=tr
 
 ARG JAR_FILE=./build/libs/*-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
-CMD ["java","-jar","app.jar"]
+CMD ["java","$JAVA_OPTS","-jar","app.jar"]
