@@ -1,4 +1,3 @@
-
 server:
   port: 8080
   servlet:
@@ -14,12 +13,12 @@ spring:
     dbcp2:
       test-on-borrow: true
       validation-query: SELECT 1
-  kafka:
-    consumer:
-      bootstrap-servers: ${KAFKA_HOST_NAME:localhost:9092}
-      group-id: chatting
-    producer:
-      bootstrap-servers: ${KAFKA_HOST_NAME:localhost:9092}
+  # kafka:
+  #   consumer:
+  #     bootstrap-servers: ${KAFKA_HOST_NAME:localhost:9092}
+  #     group-id: chatting
+  #   producer:
+  #     bootstrap-servers: ${KAFKA_HOST_NAME:localhost:9092}
   redis:
     lettuce:
       pool:
@@ -31,8 +30,8 @@ spring:
     password: ${REDIS_PASSWORD:}
 logging:
   file:
-    name: /log/spring/chat/chat.log  # 로깅 파일 위치이다.
-  level:  # 각 package 별로 로깅 레벨을 지정할 수 있다.
+    name: /log/spring/chat/chat.log # 로깅 파일 위치이다.
+  level: # 각 package 별로 로깅 레벨을 지정할 수 있다.
     root: INFO
   logback:
     rollingpolicy:
