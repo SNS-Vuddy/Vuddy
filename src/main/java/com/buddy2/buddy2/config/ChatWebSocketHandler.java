@@ -252,22 +252,40 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             messageSendLoadDTO.setType(clientMessageData.getType());
             List<Chatroom> chatroomList = chatroomRepository.findWithNickname(clientMessageData.getNickname1());
             User userNow = userRepository.findByNickname(clientMessageData.getNickname1());
-            List<MessageSendLoadInner> loadInnerList = new ArrayList<>();
-            for (Chatroom chatroom : chatroomList) {
-                User oppositeUser = userRepository.findByUserId(userChatroomRepository.findwithChatIdAndUserId(chatroom.getChatId(), userNow.getUserId()));
-                MessageSendLoadInner messageSendLoadInner = MessageSendLoadInner.builder()
-                        .chatId(chatroom.getChatId())
-                        .lastChat(chatroom.getLastChat())
-                        .nickname(oppositeUser.getNickname())
-                        .time(chatroom.getTime())
-                        .profileImg(oppositeUser.getProfileImg())
-                        .build();
-                loadInnerList.add(messageSendLoadInner);
+            if (userNow == null) {
+                log.warn("없는 유저입니다. : {}", clientMessageData.getNickname1());
             }
-            messageSendLoadDTO.setInnerList(loadInnerList);
-            String sendingMessage = objectMapper.writeValueAsString(messageSendLoadDTO);
-            log.info(sendingMessage);
-            session.sendMessage(new TextMessage(sendingMessage));
+            else {
+                List<MessageSendLoadInner> loadInnerList = new ArrayList<>();
+                for (Chatroom chatroom : chatroomList) {
+                    User oppositeUser = userRepository.findByUserId(userChatroomRepository.findwithChatIdAndUserId(chatroom.getChatId(), userNow.getUserId()));
+                    MessageSendLoadInner messageSendLoadInner = null;
+                    if (oppositeUser == null) {
+                        messageSendLoadInner = MessageSendLoadInner.builder()
+                                .chatId(chatroom.getChatId())
+                                .lastChat(chatroom.getLastChat())
+                                .nickname(null)
+                                .time(chatroom.getTime())
+                                .profileImg(oppositeUser.getProfileImg())
+                                .build();
+                    }
+                    else {
+                        messageSendLoadInner = MessageSendLoadInner.builder()
+                                .chatId(chatroom.getChatId())
+                                .lastChat(chatroom.getLastChat())
+                                .nickname(oppositeUser.getNickname())
+                                .time(chatroom.getTime())
+                                .profileImg(oppositeUser.getProfileImg())
+                                .build();
+                    }
+                    loadInnerList.add(messageSendLoadInner);
+                }
+                messageSendLoadDTO.setInnerList(loadInnerList);
+                String sendingMessage = objectMapper.writeValueAsString(messageSendLoadDTO);
+                log.info(sendingMessage);
+                session.sendMessage(new TextMessage(sendingMessage));
+            }
+
         }
         else if (messageType.equals("EXIT")) {
             CurrentChatrooms currentChatrooms = currentChatroomsMap.get(nowLocation);
