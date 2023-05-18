@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragment.FriendFragment"
+    tools:context=".view.fragment.FriendFragment"
     android:focusableInTouchMode="true"
     android:focusable="true"
     android:background="@color/white">
@@ -75,8 +75,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:padding="12dp"
-                android:src="@drawable/icon_friend_selected"
-                android:layout_weight="1"/>
+                android:src="@drawable/icon_friend"
+                android:layout_weight="1"
+                app:tint="@color/selected" />
 
             <ImageView
                 android:layout_width="wrap_content"

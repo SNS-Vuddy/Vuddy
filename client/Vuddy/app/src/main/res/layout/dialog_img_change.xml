@@ -27,9 +27,10 @@
             android:layout_height="30dp"
             android:layout_marginTop="70dp"
             android:layout_marginLeft="70dp"
-            android:src="@drawable/icon_changecamera"
+            android:src="@drawable/icon_camera"
             tools:layout_editor_absoluteX="226dp"
-            tools:layout_editor_absoluteY="90dp" />
+            tools:layout_editor_absoluteY="90dp"
+            app:tint="@color/black" />
     </RelativeLayout>
 
     <androidx.appcompat.widget.AppCompatButton

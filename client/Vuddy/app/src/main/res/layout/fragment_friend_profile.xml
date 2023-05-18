@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.FriendProfileFragment">
+    tools:context=".view.fragment.FriendProfileFragment">
 
 
     <RelativeLayout
@@ -154,7 +154,8 @@
                     android:text="메세지 보내기   "
                     android:textColor="@color/white"
                     android:visibility="gone"
-                    android:drawableEnd="@drawable/icon_send_white"/>
+                    android:drawableEnd="@drawable/icon_send"
+                    android:drawableTint="@color/white"/>
             </LinearLayout>
 
             <View

@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
     android:id="@+id/map_fragment"
-        tools:context=".fragment.MapFragment">
+        tools:context=".view.fragment.MapFragment">
 
     <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map"
@@ -83,8 +83,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:padding="12dp"
-                android:src="@drawable/icon_map_purple"
-                android:layout_weight="1"/>
+                android:src="@drawable/icon_map"
+                android:layout_weight="1"
+                app:tint="@color/selected" />
 
             <ImageView
                 android:id="@+id/iv_friend"

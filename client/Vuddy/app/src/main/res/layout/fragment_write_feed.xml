@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".fragment.WriteFeedFragment"
+    tools:context=".view.fragment.WriteFeedFragment"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/bottom_sheet_border">
+    android:background="@drawable/shape_bottom_sheet">
 
     <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_height="match_parent"
@@ -70,15 +70,15 @@
             android:layout_marginBottom="16dp"
             android:layout_height="110dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btn_pick_photo"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:drawableStart="@drawable/icon_camera"
+                android:src="@drawable/icon_camera"
                 android:background="@drawable/content_border"
-                android:gravity="center" />
+                android:layout_gravity="center" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_photo"

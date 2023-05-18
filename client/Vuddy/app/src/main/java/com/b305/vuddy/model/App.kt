@@ -1,4 +1,4 @@
-package com.b305.vuddy
+package com.b305.vuddy.model
 
 import android.app.Application
 import com.b305.vuddy.util.SharedManager

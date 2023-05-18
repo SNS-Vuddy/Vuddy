@@ -7,7 +7,8 @@
         android:paddingBottom="40dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragment.FriendMarkerBottomSheetFragment">
+        tools:context=".view.fragment.FriendMarkerBottomSheetFragment"
+        android:background="@drawable/shape_bottom_sheet">
 
     <LinearLayout
             android:layout_width="match_parent"

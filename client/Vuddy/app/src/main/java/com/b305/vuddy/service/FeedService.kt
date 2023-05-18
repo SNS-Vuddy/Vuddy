@@ -1,14 +1,11 @@
 package com.b305.vuddy.service
 
-import android.database.Observable
 import com.b305.vuddy.model.FeedResponse
-import com.b305.vuddy.model.Feeds
 import com.b305.vuddy.model.FeedsResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -18,11 +15,11 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface FeedService {
-    @Multipart
-    @POST("/feed/opened/image")
-    fun feedImg(
-        @Part images: List<MultipartBody.Part>
-    ): Call<ResponseBody>
+//    @Multipart
+//    @POST("/feed/opened/image")
+//    fun feedImg(
+//        @Part images: List<MultipartBody.Part>
+//    ): Call<ResponseBody>
 
 //    @Multipart
 //    @POST("/feed/write")
@@ -70,12 +67,12 @@ interface FeedService {
     @GET("/feed/feeds/mine")
     fun feedMineGet() : Call<FeedsResponse>
 
-    @GET("/feed/feeds/nickname/test1")
-    fun feedUserGet() : Call<FeedsResponse>
+//    @GET("/feed/feeds/nickname/test1")
+//    fun feedUserGet() : Call<FeedsResponse>
 
     @Headers("Content-Type: application/json")
     @GET("/feed/feeds/nickname/{nickname}")
-    fun FriendfeedGet(
+    fun friendfeedGet(
         @Path("nickname") nickname: String,
     ): Call<FeedsResponse>
 }
