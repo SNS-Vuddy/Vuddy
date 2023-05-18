@@ -57,7 +57,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/comment_search"
-            android:layout_width="376dp"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             app:endIconMode="clear_text"
@@ -65,7 +65,7 @@
 
             <EditText
                 android:id="@+id/comment_input_text"
-                android:layout_width="360dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:background="@drawable/shape_search_bar"
@@ -79,17 +79,18 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
+        <Button
             android:id="@+id/comment_btn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="28dp"
+            android:layout_height="55dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/shape_btn"
+            android:backgroundTint="@color/selected"
             android:text="게시"
-            android:textColor="#A286DB"
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.515"
+            app:layout_constraintHorizontal_bias="0.679"
             app:layout_constraintStart_toEndOf="@+id/comment_search" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

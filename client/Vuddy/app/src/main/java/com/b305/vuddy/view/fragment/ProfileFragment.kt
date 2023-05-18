@@ -274,7 +274,6 @@ class ProfileFragment : Fragment() {
         })
     }
 
-    @SuppressLint("InflateParams")
     private fun openDialog(context: Context) {
         val dialogLayout = LayoutInflater.from(context).inflate(R.layout.dialog_img_change, null)
         val dialogBuild = AlertDialog.Builder(context).apply {
@@ -290,28 +289,10 @@ class ProfileFragment : Fragment() {
             intent.type = "image/*"
 //            intent.data = MediaStore.Images.Media.CONTENT_TYPE
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            intent.action = Intent.ACTION_PICK
+//            intent.action = Intent.ACTION_PICK
+            intent.action = Intent.ACTION_GET_CONTENT;
             activityResult.launch(intent)
 
-        }
-
-        if (photoList.isNotEmpty()) {
-            val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
-            // Uri를 File로 변환하는 메소드
-            val imageUri = photoList[0]
-            val file = File(getPathFromUri(imageUri))
-            val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-
-            builder.addFormDataPart("images", file.name, requestFile)
-
-            val body = builder.build().parts
-            // 프로필 이미지
-            val profileImageUrl =
-                requireView().findViewById<CircleImageView>(R.id.profile_change_box)
-
-            Glide.with(requireContext())
-                .load(body)
-                .into(profileImageUrl)
         }
         val imgChangeCompleteBtn = dialogLayout.findViewById<Button>(R.id.profile_changeimg_complete_btn)
         imgChangeCompleteBtn.setOnClickListener {
@@ -329,17 +310,17 @@ class ProfileFragment : Fragment() {
                 result.data?.data?.let {
                     val imageUri: Uri? = result.data?.data
                     if (imageUri != null) {
-                        Toast.makeText(
-                            requireContext(),
-                            "${imageUri::class.simpleName}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        val dialogLayout = LayoutInflater.from(context).inflate(R.layout.dialog_img_change, null)
+                        val profileImageUrl = dialogLayout.findViewById<CircleImageView>(R.id.profile_change_box)
+                        Glide.with(this)
+                            .load(imageUri)
+                            .into(profileImageUrl)
+
                         photoList.add(imageUri)
                     }
                 }
             }
         }
-
     private fun imgChange() {
         val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
         // Uri를 File로 변환하는 메소드
@@ -359,21 +340,6 @@ class ProfileFragment : Fragment() {
                     Log.d("프로필 교체성공", "All uploaded successfully. Response: $message")
 
 
-//                    // 프로필 이미지
-//                    val profileImageUrl = view!!.findViewById<CircleImageView>(R.id.profile_change_box)
-//                    val profileImage = body
-//
-//                    if (profileImage != null) {
-//                        // 프로필 이미지가 있을 경우 이미지 로드 및 표시
-//                            Glide.with(requireContext())
-//                                .load(profileImage)
-//                                .into(profileImageUrl)
-//
-//                    } else {
-//                        // 프로필 이미지가 없을 경우 기본 이미지 표시
-//                            profileImageUrl.setImageResource(R.drawable.man)
-//
-//                    }
                     viewModel.loadProfile()
                 } else {
                     Log.d("프로필 교체 실패", "upload failed. Response: ${response.message()}")

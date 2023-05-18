@@ -151,6 +151,7 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
             intent.type = "image/*"
 //            intent.data = MediaStore.Images.Media.CONTENT_TYPE
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+//            intent.action = Intent.ACTION_GET_CONTENT;
             intent.action = Intent.ACTION_PICK
             activityResult.launch(intent)
 
@@ -158,39 +159,12 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
         }
     }
 
-//        cameraAddBtn.setOnClickListener {
-//            // 카메라로 새로운 사진을 찍어서 추가하는 경우의 코드 작성
-//            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-//                takePictureIntent.resolveActivity(context.packageManager)?.also {
-//                    val photoFile: File? = try {
-//                        createImageFile()
-//                    } catch (ex: IOException) {
-//                        // Error occurred while creating the File
-//                        null
-//                    }
-//                    // Continue only if the File was successfully created
-//                    photoFile?.also {
-//                        val photoURI: Uri = FileProvider.getUriForFile(
-//                            context,
-//                            "com.example.android.fileprovider",
-//                            it
-//                        )
-//                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-//                        activityResultCamera.launch(takePictureIntent)
-//                    }
-//                }
-//            }
-//            dialog.dismiss()
-//        }
-//
-//    }
-
     private val activityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 photoList.clear()
 
-                if (result.data?.clipData != null) { // 사진 여러개 선택한 경우
+                if (result.data?.clipData != null && result.data?.clipData!!.itemCount > 0) { // 사진 여러개 선택한 경우
                     val count = result.data?.clipData!!.itemCount
                     if (count > 10) {
                         Toast.makeText(requireContext(), "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG)
@@ -211,8 +185,6 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
                         }
                     }
                 }
-                // adapter.notifyDataSetChanged()
-                // 어댑터 생성
                 val adapter = PhotoAdapter(photoList, requireContext())
                 binding.rvPhoto.adapter = adapter
             }
@@ -248,34 +220,6 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
 //        val content = RequestBody.create(MediaType.parse("text/plain"), "yourContent")
         val requestBodylocation = location.toRequestBody("text/plain".toMediaTypeOrNull())
 
-        // content 문자열에서 "@" 문자열이 있는지 확인하고, 있다면 추출하여 tags List에 추가
-//        while (content.contains("@")) {
-//            val index = content.indexOf("@") // "@" 문자열의 위치를 찾음
-//            val subString = content.substring(index + 1) // "@" 이후의 문자열을 추출
-//            val tag = subString.split(" ")[0] // 첫번째 단어를 추출하여 태그로 사용
-//            val RequestBodytag = tag.toRequestBody("text/plain".toMediaTypeOrNull())
-//            tags.add(RequestBodytag) // 태그를 List에 추가
-////            tags.add(MultipartBody.Part.createFormData("tag", tag))
-//            content = subString // 추출한 문자열을 제외한 나머지 문자열을 다시 처리하기 위해 content 변수를 업데이트
-//
-//            // 태그를 클릭했을 때 처리할 코드
-//            val tagSpan = object : ClickableSpan() {
-//                override fun onClick(view: View) {
-//                    // 태그 클릭 시 처리할 내용 입력
-//                    // 예를 들어 해당 태그의 페이지로 이동하도록 구현할 수 있음
-//                    val intent = Intent(context, TagActivity::class.java)
-//                    intent.putExtra("tag", tag)
-//                    context?.startActivity(intent)
-//                }
-//            }
-//            val startIndex = index // 태그의 시작 위치
-//            val endIndex = index + tag.length + 1 // 태그의 끝 위치
-//            val spannableString = SpannableString(content) // 태그를 클릭할 수 있는 SpannableString 생성
-//            spannableString.setSpan(tagSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//            val editable = SpannableStringBuilder(spannableString)
-//            binding.etFeedContent.text =
-//                editable // 태그를 클릭할 수 있는 SpannableString으로 content EditText의 텍스트를 설정
-//        }
         val requestBodyContent = content.toRequestBody("text/plain".toMediaTypeOrNull())
 
         val call = feedService.feedWrite(requestBodytitle, requestBodyContent, requestBodylocation, tags, body)

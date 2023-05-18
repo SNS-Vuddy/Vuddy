@@ -18,8 +18,8 @@ class FeedDetailImageAdapter(private val feedimageList : List<String>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = feedimageList[position]
         val layoutParams = holder.detailFeedimageViewRecyclerView.layoutParams
-        layoutParams.width = 900  // 이미지뷰 너비 조정
-        layoutParams.height = 800 // 이미지뷰 높이 조정
+        layoutParams.width = 1000  // 이미지뷰 너비 조정
+        layoutParams.height = 1000 // 이미지뷰 높이 조정
         holder.detailFeedimageViewRecyclerView.layoutParams = layoutParams
 
         Glide.with(holder.itemView)

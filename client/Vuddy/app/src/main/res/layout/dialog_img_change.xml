@@ -9,6 +9,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:layout_marginTop="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -38,6 +39,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/selected"
+        android:background="@drawable/shape_btn"
         android:text="완료"
     />
 </LinearLayout>
