@@ -156,6 +156,21 @@
                     android:visibility="gone"
                     android:drawableEnd="@drawable/icon_send"
                     android:drawableTint="@color/white"/>
+
+                <Button
+                    android:id="@+id/btn_refuse_friend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginStart="24dp"
+                    android:background="@drawable/shape_btn"
+                    android:backgroundTint="@color/error"
+                    android:text="친구 요청 거절"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    android:drawableEnd="@drawable/icon_remove_friend"/>
             </LinearLayout>
 
             <View
