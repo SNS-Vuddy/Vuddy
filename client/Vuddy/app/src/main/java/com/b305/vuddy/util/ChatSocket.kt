@@ -2,6 +2,7 @@ package com.b305.vuddy.util
 
 import android.content.Context
 import android.util.Log
+import com.b305.vuddy.model.App
 import com.b305.vuddy.model.Chat
 import com.b305.vuddy.model.ChatList
 import okhttp3.OkHttpClient
@@ -15,27 +16,30 @@ import org.json.JSONObject
 
 class ChatSocket(context: Context) {
     private var client = OkHttpClient()
-    private var url = "ws://develop.vuddy.co.kr/chatting"
+    private var url = "ws://k8b305.p.ssafy.io/chatting"
     private val sharedManager: SharedManager by lazy { SharedManager(context) }
     private lateinit var webSocket: WebSocket
+//    private var webSocket: WebSocket? = null
+
     var isConnected = false
 
     fun connection() {
+        Log.d("ChatSocket", "****CHATCHAT****")
         val request = Request.Builder()
             .url(url)
             .build()
 
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
+                Log.d("ChatSocket", "****CHATCHAT****")
                 isConnected = true
                 loadChatRoomList()
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 val jsonObject = JSONObject(text)
-                val type = jsonObject.getString("type")
 
-                when (type) {
+                when (jsonObject.getString("type")) {
                     "LOAD" -> {
                         val chatRoomList = jsonObject.getJSONArray("chatroomList")
                         val chatRoomArrayList = ArrayList<Chat>()
@@ -58,7 +62,7 @@ class ChatSocket(context: Context) {
                         val resData = jsonObject.getJSONArray("data")
                         val chatId = resData.getInt(3)
                         val chatArrayList = ArrayList<Chat>()
-                        val chatLsit: ChatList = ChatList(chatId, chatArrayList)
+                        val chatLsit = ChatList(chatId, chatArrayList)
                         sharedManager.saveChatList(chatLsit)
                     }
 
@@ -78,11 +82,11 @@ class ChatSocket(context: Context) {
                             )
                             chatArrayList.add(chat)
                         }
-                        val chatLsit: ChatList = ChatList(chatId, chatArrayList)
+                        val chatLsit = ChatList(chatId, chatArrayList)
                         sharedManager.saveChatList(chatLsit)
                     }
 
-                    "Chat" -> {
+                    "CHAT" -> {
                         val profileImage = jsonObject.getString("profileImage")
                         val chatId = jsonObject.getInt("chatId")
                         val nickname = jsonObject.getString("nickname")
@@ -121,7 +125,7 @@ class ChatSocket(context: Context) {
             return
         }
         val jsonObject = JSONObject()
-            .put("nickname1", sharedManager.getCurrentUser().nickname.toString())
+            .put("nickname1", App.instance.getCurrentUser().nickname)
             .put("type", "LOAD")
 
         webSocket.send(jsonObject.toString())
@@ -133,13 +137,42 @@ class ChatSocket(context: Context) {
             return
         }
         val jsonObject = JSONObject()
-            .put("nickname1", sharedManager.getCurrentUser().nickname.toString())
+            .put("nickname1", App.instance.getCurrentUser().nickname)
             .put("chatId", chatId)
             .put("type", "CHAT")
             .put("message", message)
 
         webSocket.send(jsonObject.toString())
         Log.d("ChatSocket", "****sendMessage $chatId $message****")
+    }
+
+    fun goChatting(nickname: String?) {
+        Log.d("chatSocket", "!!!!!!chat open3")
+        if (!isConnected) {
+            return
+        }
+        Log.d("chatSocket", "!!!!!!chat open4")
+        val chatRoomList: ArrayList<Chat> = App.instance.getChatRoomList()
+        Log.d("chatSocket", "!!!!!!chat open5")
+        if (chatRoomList.any { it.nickname == nickname }) {
+            Log.d("chatSocket", "!!!!!!chat open6")
+            val jsonObject = JSONObject()
+                .put("nickname1", App.instance.getCurrentUser().nickname)
+                .put("nickname2", nickname)
+                .put("type", "JOIN")
+
+            webSocket.send(jsonObject.toString())
+            Log.d("ChatSocket", "****sendMessage JOIN!!!!!!****")
+        } else {
+            Log.d("chatSocket", "!!!!!!chat open7")
+            val jsonObject = JSONObject()
+                .put("nickname1", App.instance.getCurrentUser().nickname)
+                .put("nickname2", nickname)
+                .put("type", "OPEN")
+
+            webSocket.send(jsonObject.toString())
+            Log.d("ChatSocket", "****sendMessage OPEN!!!!!!****")
+        }
     }
 
     fun disconnect() {

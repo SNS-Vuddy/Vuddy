@@ -78,7 +78,11 @@ class SharedManager(context: Context) {
     fun getChatRoomList(): ArrayList<Chat> {
         val jsonString = prefs["chatRoomList", ""]
         val array = Gson().fromJson(jsonString, Array<Chat>::class.java)
-        return ArrayList(array.toList())
+        return if (array != null) {
+            ArrayList(array.toList())
+        } else {
+            ArrayList()
+        }
     }
 
     fun removeChatRoomList() {
@@ -86,7 +90,7 @@ class SharedManager(context: Context) {
     }
 
     fun saveChatList(chatList: ChatList) {
-        prefs["chatId"] = chatList.chatId?.toInt().toString()
+        prefs["chatId"] = chatList.chatId.toString()
         val jsonString = Gson().toJson(chatList.chatList)
         prefs["chatList"] = jsonString
     }
@@ -105,7 +109,11 @@ class SharedManager(context: Context) {
     fun getChatList(): ArrayList<Chat> {
         val jsonString = prefs["chatList", ""]
         val array = Gson().fromJson(jsonString, Array<Chat>::class.java)
-        return ArrayList(array.toList())
+        return if (array != null) {
+            ArrayList(array.toList())
+        } else {
+            ArrayList()
+        }
     }
 
     fun removeChatList() {

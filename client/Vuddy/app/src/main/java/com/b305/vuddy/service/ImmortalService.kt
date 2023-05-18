@@ -12,15 +12,15 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import com.b305.vuddy.R
-import com.b305.vuddy.activity.MainActivity
+import com.b305.vuddy.view.activity.MainActivity
 import com.b305.vuddy.model.UserLocation
 import com.b305.vuddy.util.ChatSocket
 import com.b305.vuddy.util.FASTEST_LOCATION_UPDATE_INTERVAL
 import com.b305.vuddy.util.LOCATION_UPDATE_INTERVAL
-import com.b305.vuddy.util.LocationSocket
+import com.b305.vuddy.util.location.LocationSocket
 import com.b305.vuddy.util.NOTI_ID
 import com.b305.vuddy.util.SharedManager
-import com.b305.vuddy.util.TrackingUtility
+import com.b305.vuddy.util.location.LocationUtility
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -28,9 +28,10 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import org.greenrobot.eventbus.EventBus
 
+@Suppress("DEPRECATION")
 class ImmortalService : LifecycleService() {
 
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationSocket: LocationSocket
     private lateinit var chatSocket: ChatSocket
     private lateinit var sharedManager: SharedManager
@@ -52,7 +53,7 @@ class ImmortalService : LifecycleService() {
         postInitialValues()
 
         isTracking.observe(this) {
-            updateLocation(it)
+            updateLocation()
         }
     }
 
@@ -72,12 +73,12 @@ class ImmortalService : LifecycleService() {
 
     // 요청
     @SuppressLint("MissingPermission")
-    private fun updateLocation(isTracking: Boolean) {
+    private fun updateLocation() {
         Log.d("ImmortalService", "****updateLocation****")
         if (!::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         }
-        if (TrackingUtility.hasLocationPermissions(this)) {
+        if (LocationUtility.hasLocationPermissions(this)) {
             val request = LocationRequest.create().apply {
                 interval = LOCATION_UPDATE_INTERVAL // 위치 업데이트 주기
                 fastestInterval = FASTEST_LOCATION_UPDATE_INTERVAL // 가장 빠른 위치 업데이트 주기

@@ -25,7 +25,7 @@ interface UserService {
 
     @Multipart
     @PUT("/user/profile/edit/image")
-    fun ProfileImgChange(
+    fun profileImgChange(
         @Part images: List<MultipartBody.Part>
     ): Call<ResponseBody>
 }

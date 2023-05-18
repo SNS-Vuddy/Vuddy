@@ -21,7 +21,7 @@
             android:required="true" />
 
     <application
-            android:name=".App"
+            android:name=".model.App"
             android:allowBackup="true"
             android:dataExtractionRules="@xml/data_extraction_rules"
             android:fullBackupContent="@xml/backup_rules"
@@ -34,7 +34,7 @@
             tools:targetApi="31">
 
         <receiver
-                android:name=".activity.MainActivity$Companion$BootReceiver"
+                android:name=".view.activity.MainActivity$Companion$BootReceiver"
                 android:enabled="true"
                 android:exported="false"
                 android:label="BootReceiver"
@@ -46,7 +46,7 @@
         </receiver>
 
         <activity
-                android:name=".activity.SplashActivity"
+                android:name=".view.activity.SplashActivity"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,17 +56,17 @@
         </activity>
 
         <service android:name=".service.ImmortalService" />
-        <service android:name=".service.ImmortalChatService" />
+<!--        <service android:name=".service.ImmortalChatService" />-->
 
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
                 android:value="AIzaSyDwSH5JWpAKR4nw2CxVqxWiYuP0kcQJofM" />
 
         <activity
-                android:name=".activity.AuthActivity"
+                android:name=".view.activity.AuthActivity"
                 android:exported="false" />
         <activity
-                android:name=".activity.MainActivity"
+                android:name=".view.activity.MainActivity"
                 android:exported="true" />
     </application>
 

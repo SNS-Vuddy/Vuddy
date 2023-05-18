@@ -8,15 +8,16 @@
         android:focusableInTouchMode="true"
         android:id="@+id/rv_map_friend_list"
         android:focusable="true"
-        tools:context=".fragment.FriendListBottomSheetFragment">
+        tools:context=".view.fragment.FriendListBottomSheetFragment">
 
     <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            tools:layout_editor_absoluteX="0dp">
+            tools:layout_editor_absoluteX="0dp"
+            android:background="@drawable/shape_bottom_sheet">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -36,56 +37,6 @@
                     android:layout_marginTop="20dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-
-    <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@color/grey"
-            android:gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-        <ImageView
-                android:id="@+id/iv_map"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="15dp"
-                android:src="@drawable/icon_map" />
-
-        <ImageView
-                android:id="@+id/iv_friend"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="15dp"
-                android:src="@drawable/icon_friend" />
-
-        <ImageView
-                android:id="@+id/iv_write"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="15dp"
-                android:src="@drawable/icon_write" />
-
-        <ImageView
-                android:id="@+id/iv_message"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="15dp"
-                android:src="@drawable/icon_message" />
-
-        <ImageView
-                android:id="@+id/iv_profile"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="15dp"
-                android:src="@drawable/icon_profile" />
-    </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline1"

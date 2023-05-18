@@ -4,7 +4,7 @@
     android:thickness="0dp">
     <stroke
         android:width="2dp"
-        android:color="#895BE8" />
+        android:color="@color/selected" />
     <corners
         android:bottomLeftRadius="15dp"
         android:bottomRightRadius="15dp"
@@ -12,5 +12,5 @@
         android:topRightRadius="15dp">
 
     </corners>
-    <solid android:color="#ffffff" />
+    <solid android:color="@color/white" />
 </shape>

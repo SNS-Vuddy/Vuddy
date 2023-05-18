@@ -1,0 +1,170 @@
+package com.b305.vuddy.view.extension
+
+import android.content.Intent
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import com.b305.vuddy.R
+import com.b305.vuddy.view.activity.AuthActivity
+import com.b305.vuddy.view.activity.MainActivity
+import com.b305.vuddy.model.AuthRequest
+import com.b305.vuddy.model.AuthResponse
+import com.b305.vuddy.model.Token
+import com.b305.vuddy.model.User
+import com.b305.vuddy.util.BASE_PROFILE_IMG_URL
+import com.b305.vuddy.util.BASIC_IMG_URL
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+fun AuthActivity.checkSignupByInput() {
+    val nickname = binding.etNickname.text.toString()
+    val password = binding.etPassword.text.toString()
+    val passwordConfirm = binding.etPasswordConfirm.text.toString()
+
+    if (nickname.isEmpty()) {
+        binding.tvConfirm.text = getString(R.string.auth_nickname_empty)
+        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.error))
+        return
+    }
+    if (nickname.length > 20 || nickname.length < 4) {
+        binding.tvConfirm.text = getString(R.string.auth_nickname_length_error)
+        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.error))
+        return
+    }
+    if (password.isEmpty()) {
+        binding.tvConfirm.text = getString(R.string.auth_password_empty)
+        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.error))
+        return
+    }
+    if (password.length > 20 || password.length < 8) {
+        binding.tvConfirm.text = getString(R.string.auth_password_length_error)
+        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.error))
+        return
+    }
+    if (password != passwordConfirm) {
+        binding.tvConfirm.text = getString(R.string.auth_password_confirm_error)
+        binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.error))
+        return
+    }
+    binding.tvConfirm.text = getString(R.string.auth_success)
+    binding.tvConfirm.setTextColor(ContextCompat.getColor(this, R.color.selected))
+}
+
+fun AuthActivity.confirmSignupByInput(nickname: String, password: String, passwordConfirm: String): Boolean {
+    if (nickname.isEmpty()) {
+        Toast.makeText(this, R.string.auth_nickname_empty, Toast.LENGTH_SHORT).show()
+        return false
+    }
+
+    if (nickname.length > 20 || nickname.length < 4) {
+        Toast.makeText(this, R.string.auth_nickname_length_error, Toast.LENGTH_SHORT).show()
+        return false
+    }
+
+    if (password.isEmpty()) {
+        Toast.makeText(this, R.string.auth_password_empty, Toast.LENGTH_SHORT).show()
+        return false
+    }
+
+    if (password.length > 20 || password.length < 8) {
+        Toast.makeText(this, R.string.auth_password_empty, Toast.LENGTH_SHORT).show()
+        return false
+    }
+
+    if (password != passwordConfirm) {
+        Toast.makeText(this, R.string.auth_password_confirm_error, Toast.LENGTH_SHORT).show()
+        return false
+    }
+
+    return true
+}
+
+fun AuthActivity.changeProfileImgDialog() {
+    val builder = AlertDialog.Builder(this)
+    builder.setTitle(R.string.auth_profile_img_dialog_title)
+    builder.setMessage(R.string.auth_profile_img_dialog_message)
+    builder.setPositiveButton(R.string.common_okay) { _, _ ->
+        //TODO: 여기서 프로필 사진 변경
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+    builder.setNegativeButton(R.string.common_cancel) { _, _ ->
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+    builder.show()
+}
+
+fun AuthActivity.signupService(authRequest: AuthRequest) {
+    service.signup(authRequest).enqueue(object : Callback<AuthResponse> {
+        override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+            if (response.isSuccessful) {
+
+                val nickname = authRequest.nickname
+                val password = authRequest.password
+                val profileImgUrl = BASE_PROFILE_IMG_URL
+                val statusImgUrl = BASIC_IMG_URL
+                val user = User(nickname, password, profileImgUrl, statusImgUrl)
+                sharedManager.saveCurrentUser(user)
+
+                val result = response.body()
+                val accessToken: String = result?.accessToken.toString()
+                val refreshToken: String = result?.refreshToken.toString()
+                val token = Token(accessToken, refreshToken)
+                sharedManager.saveCurrentToken(token)
+
+                val message: String = result?.message.toString()
+                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+
+                changeProfileImgDialog()
+            } else {
+                val errorMessage = JSONObject(response.errorBody()?.string()!!)
+                Toast.makeText(applicationContext, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+            Toast.makeText(applicationContext, "회원가입 실패", Toast.LENGTH_SHORT).show()
+        }
+    })
+}
+
+fun AuthActivity.loginService(authRequest: AuthRequest) {
+    service.login(authRequest).enqueue(object : Callback<AuthResponse> {
+        override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+            if (response.isSuccessful) {
+                val result = response.body()
+
+                val nickname = authRequest.nickname
+                val password = authRequest.password
+
+                val accessToken: String = result?.accessToken.toString()
+                val refreshToken: String = result?.refreshToken.toString()
+                val profileImgUrl = result?.profileImage.toString()
+                val statusImgUrl = BASIC_IMG_URL
+                val user = User(nickname, password, profileImgUrl, statusImgUrl)
+                val token = Token(accessToken, refreshToken)
+                sharedManager.saveCurrentUser(user)
+                sharedManager.saveCurrentToken(token)
+
+                val message: String = result?.message.toString()
+                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                val errorMessage = JSONObject(response.errorBody()?.string()!!)
+                Toast.makeText(applicationContext, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+            Toast.makeText(applicationContext, "로그인 실패", Toast.LENGTH_SHORT).show()
+        }
+    })
+}
