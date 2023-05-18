@@ -285,14 +285,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             it.findNavController().navigate(R.id.action_mapFragment_to_profileFragment)
         }
 
-        binding.fabLogout.setOnClickListener {
-            sharedManager.removeCurrentToken()
-            sharedManager.removeCurrentUser()
-            sharedManager.removeChatRoomList()
-            sharedManager.removeChatList()
-            requireActivity().stopService(Intent(requireContext(), ImmortalService::class.java))
-            it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
-        }
+        //TODO: 설정 페이지로 이동
+//        binding.fabLogout.setOnClickListener {
+//            sharedManager.removeCurrentToken()
+//            sharedManager.removeCurrentUser()
+//            sharedManager.removeChatRoomList()
+//            sharedManager.removeChatList()
+//            requireActivity().stopService(Intent(requireContext(), ImmortalService::class.java))
+//            it.findNavController().navigate(R.id.action_mapFragment_to_signupActivity)
+//        }
 
         binding.fabMoveCurrentLocation.setOnClickListener {
 
