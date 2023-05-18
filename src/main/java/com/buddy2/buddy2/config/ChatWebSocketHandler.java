@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.kafka.annotation.KafkaListener;
+//import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -310,15 +310,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    @KafkaListener(topics = "chat-message")
-    protected void receiveTextMessage(String message) throws Exception {
-        System.out.println("------- 3 --------");
-        System.out.println(message);
-        System.out.println("------- 3 --------");
-        ChatMessageData chatMessage = objectMapper.readValue(message, ChatMessageData.class);
-        System.out.println(chatMessage.getChatId());
-        CurrentChatrooms currentChatroom = currentChatroomsMap.get(chatMessage.getChatId());
-        currentChatroom.chatroomSendMessage(message);
-    }
+//    @KafkaListener(topics = "chat-message")
+//    protected void receiveTextMessage(String message) throws Exception {
+//        System.out.println("------- 3 --------");
+//        System.out.println(message);
+//        System.out.println("------- 3 --------");
+//        ChatMessageData chatMessage = objectMapper.readValue(message, ChatMessageData.class);
+//        System.out.println(chatMessage.getChatId());
+//        CurrentChatrooms currentChatroom = currentChatroomsMap.get(chatMessage.getChatId());
+//        currentChatroom.chatroomSendMessage(message);
+//    }
 
 }
