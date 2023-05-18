@@ -152,6 +152,7 @@ class ProfileFragment : Fragment() {
             it.findNavController().navigate(R.id.action_profileFragment_to_settingFragment)
         }
 
+
         return binding.root
     }
 
@@ -239,7 +240,9 @@ class ProfileFragment : Fragment() {
                     userNick.text = result?.data?.nickname
                     val alarmBtn = binding.profileAlarmBtn
                     if (result?.data?.hasNewAlarm == true) {
-                        alarmBtn.setBackgroundColor(R.color.selected)
+                        binding.newAlarm.visibility = View.VISIBLE
+                    } else {
+                        binding.newAlarm.visibility = View.GONE
                     }
 
                     // 프로필 이미지

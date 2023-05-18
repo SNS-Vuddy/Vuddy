@@ -89,6 +89,7 @@ class WriteFeedFragment : BottomSheetDialogFragment() {
 
         binding.btnSaveFeed.setOnClickListener {
             sendImage()
+            dismiss()
         }
 
         getFeedDetail()
