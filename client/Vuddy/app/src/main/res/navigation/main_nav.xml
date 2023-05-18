@@ -176,5 +176,8 @@
         <action
             android:id="@+id/action_settingFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+                android:id="@+id/action_settingFragment_to_signupActivity"
+                app:destination="@id/signupActivity" />
     </fragment>
 </navigation>
