@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:text="Message"
             android:gravity="center"
+            android:fontFamily="@font/pretendard"
             android:layout_margin="20dp"
             android:textSize="32sp"
             android:textStyle="bold"
