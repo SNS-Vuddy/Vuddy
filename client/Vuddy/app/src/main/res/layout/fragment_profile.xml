@@ -106,16 +106,15 @@
                 </RelativeLayout>
 
                 <TextView
-                        android:id="@+id/profile_user"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:text="username"
-                        android:textColor="@color/black"
-                        android:fontFamily="@font/pretendard"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_vertical" />
+                    android:id="@+id/profile_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_vertical"/>
             </LinearLayout>
 
             <View
@@ -127,13 +126,15 @@
             <!-- 하단 포스트 부분 -->
 
             <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/feeds_mine_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="3"
-                    tools:listitem="@layout/item_feeds" />
+                android:id="@+id/feeds_mine_list"
+                android:layout_width="390dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"
+               app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="3"
+                tools:listitem="@layout/item_feeds"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

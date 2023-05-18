@@ -25,8 +25,8 @@ class FeedMineAdapter(private val feedsMineList: ArrayList<Feeds>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = feedsMineList[position]
         val layoutParams = holder.feedimageViewRecyclerView.layoutParams
-        layoutParams.width = 300 // 이미지뷰 너비 조정
-        layoutParams.height = 300 // 이미지뷰 높이 조정
+        layoutParams.width = 330 // 이미지뷰 너비 조정
+        layoutParams.height = 330 // 이미지뷰 높이 조정
         holder.feedimageViewRecyclerView.layoutParams = layoutParams
 
         Glide.with(holder.itemView)

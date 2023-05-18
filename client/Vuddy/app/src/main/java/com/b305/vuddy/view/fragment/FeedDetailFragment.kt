@@ -1,12 +1,14 @@
 package com.b305.vuddy.view.fragment
 
 import android.annotation.SuppressLint
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -85,7 +87,6 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
         binding.myfeedTitle.text = data.data.title
         binding.myfeedNickname.text = data.data.nickname
         binding.myfeedContent.text = data.data.content
-        binding.myfeedDate.text = data.data.createdAt
 
         val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         binding.myfeedImage.layoutManager = layoutManager
@@ -133,6 +134,8 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
         val myFeedDate: TextView = binding.myfeedDate
         val myFeedcommetCount = binding.myfeedComment
 
+        val geocoder = context?.let { Geocoder(it) }
+
         val call = RetrofitAPI.feedService
         call.feedDetailGet(feedId).enqueue(object : Callback<FeedResponse> {
             @SuppressLint("SetTextI18n")
@@ -143,10 +146,49 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
                     myFeedTitle.text = feedresult?.data?.title
                     myFeednick.text = feedresult?.data?.nickname
                     myFeedContent.text = feedresult?.data?.content
-//                    myFeedLocation.text = result?.data?.location
-                    myFeedDate.text = feedresult?.data?.createdAt
+//                    myFeedDate.text = feedresult?.data?.createdAt
                     myFeedcommetCount.text = "댓글 ${feedresult?.data?.commentsCount}개"
                     binding.myfeedLikeCount.text = feedresult?.data?.likesCount.toString()
+
+                    val feedDate = feedresult?.data?.createdAt.toString()
+                    val targetChar = 'T'
+                    val replacement = " "
+
+                    val modifiedString = feedDate.replace(targetChar.toString(), replacement)
+                    myFeedDate.text = modifiedString
+
+////                    // 주소작업
+//                    val location = feedresult?.data?.location
+//                    val delimiter = ", "
+//
+//                    val delimiterIndex = location?.indexOf(delimiter)
+//                    if (delimiterIndex != -1) {
+//                        val latitude =
+//                            location?.substring(0, delimiterIndex!!)?.toDouble()
+//                        val longitude = location?.substring(delimiterIndex!! + 1)?.toDouble()
+//
+//                        val addressList = latitude?.let { lat ->
+//                            longitude?.let { lon ->
+//                                geocoder?.getFromLocation(lat, lon, 1)
+//                            }
+//                        }
+//                        if (addressList != null) {
+//                            if (addressList.isNotEmpty()) {
+//                                val address = addressList[0]
+//                                val roadAddress = address.thoroughfare // 도로명 주소
+//
+//                                if (roadAddress != null) {
+//                                binding.myfeedLocation.text = roadAddress
+//                                } else {
+//                                    println("도로명 주소를 찾을 수 없습니다.")
+//                                }
+//                            } else {
+//                                println("주소를 찾을 수 없습니다.")
+//                            }
+//                        } else {
+//                            println("주소를 찾을 수 없습니다.")
+//                        }
+//                    }
 
                     // 이미지 작업
                     val myFeedUserImageUrl = binding.myfeedUserImage
@@ -164,7 +206,7 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
                     // 이미지 리사이클러 뷰
                     val feedimageList: List<String> = feedresult?.data?.images!!
                     val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-//
+
                     recyclerView = binding.myfeedImage
                     recyclerView.layoutManager = layoutManager
 

@@ -92,13 +92,15 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/myfeed_image"
-                android:layout_width="320dp"
-                android:layout_height="240dp"
-                android:layout_marginTop="24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+            android:id="@+id/myfeed_image"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
 
         <LinearLayout
                 android:id="@+id/title_like_box"
@@ -172,13 +174,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/myfeed_content" />
 
         <View
-                android:layout_width="320dp"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/light_grey"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/myfeed_comment" />
+            android:layout_width="320dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="48dp"
+            android:background="@color/light_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/myfeed_comment" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
