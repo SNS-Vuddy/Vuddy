@@ -29,10 +29,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:id="@+id/buttonCamera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/shape_btn"
+            android:backgroundTint="@color/yellow"
             android:text="카 메 라" />
 
         <Space
@@ -40,10 +42,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:id="@+id/buttonGallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/shape_btn"
+            android:backgroundTint="@color/selected"
             android:text="갤러리" />
 
         <Space
