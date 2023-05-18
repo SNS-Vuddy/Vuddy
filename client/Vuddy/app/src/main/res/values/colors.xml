@@ -9,5 +9,6 @@
 
     <color name="selected">#83cceb</color>
     <color name="unselected">#FFFFFFFF</color>
+    <color name="unselected_grey">#b0b9c2</color>
     <color name="error">#FF0000</color>
 </resources>

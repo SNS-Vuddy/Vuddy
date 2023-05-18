@@ -48,7 +48,9 @@ class MessageFragment : Fragment() {
         val layoutManager = LinearLayoutManager(context)
         recyclerView = view.findViewById(R.id.chat_room_list)
         recyclerView.layoutManager = layoutManager
-        recyclerView.setHasFixedSize(true)
+        //TODO
+//        recyclerView.setHasFixedSize(true)
+        recyclerView.setHasFixedSize(false)
         chatRoomAdapter = ChatRoomAdapter(chatRoomList)
         recyclerView.adapter = chatRoomAdapter
     }

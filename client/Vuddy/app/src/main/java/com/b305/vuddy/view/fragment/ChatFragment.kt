@@ -56,7 +56,9 @@ class ChatFragment: Fragment() {
         val layoutManager = LinearLayoutManager(context)
         recyclerView = view.findViewById(R.id.chat_list)
         recyclerView.layoutManager = layoutManager
-        recyclerView.setHasFixedSize(true)
+        //TODO
+//        recyclerView.setHasFixedSize(true)
+        recyclerView.setHasFixedSize(false)
         chatAdapter = ChatAdapter(chatList)
         recyclerView.adapter = chatAdapter
     }
