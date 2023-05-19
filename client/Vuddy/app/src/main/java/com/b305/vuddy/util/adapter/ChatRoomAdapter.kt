@@ -1,5 +1,6 @@
 package com.b305.vuddy.util.adapter
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,18 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
 import com.b305.vuddy.view.fragment.ChatFragment
 import com.b305.vuddy.model.Chat
-import com.b305.vuddy.util.ChatSocket
+import com.b305.vuddy.view.activity.MainActivity
 import com.bumptech.glide.Glide
 
 class ChatRoomAdapter(private val chatRoomList: ArrayList<Chat>) : RecyclerView.Adapter<ChatRoomAdapter.CustomViewHolder>() {
 
-    private lateinit var chatSocket: ChatSocket
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_room_list, parent, false)
         return CustomViewHolder(view).apply {
@@ -26,16 +24,25 @@ class ChatRoomAdapter(private val chatRoomList: ArrayList<Chat>) : RecyclerView.
                 val curPos : Int = bindingAdapterPosition
                 val chatRoom : Chat = chatRoomList[curPos]
 
-                chatSocket.goChatting(chatRoom.nickname)
+                val context = itemView.context
+                if (context is MainActivity) {
+//                    val service = context.getServiceInstance()
+//                    val chatSocket = service?.getChatSocket()
+//                    chatSocket?.goChatting(chatRoom.nickname)
 
-                val bundle = Bundle()
-                bundle.putString("nickname", chatRoom.nickname)
-                val chatFragment = ChatFragment()
-                chatFragment.arguments = bundle
-                Log.d("Chat", "CHATCHAT $bundle")
+                    val bundle = Bundle().apply {
+                        putString("nickname", chatRoom.nickname)
+                    }
+                    val chatFragment = ChatFragment()
+                    chatFragment.arguments = bundle
 
-                Toast.makeText(parent.context, "${chatRoom.nickname} : ${chatRoom.message}", Toast.LENGTH_SHORT).show()
-                it.findNavController().navigate(R.id.action_messageFragment_to_chatFragment, bundle)
+                    context.supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, chatFragment)
+                        .addToBackStack(null)
+                        .commit()
+                } else {
+                    Log.e("ChatRoomAdapter", "Parent activity is not MainActivity")
+                }
             }
         }
     }
@@ -51,12 +58,24 @@ class ChatRoomAdapter(private val chatRoomList: ArrayList<Chat>) : RecyclerView.
             .circleCrop() // 동그랗게 자르기
             .into(holder.profileImage) // 이미지를 넣을 뷰
         holder.nickname.text = currentItem.nickname
-        holder.lastChat.text = currentItem.message
+        if (currentItem.message == "null") {
+            holder.lastChat.text = ""
+        } else {
+            holder.lastChat.text = currentItem.message
+        }
+//        holder.lastTime.text = currentItem.time?.substring(0, 10)
         holder.lastTime.text = currentItem.time
     }
 
     override fun getItemCount(): Int {
         return chatRoomList.size
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateChatRooms(updatedList: ArrayList<Chat>) {
+        chatRoomList.clear()
+        chatRoomList.addAll(updatedList)
+        notifyDataSetChanged()
     }
 
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

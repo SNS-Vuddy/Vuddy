@@ -2,6 +2,7 @@ package com.b305.vuddy.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.b305.vuddy.model.Chat
 import com.b305.vuddy.model.ChatList
 import com.b305.vuddy.model.Token
@@ -61,19 +62,32 @@ class SharedManager(context: Context) {
     }
 
     fun updataChatRoomList(chatRoom: Chat) {
+        Log.d("share", "!!!!!update $chatRoom")
         val updateList = ArrayList<Chat>()
         val chatId = chatRoom.chatId
         val chatRoomList = getChatRoomList().toMutableList()
 
+        val roomData = chatRoomList.find { it.chatId == chatId }
+
         // chatId를 가진 인자를 삭제합니다.
         chatRoomList.removeAll { it.chatId == chatId }
 
-        updateList.add(chatRoom)
+        val updateRoomData = Chat().apply {
+            profileImage = roomData?.profileImage
+            this.chatId = chatId
+            nickname = roomData?.nickname
+            message = chatRoom.message
+            time = chatRoom.time
+        }
+
+        updateList.add(updateRoomData)
         updateList.addAll(chatRoomList)
+        Log.d("share", "!!!!!update $updateList")
 
         val jsonString = Gson().toJson(updateList)
         prefs["chatRoomList"] = jsonString
     }
+
 
     fun getChatRoomList(): ArrayList<Chat> {
         val jsonString = prefs["chatRoomList", ""]
@@ -96,14 +110,22 @@ class SharedManager(context: Context) {
     }
 
     fun addChat(chat: Chat) {
+        Log.d("share", "!!!!!update $chat")
         val chatId = chat.chatId
         val chatList = getChatList().toMutableList()
+        Log.d("share", "!!!!!getChatLsit $chatList")
 
-        if (!chatList.any { it.chatId == chatId }) {
+        if (getChatId() == chatId) {
             chatList.add(chat)
+            Log.d("share", "!!!!!addChatList $chatList")
             val jsonString = Gson().toJson(chatList)
             prefs["chatList"] = jsonString
         }
+    }
+
+    fun getChatId(): Int {
+        Log.d("share", "!!!!ID ${prefs["chatId", ""]}")
+        return prefs["chatId", ""].toInt()
     }
 
     fun getChatList(): ArrayList<Chat> {

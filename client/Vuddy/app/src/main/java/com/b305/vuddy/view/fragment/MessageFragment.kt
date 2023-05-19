@@ -16,15 +16,33 @@ import com.b305.vuddy.util.adapter.ChatRoomAdapter
 
 class MessageFragment : Fragment() {
 
-    lateinit var binding: FragmentMessageBinding
-    private val chatRoomList: ArrayList<Chat> = App.instance.getChatRoomList()
+    private lateinit var binding: FragmentMessageBinding
     private lateinit var chatRoomAdapter: ChatRoomAdapter
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-
         binding = FragmentMessageBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupViews()
+        setupListeners()
+        refreshChatRoomList()
+    }
+
+    private fun setupViews() {
+        val layoutManager = LinearLayoutManager(context)
+        recyclerView = binding.chatRoomList
+        recyclerView.layoutManager = layoutManager
+        recyclerView.setHasFixedSize(false)
+        chatRoomAdapter = ChatRoomAdapter(ArrayList())
+        recyclerView.adapter = chatRoomAdapter
+    }
+
+    private fun setupListeners() {
         binding.ivMap.setOnClickListener {
             it.findNavController().navigate(R.id.action_messageFragment_to_mapFragment)
         }
@@ -38,20 +56,10 @@ class MessageFragment : Fragment() {
         binding.ivProfile.setOnClickListener {
             it.findNavController().navigate(R.id.action_messageFragment_to_profileFragment)
         }
-
-        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val layoutManager = LinearLayoutManager(context)
-        recyclerView = view.findViewById(R.id.chat_room_list)
-        recyclerView.layoutManager = layoutManager
-        //TODO
-//        recyclerView.setHasFixedSize(true)
-        recyclerView.setHasFixedSize(false)
-        chatRoomAdapter = ChatRoomAdapter(chatRoomList)
-        recyclerView.adapter = chatRoomAdapter
+    private fun refreshChatRoomList() {
+        val chatRoomList: ArrayList<Chat> = App.instance.getChatRoomList()
+        chatRoomAdapter.updateChatRooms(chatRoomList)
     }
 }

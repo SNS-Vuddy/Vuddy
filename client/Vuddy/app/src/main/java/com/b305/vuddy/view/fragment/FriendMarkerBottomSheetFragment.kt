@@ -9,12 +9,11 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.b305.vuddy.R
-import com.b305.vuddy.util.ChatSocket
+import com.b305.vuddy.view.activity.MainActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 @Suppress("DEPRECATION")
 class FriendMarkerBottomSheetFragment : BottomSheetDialogFragment() {
-    private lateinit var chatSocket: ChatSocket
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_friend_marker_bottom_sheet, container, false)
@@ -50,7 +49,9 @@ class FriendMarkerBottomSheetFragment : BottomSheetDialogFragment() {
 
         val buttonGoToChatting = view.findViewById<Button>(R.id.btn_send_message)
         buttonGoToChatting.setOnClickListener {
-            chatSocket.goChatting(nickname)
+            val service = (requireContext() as MainActivity).getServiceInstance()
+            val chatSocket = service?.getChatSocket()
+            chatSocket?.goChatting(nickname)
             val bundle = Bundle()
             bundle.putString("nickname", nickname)
             val chatFragment = ChatFragment()
