@@ -60,7 +60,9 @@
 
 ### ERD
 
-- **** ERD
+<p align="center">
+	<img src="./readmeasset/erd.png" width="800px">
+</p>
 
 ### API 명세서 [:link:](https://documenter.getpostman.com/view/23901534/2s93eR5vmA)
 
