@@ -1,0 +1,86 @@
+version: "3.5"
+services:
+  api_gateway:
+    image: itmagician/b305-vuddy-api_gateway
+    container_name: "api_gateway"
+    ports:
+      - "80:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+     SERVER_HOSTNAME: 
+  user:
+    image: itmagician/b305-vuddy-user
+    container_name: "user"
+    ports:
+      - "9012:8080"
+    environment:
+      MYSQL_URL: 
+      MYSQL_USERNAME: 
+      MYSQL_PASSWORD: 
+      REDIS_HOST_NAME: 
+      REDIS_PORT: 
+      REDIS_PASSWORD: 
+      KAFKA_HOST_NAME: 
+  chatting:
+    image: itmagician/b305-vuddy-chatting
+    container_name: "chatting"
+    ports:
+      - "9017:8080"
+    environment:
+      MYSQL_URL: 
+      MYSQL_USERNAME: 
+      MYSQL_PASSWORD: 
+      REDIS_HOST_NAME: 
+      REDIS_PORT: 
+      REDIS_PASSWORD: 
+      KAFKA_HOST_NAME: 
+  comment:
+    image: itmagician/b305-vuddy-comment
+    container_name: "comment"
+    ports:
+      - "9015:8080"
+    environment:
+      MYSQL_URL: 
+      MYSQL_USERNAME: 
+      MYSQL_PASSWORD: 
+  friend:
+    image: itmagician/b305-vuddy-friend
+    container_name: "friend"
+    ports:
+      - "9014:8080"
+    environment:
+      MYSQL_URL: 
+      MYSQL_USERNAME: 
+      MYSQL_PASSWORD: 
+  location:
+    image: itmagician/b305-vuddy-location
+    container_name: "location"
+    ports:
+      - "9016:8080"
+    environment:
+      MYSQL_URL: 
+      MYSQL_USERNAME: 
+      MYSQL_PASSWORD: 
+      REDIS_HOST_NAME: 
+      REDIS_PORT: 
+      REDIS_PASSWORD: 
+      KAFKA_HOST_NAME: 
+  feed:
+    image: itmagician/b305-vuddy-feed
+    container_name: "feed"
+    ports:
+      - "9013:8080"
+    environment:
+      MYSQL_URL: 
+      MYSQL_USERNAME: 
+      MYSQL_PASSWORD: 
+  auth:
+    image: itmagician/b305-vuddy-auth
+    container_name: "auth"
+    ports:
+      - "9011:8080"
+    environment:
+      MYSQL_URL: 
+      MYSQL_USERNAME: 
+      MYSQL_PASSWORD: 
