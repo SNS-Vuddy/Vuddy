@@ -211,12 +211,18 @@ class ProfileFragment : Fragment() {
                     // 리사이클러뷰
 //                    val layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                     //격자 레이아웃
-                    val layoutManager = GridLayoutManager(context, 3)
+                    val gridLayoutManager = GridLayoutManager(context, 3)
                     // 역순 작업
-                    layoutManager.reverseLayout = true
+                    // 1번
+//                    gridLayoutManager.reverseLayout = true
+//                  // 2번
+//                    gridLayoutManager.setReverseLayout(true)
+
+                    // 3번
+                    feedList.reverse()
 
                     recyclerView = binding.feedsMineList
-                    recyclerView.layoutManager = layoutManager
+                    recyclerView.layoutManager = gridLayoutManager
 
                     feedMineAdapter = FeedMineAdapter(feedList)
                     recyclerView.adapter = feedMineAdapter
