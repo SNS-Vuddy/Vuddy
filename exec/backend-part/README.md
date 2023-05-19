@@ -5,7 +5,7 @@ docker compose --env-file environment/.env -f dataserver-docker-compose.yml up -
 
 ### MySQL 실행이 완료될때까지 3분 정도 대기
 
-docker compose --env-file environment/.env -f aps-docker-compose.yml up -d
+docker compose --env-file environment/.env -f apps-docker-compose.yml up -d
 ```
 ## 설정변경 방법
 ---
