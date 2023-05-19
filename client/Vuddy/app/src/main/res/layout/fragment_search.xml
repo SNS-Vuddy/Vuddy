@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".view.fragment.SearchFragment">
+
+    <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline5"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_editor_absoluteX="0dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                    android:id="@+id/search_input_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/pretendard"
+                    android:drawableStart="@drawable/icon_search"
+                    android:hint="Search"
+                    android:inputType="text"
+                    android:textSize="16sp"
+                    android:layout_margin="20dp"
+                    android:padding="16dp"
+                    android:background="@drawable/shape_search_bar" />
+
+            <TextView
+                    android:id="@+id/my_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:background="@drawable/shape_search_cate"
+                    android:paddingVertical="10dp"
+                    android:text="내 친구"
+                    android:fontFamily="@font/pretendard"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_input_text" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/friend_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/my_friend"
+                    tools:listitem="@layout/item_friend_list" />
+
+            <TextView
+                    android:id="@+id/no_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/shape_search_cate"
+                    android:paddingVertical="10dp"
+                    android:text="다른 친구"
+                    android:fontFamily="@font/pretendard"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/friend_list" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/no_friend_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/no_friend"
+                    tools:listitem="@layout/item_friend_list" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="5"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:background="@color/unselected"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+                android:layout_marginStart="20dp"
+                android:id="@+id/iv_map"
+                android:layout_width="0dp"
+                android:scaleType="centerInside"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/icon_map_normal" />
+
+        <ImageView
+                android:id="@+id/iv_friend"
+                android:layout_width="0dp"
+                android:scaleType="centerInside"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/icon_contacts_normal" />
+
+        <ImageView
+                android:id="@+id/iv_write"
+                android:layout_width="0dp"
+                android:scaleType="centerInside"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/icon_plus_normal" />
+
+        <ImageView
+                android:id="@+id/iv_message"
+                android:layout_width="0dp"
+                android:scaleType="centerInside"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/icon_message_normal" />
+
+        <ImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="0dp"
+                android:scaleType="centerInside"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/icon_profile_normal" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9" />
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.9" />
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="80dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
