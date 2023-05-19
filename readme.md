@@ -72,16 +72,26 @@
 
 ## 기능
 
-- **** 기능별 동작 화면
+- **** 기능별 동작 화면 추가 예정
+
+<!-- <p align="center">
+	<img src="./readmeasset/api.png" width="800px">
+</p>
+
+<p align="center">
+	<img src="./readmeasset/api.png" width="270px">
+	<img src="./readmeasset/api.png" width="270px">
+	<img src="./readmeasset/api.png" width="270px">
+</p> -->
 
 ## Android
 
-- **** Android
+- [Android](./client/)
 
 ## Backend
 
-- **** Backend
+- [Backend](./server/)
 
 ## Infra
 
-- **** Infra
+- [Infra](./exec/helm-chart/)
