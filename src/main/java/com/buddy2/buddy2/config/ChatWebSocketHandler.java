@@ -233,7 +233,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             messageSendJoinInnerDTO.setNickname(clientMessageData.getNickname2());
 
 
-            String redisKey = "chatroom-" + messageSendInnerDTO.getChatId();
+            String redisKey = "chatroom-" + messageSendJoinInnerDTO.getChatId();
             List<MessageSendInnerDTO> messageList = new ArrayList<>();
             List<String> redisMessageList = redisMessageTemplate.opsForList().range(redisKey,-20,-1);
             if (redisMessageList == null) {
@@ -277,6 +277,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                                 .time(chatroom.getTime())
                                 .profileImg(oppositeUser.getProfileImg())
                                 .build();
+                        String lastMessage = redisMessageTemplate.opsForList().index("chatroom-" + chatroom.getChatId(), -1);
+                        MessageSendInnerDTO lastChatroom = objectMapper.readValue(lastMessage, MessageSendInnerDTO.class);
+                        if (lastChatroom != null) {
+                            messageSendLoadInner.setLastChat(lastChatroom.getMessage());
+                            messageSendLoadInner.setTime(lastChatroom.getTime());
+                            messageSendLoadInner.setProfileImg(lastChatroom.getProfileImg());
+                        }
                     }
                     loadInnerList.add(messageSendLoadInner);
                 }
@@ -284,6 +291,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 String sendingMessage = objectMapper.writeValueAsString(messageSendLoadDTO);
                 log.info(sendingMessage);
                 session.sendMessage(new TextMessage(sendingMessage));
+
             }
 
         }
