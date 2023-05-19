@@ -107,7 +107,10 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
         // 보내온 시간
         LocalDateTime localDateTime = LocalDateTime.parse(locationMessageReceive.getLocalDateTime());
 
-
+        redisLocationTemplate.opsForHash().put("정현석-location", "home", "36.358594 127.300690");
+        redisLocationTemplate.opsForHash().put("정현석-location", "office", "36.3552835 127.298009");
+        redisLocationTemplate.opsForHash().put("사쿠라-location", "office", "36.3552835 127.298009");
+        redisLocationTemplate.opsForHash().put("사쿠라-location", "home", "36.3550962 127.2998105");
 
         LocationMessageData locationMessage = new LocationMessageData();
         locationMessage.setNickname(locationMessageReceive.getNickname());
