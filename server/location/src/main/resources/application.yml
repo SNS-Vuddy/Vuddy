@@ -1,0 +1,40 @@
+
+server:
+  port: 8080
+  servlet:
+    context-path: /location
+
+spring:
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/vuddy}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:abcd1234}
+    hikari:
+      max-lifetime: 1800000
+    dbcp2:
+      test-on-borrow: true
+      validation-query: SELECT 1
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_HOST_NAME:localhost:9092}
+      group-id: location
+    producer:
+      bootstrap-servers: ${KAFKA_HOST_NAME:localhost:9092}
+  redis:
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 2
+    host: ${REDIS_HOST_NAME:127.0.0.1}
+    port: ${REDIST_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+logging:
+  file:
+    name: /log/spring/location/location.log  # 로깅 파일 위치이다.
+  level:  # 각 package 별로 로깅 레벨을 지정할 수 있다.
+    root: INFO
+  logback:
+    rollingpolicy:
+      max-history: 7
+      max-file-size: 10MB
