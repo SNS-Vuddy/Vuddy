@@ -67,7 +67,7 @@
                         android:fontFamily="@font/pretendard"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:text="주소" />
+                        android:text="대전광역시 유성구 봉명동" />
             </LinearLayout>
 
             <View
