@@ -190,8 +190,8 @@ class FriendProfileFragment : Fragment() {
                     val feedList: ArrayList<Feeds> = result?.FeedList!!
                     //격자 레이아웃
                     val layoutManager = GridLayoutManager(context, 3)
-                    // 역순 작업
-                    layoutManager.reverseLayout = true
+                    // 3번
+                    feedList.reverse()
 
                     recyclerView = binding.friendFeedsList
                     recyclerView.layoutManager = layoutManager
