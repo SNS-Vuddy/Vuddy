@@ -150,45 +150,50 @@ class FeedDetailFragment : BottomSheetDialogFragment() {
                     myFeedcommetCount.text = "댓글 ${feedresult?.data?.commentsCount}개"
                     binding.myfeedLikeCount.text = feedresult?.data?.likesCount.toString()
 
+                    //날짜 작업
                     val feedDate = feedresult?.data?.createdAt.toString()
                     val targetChar = 'T'
                     val replacement = " "
 
                     val modifiedString = feedDate.replace(targetChar.toString(), replacement)
-                    myFeedDate.text = modifiedString
+                    val newDate = modifiedString.replaceAfter(replacement, "")
+                    myFeedDate.text = newDate
 
-////                    // 주소작업
-//                    val location = feedresult?.data?.location
-//                    val delimiter = ", "
-//
-//                    val delimiterIndex = location?.indexOf(delimiter)
-//                    if (delimiterIndex != -1) {
-//                        val latitude =
-//                            location?.substring(0, delimiterIndex!!)?.toDouble()
-//                        val longitude = location?.substring(delimiterIndex!! + 1)?.toDouble()
-//
-//                        val addressList = latitude?.let { lat ->
-//                            longitude?.let { lon ->
-//                                geocoder?.getFromLocation(lat, lon, 1)
-//                            }
-//                        }
-//                        if (addressList != null) {
-//                            if (addressList.isNotEmpty()) {
-//                                val address = addressList[0]
+                    // 주소작업
+                    val location = feedresult?.data?.location
+                    val delimiter = ", "
+
+                    val delimiterIndex = location?.indexOf(delimiter)
+                    if (delimiterIndex != -1) {
+                        val latitude =
+                            location?.substring(0, delimiterIndex!!)?.toDouble()
+                        val longitude = location?.substring(delimiterIndex!! + 1)?.toDouble()
+
+                        val addressList = latitude?.let { lat ->
+                            longitude?.let { lon ->
+                                geocoder?.getFromLocation(lat, lon, 1)
+                            }
+                        }
+                        if (addressList != null) {
+                            if (addressList.isNotEmpty()) {
+                                val address = addressList[0]
 //                                val roadAddress = address.thoroughfare // 도로명 주소
-//
-//                                if (roadAddress != null) {
-//                                binding.myfeedLocation.text = roadAddress
-//                                } else {
-//                                    println("도로명 주소를 찾을 수 없습니다.")
-//                                }
-//                            } else {
-//                                println("주소를 찾을 수 없습니다.")
-//                            }
-//                        } else {
-//                            println("주소를 찾을 수 없습니다.")
-//                        }
-//                    }
+
+                                val detailedAddress = address.getAddressLine(0).replace("대한민국 ", "") // 상세 주소
+                                if (detailedAddress != null) {
+                                    val delimiterword = "동 "
+                                    val replaceDeatilAddress = detailedAddress.replaceAfter(delimiterword, "")
+                                binding.myfeedLocation.text = replaceDeatilAddress
+                                } else {
+                                    println("길거리")
+                                }
+                            } else {
+                                println("주소를 찾을 수 없습니다.")
+                            }
+                        } else {
+                            println("주소를 찾을 수 없습니다.")
+                        }
+                    }
 
                     // 이미지 작업
                     val myFeedUserImageUrl = binding.myfeedUserImage
