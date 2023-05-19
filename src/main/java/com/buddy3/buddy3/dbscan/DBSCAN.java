@@ -36,49 +36,52 @@ public class DBSCAN {
 //    }
 
 
-    @Scheduled(cron="0 0 * * * *", zone = "Asia/Seoul")
-    public void startDBScan() {
-//        System.out.println("시작!");
-        List<String> allUsersList = userRepository.findAllUsers();
-        for (String userNickname : allUsersList) {
-            List<String> locationList = redisLocationTemplate.opsForList().range(userNickname, 0, -1);
-            if (locationList.size() == 0) {
-                continue;
-            }
-            int[] clusterGroup = new int[locationList.size()];
-            int groupNow = 0;
-            for (int i = 0; i < locationList.size(); i++) {
-                if (clusterGroup[i] == 0) {
-                    List<Integer> neighbors = countNeighbor(locationList, i);
-//                    System.out.println("neighbors : " + neighbors.toString());
-                    if (neighbors.size() < minCount) {
-                        clusterGroup[i] = -1;
-                    }
-                    else {
-                        groupNow++;
-                        clusterGroup[i] = groupNow;
-                        List<Integer> scanList = new ArrayList<>();
-                        scanList.addAll(neighbors);
-                        for (int k = 0; k < scanList.size(); k++) {
-                            int num = scanList.get(k);
-                            if (clusterGroup[num] == -1) {
-                                clusterGroup[num] = groupNow;
-                            }
-                            if (clusterGroup[num] != 0) {
-                                continue;
-                            }
-                            clusterGroup[num] = groupNow;
-                            neighbors = countNeighbor(locationList, num);
-                            if (neighbors.size() >= minCount)
-                                scanList.addAll(neighbors);
-                        }
-                    }
-                }
-            }
-//            System.out.println(locationList.get(0));
-            clusteringLocation(locationList, clusterGroup, groupNow, userNickname);
-        }
-    }
+//    @Scheduled(cron="0 * * * * *", zone = "Asia/Seoul")
+//    public void startDBScan() {
+////        System.out.println("시작!");
+////        List<String> allUsersList = userRepository.findAllUsers();
+////        for (String userNickname : allUsersList) {
+////            List<String> locationList = redisLocationTemplate.opsForList().range(userNickname, 0, -1);
+////            if (locationList.size() == 0) {
+////                continue;
+////            }
+////            int[] clusterGroup = new int[locationList.size()];
+////            int groupNow = 0;
+////            for (int i = 0; i < locationList.size(); i++) {
+////                if (clusterGroup[i] == 0) {
+////                    List<Integer> neighbors = countNeighbor(locationList, i);
+//////                    System.out.println("neighbors : " + neighbors.toString());
+////                    if (neighbors.size() < minCount) {
+////                        clusterGroup[i] = -1;
+////                    }
+////                    else {
+////                        groupNow++;
+////                        clusterGroup[i] = groupNow;
+////                        List<Integer> scanList = new ArrayList<>();
+////                        scanList.addAll(neighbors);
+////                        for (int k = 0; k < scanList.size(); k++) {
+////                            int num = scanList.get(k);
+////                            if (clusterGroup[num] == -1) {
+////                                clusterGroup[num] = groupNow;
+////                            }
+////                            if (clusterGroup[num] != 0) {
+////                                continue;
+////                            }
+////                            clusterGroup[num] = groupNow;
+////                            neighbors = countNeighbor(locationList, num);
+////                            if (neighbors.size() >= minCount)
+////                                scanList.addAll(neighbors);
+////                        }
+////                    }
+////                }
+////            }
+//////            System.out.println(locationList.get(0));
+////            clusteringLocation(locationList, clusterGroup, groupNow, userNickname);
+////        }
+//
+////        redisLocationTemplate.opsForHash().put("정현석-location", "home", "36.358594 127.300690");
+////        redisLocationTemplate.opsForHash().put("정현석-location", "office", "36.3552835 127.298009");
+//    }
 
     public void clusteringLocation(List<String> locationList, int[] clusterGroup, int groupCount, String nickname) {
 //        System.out.println("groupCount : " + groupCount);
