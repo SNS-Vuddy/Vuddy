@@ -1,50 +1,85 @@
-# git 컨벤션
+# 친구 위치 조회 SNS, Vuddy
 
-### 브랜치명
-네이밍 규칙 : ${group_name}/${type}/${function_name|service_name}  
-(예 : develop/android/gps, develop/backend/auth-microservice, feature/android/tracking, feature/react/login)
+## 목차
 
+- [개요](#개요)
+- [설계](#설계)
+- [기능](#기능)
+- [Android](#Android)
+- [Backend](#Backend)
+- [Infra](#Infra)
 
-    - group name
-        * feature : commit용 브랜치, 특정 기능이나 서비스를 개발해서 commit을 남기는 브랜치
-        * test : 하나로 합치는 브랜치, feature 브랜치에 작성한 기능을 하나로 합치는 브랜치임.
-        * dev : 개발용 브랜치, CI가 개발 환경용 서버(네임스페이스)에 올려주는 브랜치로써 여러개의 feature 브랜치가 하나로 합쳐지는 레포지토리임.
-        * devops : 관련 브랜치, ci 스크립트 등을 남김
-    - type
-        * android
-        * backend
-        * cicd-script
-    - function name / service name : 개발자가 담당하는 기능이나 서비스의 이름
+## 개요
 
-- group name을 정의하게된 계기 :
-git repository 이름은 하위 폴더가 생성이 안됨.  즉, dev가 미리 생성되었다면, dev/android, dev/backend/auth 등을 생성할 수가 없음
--> https://code-anthropoid.tistory.com/223
+### 서비스 개요
 
+- Vuddy: 안드로이드 기반의 친구 위치 조회 SNS
+- 기회의도: 친구의 현재 위치를 파악하고, 추억을 지도에 남길 수 있는 SNS 개발
 
-## commit 메세지
-- shell
-```sh
-$ git commit -m "feat: 로그인 기능 구현"
-```
+### 핵심 기능
 
-- type 커밋유형 종류
-```
-feat : 새로운 기능 추가
-fix : 버그 수정
-docs : 문서 수정
-chore : 그 외 자잘한 작업
-test : 테스트 코드
-build : 시스템 또는 외부 종속성에 영향을 미치는 변경사항 (npm, gulp, yarn 레벨)
-ci : CI관련 설정
-style : 코드 의미에 영향을 주지 않는 변경사항 (포맷, 세미콜론 누락, 공백 등)
-refactor : 성능 개선
-```
+- 자신의 현재 위치를 조회하여 친구들에게 전송
+- 전송받은 위치를 나의 지도에 표시
+- 친구와 채팅 기능
+- 피드를 작성하고, 지도에 해당 위치에 피드를 표시
 
-- subject 제목
-```
-- 64자를 넘기지 않는다.
-- 마침표를 붙이지 않는다.
-- 개조식 구문으로 작성 (ex. feat: 로그 출력 기능 추가)
-- 문장형으로 끝나지 않게 작성 (ex. 추가함, 추가하였습니다 X)
-```
+## 설계
 
+### 기술스택
+
+#### 안드로이드
+
+- Android
+- Kotlin
+
+#### 스프링
+
+- Spring Boot
+- Java
+- Kafka
+- Redis
+- MySQL
+
+#### 인프라
+
+- Docker
+- Kubernetes
+- Argo
+
+### 서비스 아키텍쳐
+
+<p align="center">
+	<img src="./readmeasset/service_architecture.jpg" width="800px">
+</p>
+
+### Figma [:link:](https://www.figma.com/file/zxIbmYm4JoglF6kdQL3J2q/B305?type=design&node-id=0-1&t=G1MX4301YSdhDi3q-0)
+
+<p align="center">
+	<img src="./readmeasset/figma.png" width="800px">
+</p>
+
+### ERD
+
+- **** ERD
+
+### API 명세서 [:link:](https://documenter.getpostman.com/view/23901534/2s93eR5vmA)
+
+<p align="center">
+	<img src="./readmeasset/api.png" width="800px">
+</p>
+
+## 기능
+
+- **** 기능별 동작 화면
+
+## Android
+
+- **** Android
+
+## Backend
+
+- **** Backend
+
+## Infra
+
+- **** Infra
