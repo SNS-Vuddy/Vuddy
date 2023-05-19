@@ -44,6 +44,7 @@
                     android:id="@+id/new_alarm"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
+                    android:visibility="visible"
                     android:src="@drawable/icon_new_alarm"
                     android:layout_alignEnd="@+id/profile_alarm_btn" />
         </RelativeLayout>

@@ -17,9 +17,11 @@ class AlarmAdapter(private var alarmList: ArrayList<Alarm>, val callback: AlarmC
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(alarmList: ArrayList<Alarm>) {
-        this.alarmList = alarmList
+        this.alarmList.clear()
+        this.alarmList.addAll(alarmList)
         notifyDataSetChanged()
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_friend_alarm, parent, false)
         return ViewHolder(view).apply {

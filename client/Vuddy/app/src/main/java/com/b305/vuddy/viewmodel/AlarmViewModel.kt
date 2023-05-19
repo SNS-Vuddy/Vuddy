@@ -27,7 +27,7 @@ class AlarmViewModel : ViewModel() {
                         Log.d("친구목록 불러오기 성공", "get successfully. Response: $result")
                         // 알림 RecyclerView
                         val alarmList : List<Alarm> = result?.AlarmList ?: emptyList()
-                        _alarmList.value = alarmList
+                        _alarmList.setValue(alarmList)
                     } else {
                         Log.d("친구목록 불러오기 실패", "get failed. Response: ${response.message()}")
                     }

@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
@@ -159,11 +160,11 @@ class ProfileFragment : Fragment() {
     @SuppressLint("ResourceAsColor")
     private fun updateUI(data: UserResponse) {
 
-        if (data?.data?.hasNewAlarm == true) {
-            binding.newAlarm.visibility = View.VISIBLE
-        } else {
-            binding.newAlarm.visibility = View.GONE
-        }
+//        if (data?.data?.hasNewAlarm == true) {
+//            binding.newAlarm.visibility = View.VISIBLE
+//        } else {
+//            binding.newAlarm.visibility = GONE
+//        }
 
         val profileImageUrl = binding.profileImage
         val profileImage = data.data.profileImage
@@ -246,12 +247,12 @@ class ProfileFragment : Fragment() {
                     Log.d("UserData Get", "get successfully. Response: $result")
                     val userNick = binding.profileUser
                     userNick.text = result?.data?.nickname
-                    val alarmBtn = binding.profileAlarmBtn
-                    if (result?.data?.hasNewAlarm == true) {
-                        binding.newAlarm.visibility = View.VISIBLE
-                    } else {
-                        binding.newAlarm.visibility = View.GONE
-                    }
+
+//                    if (result?.data?.hasNewAlarm == true) {
+//                        binding.newAlarm.visibility = View.VISIBLE
+//                    } else if (result?.data?.hasNewAlarm == false){
+//                        binding.newAlarm.visibility = GONE
+//                    }
 
                     // 프로필 이미지
                     val profileImageUrl = binding.profileImage

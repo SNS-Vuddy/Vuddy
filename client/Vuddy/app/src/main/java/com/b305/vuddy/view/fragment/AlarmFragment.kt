@@ -48,13 +48,19 @@ class AlarmFragment : Fragment(), AlarmAdapter.AlarmCallback {
             requireActivity().onBackPressed()
         }
 
-
+//        viewModel.loadAlarmList()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[AlarmViewModel::class.java]
+
+        viewModel.loadAlarmList() // loadAlarmList() 호출 위치 변경
+
+        viewModel.alarmList.observe(viewLifecycleOwner) { alarm ->
+            alarmAdapter.setData(ArrayList(alarm))
+        }
 
         val call = RetrofitAPI.friendService
         call.friendRequest().enqueue(
@@ -66,16 +72,16 @@ class AlarmFragment : Fragment(), AlarmAdapter.AlarmCallback {
                         // 알림 RecyclerView
                         val alarmList : ArrayList<Alarm> = result?.AlarmList!!
 
-                        recyclerView = binding.friendAlarmList
-                        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-                        val adapter = AlarmAdapter(alarmList, this@AlarmFragment)
-                        recyclerView.adapter = adapter
-
-                        viewModel.alarmList.observe(viewLifecycleOwner) { alarm ->
-                            alarmAdapter.setData(ArrayList(alarm))
-                        }
-
+//                        recyclerView = binding.friendAlarmList
+//                        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+//
+//                        val adapter = AlarmAdapter(alarmList, this@AlarmFragment)
+//                        recyclerView.adapter = adapter
+//
+//                        viewModel.alarmList.observe(viewLifecycleOwner) { alarm ->
+//                            alarmAdapter.setData(ArrayList(alarm))
+//                        }
+                        alarmAdapter.setData(alarmList)
                         viewModel.loadAlarmList()
 
                     } else {
@@ -99,7 +105,7 @@ class AlarmFragment : Fragment(), AlarmAdapter.AlarmCallback {
                 if (response.isSuccessful) {
                     val result = response.body()
                     Log.d("친구요청 수락 성공", "get successfully. Response: $result")
-
+                    viewModel.loadAlarmList()
                 } else {
                     Log.d("친구요청 수락 실패", "get failed. Response: ${response.message()}")
                 }
@@ -124,7 +130,7 @@ class AlarmFragment : Fragment(), AlarmAdapter.AlarmCallback {
                 if (response.isSuccessful) {
                     val result = response.body()
                     Log.d("친구요청 거절 성공", "get successfully. Response: $result")
-
+                    viewModel.loadAlarmList()
                 } else {
                     Log.d("친구요청 거절 실패", "get failed. Response: ${response.message()}")
                 }
