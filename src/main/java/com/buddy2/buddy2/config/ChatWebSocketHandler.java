@@ -305,8 +305,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                                 .profileImg(oppositeUser.getProfileImg())
                                 .build();
                         String lastMessage = redisMessageTemplate.opsForList().index("chatroom-" + chatroom.getChatId(), -1);
-                        MessageSendInnerDTO lastChatroom = objectMapper.readValue(lastMessage, MessageSendInnerDTO.class);
-                        if (lastChatroom != null) {
+                        if (lastMessage != null) {
+                            MessageSendInnerDTO lastChatroom = objectMapper.readValue(lastMessage, MessageSendInnerDTO.class);
                             messageSendLoadInner.setLastChat(lastChatroom.getMessage());
                             messageSendLoadInner.setTime(lastChatroom.getTime());
                             messageSendLoadInner.setProfileImg(lastChatroom.getProfileImg());
