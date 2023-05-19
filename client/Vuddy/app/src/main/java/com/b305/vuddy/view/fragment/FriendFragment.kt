@@ -71,8 +71,8 @@ class FriendFragment : Fragment() {
                     profileAdapter = ProfileAdapter(friendList)
                     recyclerView.adapter = profileAdapter
                 } else {
-                    val errorMessage = JSONObject(response.errorBody()?.string()!!)
-                    Toast.makeText(context, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
+//                    val errorMessage = JSONObject(response.)
+//                    Toast.makeText(context, errorMessage.getString("message"), Toast.LENGTH_SHORT).show()
                     Log.d(ContentValues.TAG, "$response")
                 }
             }

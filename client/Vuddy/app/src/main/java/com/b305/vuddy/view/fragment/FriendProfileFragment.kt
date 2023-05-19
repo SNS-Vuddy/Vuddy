@@ -12,20 +12,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.b305.vuddy.R
 import com.b305.vuddy.databinding.FragmentFriendProfileBinding
-import com.b305.vuddy.model.App
-import com.b305.vuddy.model.Chat
 import com.b305.vuddy.model.Feeds
 import com.b305.vuddy.model.FeedsResponse
 import com.b305.vuddy.model.FriendResponse
 import com.b305.vuddy.viewmodel.FriendViewModel
 import com.b305.vuddy.util.adapter.FeedMineAdapter
 import com.b305.vuddy.service.RetrofitAPI
+import com.b305.vuddy.view.activity.MainActivity
 import com.bumptech.glide.Glide
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
-import okhttp3.WebSocket
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,8 +36,6 @@ class FriendProfileFragment : Fragment() {
 
     private lateinit var feedMineAdapter: FeedMineAdapter
     private lateinit var recyclerView: RecyclerView
-//    private lateinit var chatSocket: ChatSocket
-    private lateinit var webSocket: WebSocket
 
     private lateinit var viewModel: FriendViewModel
 
@@ -58,7 +53,6 @@ class FriendProfileFragment : Fragment() {
 
         binding.backBtn.setOnClickListener {
             requireActivity().onBackPressed()
-
         }
         binding.btnDeleteFriend.setOnClickListener {
             friendDelete()
@@ -98,13 +92,17 @@ class FriendProfileFragment : Fragment() {
             friendDelete()
         }
         binding.btnGoChatting.setOnClickListener {
-            Log.d("chatSocket", "!!!!!!chat open1 $nickname")
-//            chatSocket.goChatting(nickname)
-            goChatting(nickname)
-            Log.d("chatSocket", "!!!!!!chat open2")
-            val fragmentB = ChatFragment()
-            val fragmentManager = requireActivity().supportFragmentManager
-            fragmentManager.beginTransaction().replace(R.id.fragmentContainerView, fragmentB).commit()
+            val service = (requireContext() as MainActivity).getServiceInstance()
+            val chatSocket = service?.getChatSocket()
+            chatSocket?.goChatting(nickname)
+            val bundle = Bundle()
+            bundle.putString("nickname", nickname)
+            val chatFragment = ChatFragment()
+            chatFragment.arguments = bundle
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, chatFragment)
+                .addToBackStack(null)
+                .commit()
         }
 //        binding.ivMap.setOnClickListener {
 //            it.findNavController().navigate(R.id.action_friendProfileFragment_to_mapFragment)
@@ -323,30 +321,5 @@ class FriendProfileFragment : Fragment() {
                 Log.d("친구삭제 실패", "get failed")
             }
         })
-    }
-
-    private fun goChatting(nickname: String?) {
-        Log.d("chatSocket", "!!!!!!chat open3")
-        val chatRoomList: ArrayList<Chat> = App.instance.getChatRoomList()
-        Log.d("chatSocket", "!!!!!!chat open5")
-        if (chatRoomList.any { it.nickname == nickname }) {
-            Log.d("chatSocket", "!!!!!!chat open6")
-            val jsonObject = JSONObject()
-                .put("nickname1", App.instance.getCurrentUser().nickname)
-                .put("nickname2", nickname)
-                .put("type", "JOIN")
-
-            webSocket.send(jsonObject.toString())
-            Log.d("ChatSocket", "****sendMessage JOIN!!!!!!****")
-        } else {
-            Log.d("chatSocket", "!!!!!!chat open7")
-            val jsonObject = JSONObject()
-                .put("nickname1", App.instance.getCurrentUser().nickname)
-                .put("nickname2", nickname)
-                .put("type", "OPEN")
-
-            webSocket.send(jsonObject.toString())
-            Log.d("ChatSocket", "****sendMessage OPEN!!!!!!****")
-        }
     }
 }

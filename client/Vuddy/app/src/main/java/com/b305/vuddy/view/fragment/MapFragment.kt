@@ -1,7 +1,5 @@
 package com.b305.vuddy.view.fragment
 
-
-import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -20,7 +18,6 @@ import com.b305.vuddy.view.extension.refreshMap
 import com.b305.vuddy.model.MapFeedResponse
 import com.b305.vuddy.model.User
 import com.b305.vuddy.model.UserLocation
-import com.b305.vuddy.service.ImmortalService
 import com.b305.vuddy.util.ANIMATE_CAMERA
 import com.b305.vuddy.util.BASIC_IMG_URL
 import com.b305.vuddy.util.DIALOG_MODE
