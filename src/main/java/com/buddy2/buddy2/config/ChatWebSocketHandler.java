@@ -72,8 +72,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 //    }
 
 
-    Map<Long, CurrentChatrooms> currentChatroomsMap = new ConcurrentHashMap<>();
-    Map<String, String> userProfileImgMap = new ConcurrentHashMap<>();
+    ConcurrentHashMap<Long, CurrentChatrooms> currentChatroomsMap = new ConcurrentHashMap<>();
+    ConcurrentHashMap<String, String> userProfileImgMap = new ConcurrentHashMap<>();
+    ConcurrentHashMap<String, String> sessionUserMap = new ConcurrentHashMap<>();
+    ConcurrentHashMap<String, List<Long>> userChatroomListMap = new ConcurrentHashMap<>();
 //    Map<String, Integer> chatNumberMap = new ConcurrentHashMap<>();
 
 //    Long chatNum = chatroomRepository.findWithChatId().getChatId();
@@ -115,6 +117,18 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         System.out.println(formatDateTime(LocalDateTime.now(ZoneId.of("Asia/Seoul"))) + " | 접속 종료 sessionId : " + session.getId());
+        String nickname = sessionUserMap.get(session.getId());
+        List<Long> chatroomList = userChatroomListMap.get(nickname);
+        if (chatroomList != null) {
+            for (Long chatId : chatroomList) {
+                CurrentChatrooms currentChatrooms = currentChatroomsMap.get(chatId);
+                currentChatrooms.removeChatMember(nickname);
+                currentChatroomsMap.put(chatId, currentChatrooms);
+            }
+            userChatroomListMap.remove(nickname);
+        }
+        sessionUserMap.remove(session.getId());
+        userProfileImgMap.remove(nickname);
 //        sessionsList.remove(session);
     }
 
@@ -129,6 +143,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
 
         ChatMessageData clientMessageData = objectMapper.readValue(message.getPayload(), ChatMessageData.class);
+
+        sessionUserMap.put(session.getId(), clientMessageData.getNickname1());
 
 
         MessageSendDTO messageSendDTO = new MessageSendDTO();
@@ -169,11 +185,19 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                     .webSocketSession(session)
                     .build();
             currentChatroomsMap.put(chatNumber,currentChatrooms);
+
+            List<Long> chatroomList = userChatroomListMap.get(clientMessageData.getNickname1());
+            if (chatroomList == null) {
+                chatroomList = new ArrayList<>();
+            }
+            chatroomList.add(chatNumber);
+            userChatroomListMap.put(clientMessageData.getNickname1(), chatroomList);
+
             messageSendInnerDTO.setChatId(chatNumber);
 
             nowLocation = chatNumber;
 
-            LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
+            LocalDateTime timeNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
             messageSendInnerDTO.setTime(formatDateTime(timeNow));
             messageSendInnerDTO.setNickname(clientMessageData.getNickname2());
 
@@ -213,6 +237,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                             .webSocketSession(session)
                             .build();
                     currentChatroomsMap.put(room.getChatId(), currentChatrooms);
+                    List<Long> chatroomList = new ArrayList<>();
+                    chatroomList.add(room.getChatId());
+                    userChatroomListMap.put(clientMessageData.getNickname1(), chatroomList);
                     nowLocation = room.getChatId();
                 }
             } else {
@@ -228,7 +255,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
 
 
-            LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
+            LocalDateTime timeNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
             messageSendJoinInnerDTO.setChatId(joinChatId.get(0));
             messageSendJoinInnerDTO.setNickname(clientMessageData.getNickname2());
 
@@ -307,7 +334,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
         else if (messageType.equals("CHAT")) {
 
-            LocalDateTime timeNow = LocalDateTime.now(ZoneId.systemDefault());
+            LocalDateTime timeNow = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
             messageSendInnerDTO.setTime(formatDateTime(timeNow));
             messageSendInnerDTO.setChatId(clientMessageData.getChatId());
             messageSendInnerDTO.setNickname(clientMessageData.getNickname1());
