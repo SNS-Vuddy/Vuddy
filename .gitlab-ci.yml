@@ -10,16 +10,12 @@ cache:
   paths:
     - ${TF_ROOT}/.terraform/
 
-.terraform:fmt: &terraform_fmt
-  stage: validate
-  script:
-    - gitlab-terraform fmt
-  allow_failure: true
-
-.terraform:validate: &terraform_validate
+validate: &terraform_validate
   stage: validate
   script:
     - gitlab-terraform validate
+  when:
+    manual
 
 
 
@@ -35,10 +31,11 @@ cache:
 
 
 
-# stages:          # List of stages for jobs, and their order of execution
-#   - build
-#   - test
-#   - deploy
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+  - validate
 
 # build-job:       # This job runs in the build stage, which runs first.
 #   stage: build
