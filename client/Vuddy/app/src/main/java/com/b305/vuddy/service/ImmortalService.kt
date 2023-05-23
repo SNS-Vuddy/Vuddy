@@ -6,6 +6,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Color
+import android.os.Binder
+import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -44,6 +46,17 @@ class ImmortalService : LifecycleService() {
     // 초기화
     private fun postInitialValues() {
         isTracking.postValue(false)
+    }
+
+    inner class LocalBinder : Binder() {
+        fun getService(): ImmortalService = this@ImmortalService
+    }
+
+    private val binder = LocalBinder()
+
+    override fun onBind(intent: Intent): IBinder {
+        super.onBind(intent)
+        return binder
     }
 
     override fun onCreate() {
@@ -156,6 +169,10 @@ class ImmortalService : LifecycleService() {
                     Log.d("ImmortalService", "****stopLocationUpdates****")
                 }
         }
+    }
+
+    fun getChatSocket(): ChatSocket {
+        return chatSocket
     }
 }
 

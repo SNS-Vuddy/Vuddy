@@ -1,5 +1,6 @@
 package com.b305.vuddy.util.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +16,10 @@ class ChatAdapter(private val chatLsit: ArrayList<Chat>) : RecyclerView.Adapter<
     private val defaultProfile = R.drawable.bird
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view: View
+        Log.d("chatting", "!!!!!! $viewType")
         return if(viewType == 1){
             view = LayoutInflater.from(parent.context).inflate(R.layout.item_my_chat, parent, false)
+            Log.d("chatting", "!!!!!!viewType $view")
             Holder(view)
         }
         //getItemViewType 에서 뷰타입 2을 리턴받았다면 상대채팅레이아웃을 받은 Holder2를 리턴
@@ -31,6 +34,7 @@ class ChatAdapter(private val chatLsit: ArrayList<Chat>) : RecyclerView.Adapter<
         //onCreateViewHolder에서 리턴받은 뷰홀더가 Holder라면 내채팅, item_my_chat의 뷰들을 초기화 해줌
         if (holder is Holder) {
             holder.chatText.text = chatLsit[position].message
+//            holder.chatTime.text = chatLsit[position].time?.substring(0, 10)
             holder.chatTime.text = chatLsit[position].time
         }
         //onCreateViewHolder에서 리턴받은 뷰홀더가 Holder2라면 상대의 채팅, item_your_chat의 뷰들을 초기화 해줌
@@ -44,6 +48,7 @@ class ChatAdapter(private val chatLsit: ArrayList<Chat>) : RecyclerView.Adapter<
                 .into(holder.profileImage) // 이미지를 넣을 뷰
             holder.nickname.text = chatLsit[position].nickname
             holder.chatText.text = chatLsit[position].message
+//            holder.chatTime.text = chatLsit[position].time?.substring(0, 10)
             holder.chatTime.text = chatLsit[position].time
         }
     }
@@ -56,7 +61,7 @@ class ChatAdapter(private val chatLsit: ArrayList<Chat>) : RecyclerView.Adapter<
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         //친구목록 모델의 변수들 정의하는부분
         val chatText: TextView = itemView.findViewById(R.id.chat_text)
-        val chatTime: TextView = itemView.findViewById(R.id.last_time)
+        val chatTime: TextView = itemView.findViewById(R.id.chat_time)
     }
 
     //상대가친 채팅 뷰홀더
