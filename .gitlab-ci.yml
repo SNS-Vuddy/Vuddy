@@ -1,29 +1,48 @@
-# This file is a template, and might need editing before it works on your project.
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
-#
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
-#
-# You can copy and paste this template into a new `.gitlab-ci.yml` file.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+image:
+  name: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/terraform-images/releases/1.4:v1.0.0"
 
-stages:          # List of stages for jobs, and their order of execution
-  - build
-  - test
-  - deploy
+variables:
+  TF_ROOT: ${CI_PROJECT_DIR}  # The relative path to the root directory of the Terraform project
+  TF_STATE_NAME: default      # The name of the state file used by the GitLab Managed Terraform state backend
 
-build-job:       # This job runs in the build stage, which runs first.
-  stage: build
+cache:
+  key: "${TF_ROOT}"
+  paths:
+    - ${TF_ROOT}/.terraform/
+
+.terraform:fmt: &terraform_fmt
+  stage: validate
   script:
-    - echo "Compiling the code..."
-    - echo "$CI_PROJECT_ID $CI_PIPELINE_ID"
-    - echo "Compile complete."
+    - gitlab-terraform fmt
+  allow_failure: true
+
+.terraform:validate: &terraform_validate
+  stage: validate
+  script:
+    - gitlab-terraform validate
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# stages:          # List of stages for jobs, and their order of execution
+#   - build
+#   - test
+#   - deploy
+
+# build-job:       # This job runs in the build stage, which runs first.
+#   stage: build
+#   script:
+#     - echo "Compiling the code..."
+#     - echo "$CI_PROJECT_ID $CI_PIPELINE_ID"
+#     - echo "Compile complete."
