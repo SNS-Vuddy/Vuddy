@@ -25,5 +25,5 @@ build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
     - echo "Compiling the code..."
-    - echo "$CI_PROJECT_ID"
+    - echo "$CI_PROJECT_ID $CI_PIPELINE_ID"
     - echo "Compile complete."
