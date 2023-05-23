@@ -1,21 +1,26 @@
-image:
-  name: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/terraform-images/releases/1.4:v1.0.0"
-
+image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
 variables:
-  TF_ROOT: ${CI_PROJECT_DIR}  # The relative path to the root directory of the Terraform project
-  TF_STATE_NAME: default      # The name of the state file used by the GitLab Managed Terraform state backend
+  TF_ROOT: ${CI_PROJECT_DIR}
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
 
 cache:
-  key: "${TF_ROOT}"
+  key: example-production
   paths:
-    - ${TF_ROOT}/.terraform/
+    - ${TF_ROOT}/.terraform
 
-validate: &terraform_validate
-  stage: validate
+before_script:
+  - cd ${TF_ROOT}
+
+stages:
+  - prepare
+  - validate
+  - build
+  - deploy
+
+init:
+  stage: prepare
   script:
-    - gitlab-terraform validate
-  when:
-    manual
+    - gitlab-terraform init
 
 
 
