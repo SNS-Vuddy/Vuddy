@@ -38,7 +38,7 @@ stages:
 test:
   stage: prepare
   script:
-    - echo $DYNAMIC_ENV_VAR
+    - echo $TF_STATE_NAME
 
 # init:
 #   stage: prepare
