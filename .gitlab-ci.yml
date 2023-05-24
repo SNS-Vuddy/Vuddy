@@ -1,7 +1,8 @@
 image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
 variables:
   TF_ROOT: ${CI_PROJECT_DIR}/terraform
-  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+  TF_STATE_NAME: "eks-1"
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/${TF_STATE_NAME}/${CI_PROJECT_NAME}
   # https://registry.terraform.io/providers/hashicorp/aws/latest/docs#environment-variables
   AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
   AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
@@ -31,6 +32,7 @@ stages:
   - validate
   - build
   - deploy
+  - cleanup
 
 init:
   stage: prepare
@@ -68,6 +70,39 @@ plan:
       - ${TF_ROOT}/plan.cache
     reports:
       terraform: ${TF_ROOT}/plan.json
+
+
+
+# Separate apply job for manual launching Terraform as it can be destructive
+# action.
+apply:
+  stage: deploy
+  tags:
+    - docker-executor
+  environment:
+    name: production
+  script:
+    - gitlab-terraform apply
+  dependencies:
+    - plan
+  resource_group: ${TF_STATE_NAME}
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $TF_AUTO_DEPLOY == "true"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+  # only:
+  #   - devops/terraform/eks
+
+    
+
+destroy:
+  stage: cleanup
+  tags:
+    - docker-executor
+  script:
+    - gitlab-terraform destroy
+  resource_group: ${TF_STATE_NAME}
+  when: manual
 
 
 
