@@ -58,6 +58,7 @@ test:
   stage: prepare
   script:
     - echo $TF_STATE_NAME
+    - echo $address
       
 validate:
   stage: validate
