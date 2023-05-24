@@ -1,12 +1,19 @@
 stages:
   - prepare
 
+
+variables:
+  TF_ROOT: ${CI_PROJECT_DIR}
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+
 init:
   stage: prepare
   tags:
-    - shell
+    - docker-executor
+  image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
   script:
     - echo "Hello World"
+    - gitlab-terraform version
 
 
 # image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
