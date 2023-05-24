@@ -49,7 +49,7 @@ init:
       -backend-config=lock_method=POST \
       -backend-config=unlock_method=DELETE \
       -backend-config=retry_wait_min=5 $TF_INIT_FLAGS
-    - echo "${TF_STATE_NAME} ${CI_COMMIT_BRANCH}"
+    # - echo "${TF_STATE_NAME} ${CI_COMMIT_BRANCH}"
       
 validate:
   stage: validate
