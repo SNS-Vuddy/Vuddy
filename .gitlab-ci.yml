@@ -8,7 +8,8 @@ variables:
   TF_USERNAME: ${TF_USERNAME}
   TF_PASSWORD: ${TF_PASSWORD}
   TF_INIT_FLAGS: ""
-  ME: $(whoami)
+  DYNAMIC_ENV_VAR: $(whoami)
+
 
 
 cache:
@@ -38,7 +39,7 @@ stages:
 test:
   stage: prepare
   script:
-    - echo ${ME}
+    - echo $DYNAMIC_ENV_VAR
 
 # init:
 #   stage: prepare
