@@ -18,7 +18,8 @@ cache:
 
 before_script:
   - cd ${TF_ROOT}
-  - cat > backend.tf << EOF
+  - |
+    cat > backend.tf << EOF
     terraform {
       backend "http" {
       }
