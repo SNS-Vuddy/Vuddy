@@ -18,6 +18,12 @@ cache:
 
 before_script:
   - cd ${TF_ROOT}
+  - cat > backend.tf << EOF
+    terraform {
+      backend "http" {
+      }
+    }
+    EOF
 
 stages:
   - prepare
