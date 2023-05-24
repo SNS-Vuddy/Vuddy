@@ -19,17 +19,21 @@ stages:
 
 init:
   stage: prepare
+  tags:
+    - docker-executor
   script:
     - gitlab-terraform init
 
 validate:
   stage: validate
+    - docker-executor
   script:
     - gitlab-terraform init
     - gitlab-terraform validate
 
 plan:
   stage: build
+    - docker-executor
   script:
     - gitlab-terraform plan
     - gitlab-terraform plan-json
