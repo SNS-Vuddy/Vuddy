@@ -129,7 +129,7 @@
 
 ## 5️⃣ 팀원 소개
 
-|   이름   |     [강동관](https://github.com/whatistheMatter823)         |     [정윤해](https://github.com/JEONGYOONHAE)     |     [장수영](https://github.com/dearsyjang)     |     [배근혜](https://github.com/hyehye66)     |     [이현정](https://github.com/Hyunbird)     |     [최혁주](https://github.com/spaceforvincent)     |
+|   이름   |     [정현석](https://github.com/HyunseokCheong)         |     [이진욱](https://github.com/ssafyer)     |     [송기라](https://github.com/Songkira)     |     [유덕균](https://github.com/dokkyunYU)     |     [류원창](https://github.com/ryuwc)     |     [김태훈](https://github.com/IT-magician)     |
 | :------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
-|  포지션  |                 Team Leader<br/>Data<br/>CI/CD                 |         Back-end<br/>CI/CD          |            Front-end<br/>UI/UX            | Front-end<br/>UI/UX | Front-end<br/>UI/UX | Front-end<br/>UI/UX |
-| 담당<br/>기능 | 데이터 처리<br/>Spring Boot<br> Dockerize & 배포 | Spring Boot <br/>Dockerize & 배포 | 회원<br/>산 지도 & 정보<br/>등산 챌린지 |       채팅        |     등산 기록     |     등산 달력     |
+|  포지션  |                 Team Leader<br/>Front-end<br/>                |         Front-end         |            Front-end           | Back-end | Back-end| Infra |
+| 담당<br/>기능 | Android <br/> 지도 | Android <br/> 친구 <br/> 채팅 | Android <br/> 피드 <br/> 프로필 |  Spring <br/> 소켓 서버    |     Spring <br/> API 서버    |     Kubernetes <br/> CI/CD     |
