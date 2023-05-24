@@ -113,19 +113,28 @@
 
 ## 4️⃣ 기능
 
-- **** 기능별 동작 화면 추가 예정
-
-<!-- <p align="center">
-	<img src="./readmeasset/api.png" width="800px">
-</p>
+### 회원가입/로그인
 
 <p align="center">
-	<img src="./readmeasset/api.png" width="270px">
-	<img src="./readmeasset/api.png" width="270px">
-	<img src="./readmeasset/api.png" width="270px">
-</p> -->
+	<img src="./readmeasset/01_signup.jpg" width="270px">
+	<img src="./readmeasset/02_login.jpg" width="270px">
+</p>
 
-<br />
+### 지도
+
+<p align="center">
+	<img src="./readmeasset/03_map_01.jpg" width="270px">
+	<img src="./readmeasset/04_map_02.jpg" width="270px">
+	<img src="./readmeasset/05_map_03.jpg" width="270px">
+</p>
+
+### 친구 목록
+
+### 피드 작성
+
+### 채팅
+
+### 프로필
 
 ## 5️⃣ 팀원 소개
 
