@@ -8,7 +8,7 @@ variables:
   PROJECT_ID: ${CI_PROJECT_ID}
   TF_USERNAME: ${TF_USERNAME}
   TF_PASSWORD: ${TF_PASSWORD}
-  TF_INIT_FLAGS: "-lockfile=readonly"
+  TF_INIT_FLAGS: ""
 
 
 cache:
@@ -37,14 +37,15 @@ init:
   tags:
     - docker-executor
   script:
-    - gitlab-terraform init
-      -backend-config=address=${TF_ADDRESS}
-      -backend-config=lock_address=${TF_ADDRESS}/lock
-      -backend-config=unlock_address=${TF_ADDRESS}/lock
-      -backend-config=username=${TF_USERNAME}
-      -backend-config=password=${TF_PASSWORD}
-      -backend-config=lock_method=POST
-      -backend-config=unlock_method=DELETE
+    - |
+      gitlab-terraform init \
+      -backend-config=address=${TF_ADDRESS} \
+      -backend-config=lock_address=${TF_ADDRESS}/lock \
+      -backend-config=unlock_address=${TF_ADDRESS}/lock \
+      -backend-config=username=${TF_USERNAME} \
+      -backend-config=password=${TF_PASSWORD} \
+      -backend-config=lock_method=POST \
+      -backend-config=unlock_method=DELETE \
       -backend-config=retry_wait_min=5 $TF_INIT_FLAGS
 validate:
   stage: validate
