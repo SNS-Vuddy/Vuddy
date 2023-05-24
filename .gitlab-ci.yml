@@ -9,6 +9,8 @@ variables:
   TF_PASSWORD: ${TF_PASSWORD}
   TF_INIT_FLAGS: ""
   DYNAMIC_ENV_VAR: $${whoami}
+  SCRIPT_CMD: |
+    DYNAMIC_ENV_VAR=$DYNAMIC_ENV_VAR
 
 
 
