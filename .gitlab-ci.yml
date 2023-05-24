@@ -68,49 +68,49 @@ validate:
   dependencies:              
     - validate
 
-# plan:
-#   stage: build
-#   tags:
-#     - docker-executor
-#   script:
-#     - gitlab-terraform plan
-#     - gitlab-terraform plan-json
-#   artifacts:
-#     name: plan
-#     paths:
-#       - ${TF_ROOT}/plan.cache
-#     reports:
-#       terraform: ${TF_ROOT}/plan.json
+plan:
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - gitlab-terraform plan
+    - gitlab-terraform plan-json
+  artifacts:
+    name: plan
+    paths:
+      - ${TF_ROOT}/plan.cache
+    reports:
+      terraform: ${TF_ROOT}/plan.json
 
 
 
-# # Separate apply job for manual launching Terraform as it can be destructive
-# # action.
-# apply:
-#   stage: deploy
-#   tags:
-#     - docker-executor
-#   environment:
-#     name: production
-#   script:
-#     - gitlab-terraform apply
-#   dependencies:
-#     - plan
-#   resource_group: ${TF_STATE_NAME}
-#   when: manual
-#   only:
-#     - devops/terraform/eks
+# Separate apply job for manual launching Terraform as it can be destructive
+# action.
+apply:
+  stage: deploy
+  tags:
+    - docker-executor
+  environment:
+    name: production
+  script:
+    - gitlab-terraform apply
+  dependencies:
+    - plan
+  resource_group: ${TF_STATE_NAME}
+  when: manual
+  only:
+    - devops/terraform/eks
 
     
 
-# destroy:
-#   stage: cleanup
-#   tags:
-#     - docker-executor
-#   script:
-#     - gitlab-terraform destroy
-#   resource_group: ${TF_STATE_NAME}
-#   when: manual
+destroy:
+  stage: cleanup
+  tags:
+    - docker-executor
+  script:
+    - gitlab-terraform destroy
+  resource_group: ${TF_STATE_NAME}
+  when: manual
 
 
 
