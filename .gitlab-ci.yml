@@ -1,43 +1,45 @@
+image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
+variables:
+  TF_ROOT: ${CI_PROJECT_DIR}/terraform
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+
+cache:
+  key: example-production
+  paths:
+    - ${TF_ROOT}/.terraform
+
+before_script:
+  - cd ${TF_ROOT}
+
 stages:
   - prepare
-
-# variables:
-#   TF_ROOT: ${CI_PROJECT_DIR}
-#   TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+  - validate
+  - build
+  - deploy
 
 init:
   stage: prepare
-  tags:
-    - docker-executor
-#   image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
   script:
-    - echo "Hello World"
-#     - gitlab-terraform version
+    - gitlab-terraform init
 
+validate:
+  stage: validate
+  script:
+    - gitlab-terraform init
+    - gitlab-terraform validate
 
-# image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
-# variables:
-#   TF_ROOT: ${CI_PROJECT_DIR}
-#   TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${CI_PROJECT_NAME}
+plan:
+  stage: build
+  script:
+    - gitlab-terraform plan
+    - gitlab-terraform plan-json
+  artifacts:
+    name: plan
+    paths:
+      - ${TF_ROOT}/plan.cache
+    reports:
+      terraform: ${TF_ROOT}/plan.json
 
-# cache:
-#   key: example-production
-#   paths:
-#     - ${TF_ROOT}/.terraform
-
-# before_script:
-#   - cd ${TF_ROOT}
-
-# stages:
-#   - prepare
-#   - validate
-#   - build
-#   - deploy
-
-# init:
-#   stage: prepare
-#   script:
-#     - gitlab-terraform init
 
 
 
