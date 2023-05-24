@@ -1,7 +1,7 @@
 image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
 variables:
   TF_ROOT: ${CI_PROJECT_DIR}/terraform
-  TF_STATE_NAME: "${CI_PROJECT_NAME}-aws-group1" # EC2, EKS, VPC, IAM, route53을 접근하는 infra그룹용
+  TF_STATE_NAME: "${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}" # EC2, EKS, VPC, IAM, route53을 접근하는 infra그룹용
   TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE_NAME}"
   # https://registry.terraform.io/providers/hashicorp/aws/latest/docs#environment-variables
   AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
