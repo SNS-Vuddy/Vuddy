@@ -133,3 +133,7 @@
 | :------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
 |  포지션  |                 Team Leader<br/>Front-end<br/>                |         Front-end         |            Front-end           | Back-end | Back-end| Infra |
 | 담당<br/>기능 | Android <br/> 지도 | Android <br/> 친구 <br/> 채팅 | Android <br/> 피드 <br/> 프로필 |  Spring <br/> 소켓 서버    |     Spring <br/> API 서버    |     Kubernetes <br/> CI/CD     |
+
+<p align="center">
+	<img src="./readmeasset/team.jpg" width="800px">
+</p>
