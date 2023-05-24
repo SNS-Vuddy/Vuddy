@@ -33,6 +33,7 @@ validate:
 
 plan:
   stage: build
+  tags:
     - docker-executor
   script:
     - gitlab-terraform plan
