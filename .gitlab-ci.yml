@@ -8,6 +8,7 @@ variables:
   TF_USERNAME: ${TF_USERNAME}
   TF_PASSWORD: ${TF_PASSWORD}
   TF_INIT_FLAGS: ""
+  ME: $(whoami)
 
 
 cache:
@@ -37,7 +38,7 @@ stages:
 test:
   stage: prepare
   script:
-    - echo $(whoami)
+    - echo ${ME}
 
 # init:
 #   stage: prepare
