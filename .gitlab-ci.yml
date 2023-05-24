@@ -7,8 +7,8 @@ stages:
 
 init:
   stage: prepare
-  # tags:
-#     - docker-executor
+  tags:
+    - docker-executor
 #   image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
   script:
     - echo "Hello World"
