@@ -138,7 +138,6 @@
 
 <p align="center">
 	<img src="./readmeasset/feedwrite_01.png" width="270px">
-	<img src="./readmeasset/feedwrite_02.png" width="270px">
 	<img src="./readmeasset/feedwrite_03.png" width="270px">
 	<img src="./readmeasset/feedwrite_04.png" width="270px">
 </p>
