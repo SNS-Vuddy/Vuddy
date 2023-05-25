@@ -56,7 +56,9 @@
 
 - Docker
 - Kubernetes
-- Argo
+- Argo CD
+- Gitlab Runner
+- IaC(Terraform)
 
 ### 🧫 서비스 아키텍쳐
 
