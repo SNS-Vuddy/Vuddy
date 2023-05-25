@@ -8,13 +8,12 @@
 - [기능](#기능)
 - [팀원 소개](#팀원-소개)
 
-
 ## 1️⃣ 개요
 
 ### ⌛ 프로젝트 기간 및 인원
+
 - 기간: 2023.04.10 ~ 2023.05.18 (6주)
 - 인원(6명) : 정현석, 이진욱, 송기라, 류원창, 유덕균, 김태훈
-
 
 ### 🎞 [UCC](https://www.youtube.com/watch?v=N_vFnSwea6M)
 
@@ -24,7 +23,7 @@
 
 - Vuddy: 안드로이드 기반의 친구 위치 조회 SNS
 - 기회의도: 친구의 현재 위치를 파악하고, 추억을 지도에 남길 수 있는 SNS 개발
-- 
+-
 
 ### 🛠 핵심 기능
 
@@ -100,7 +99,6 @@
 - 안정적이고 정확한 위치 조회 가능
 - 배터리 소모 최소화
 
-
 ### 사용자 상태 파악
 
 <p align="center">
@@ -130,18 +128,44 @@
 
 ### 친구 목록
 
+<p align="center">
+	<img src="./readmeasset/friend_01.png" width="270px">
+	<img src="./readmeasset/friend_02.png" width="270px">
+	<img src="./readmeasset/friend_03.png" width="270px">
+</p>
+
 ### 피드 작성
+
+<p align="center">
+	<img src="./readmeasset/feedwrite_01.png" width="270px">
+	<img src="./readmeasset/feedwrite_02.png" width="270px">
+	<img src="./readmeasset/feedwrite_03.png" width="270px">
+	<img src="./readmeasset/feedwrite_04.png" width="270px">
+</p>
+
+### 피드 상세
+
+<p align="center">
+	<img src="./readmeasset/profile_04.png" width="270px">
+	<img src="./readmeasset/profile_05.png" width="270px">
+</p>
 
 ### 채팅
 
 ### 프로필
 
+<p align="center">
+	<img src="./readmeasset/profile_01.png" width="270px">
+	<img src="./readmeasset/profile_02.png" width="270px">
+	<img src="./readmeasset/profile_03.png" width="270px">
+</p>
+
 ## 5️⃣ 팀원 소개
 
-|   이름   |     [정현석](https://github.com/HyunseokCheong)         |     [이진욱](https://github.com/ssafyer)     |     [송기라](https://github.com/Songkira)     |     [유덕균](https://github.com/dokkyunYU)     |     [류원창](https://github.com/ryuwc)     |     [김태훈](https://github.com/IT-magician)     |
-| :------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
-|  포지션  |                 Team Leader<br/>Front-end<br/>                |         Front-end         |            Front-end           | Back-end | Back-end| Infra |
-| 담당<br/>기능 | Android <br/> 지도 | Android <br/> 친구 <br/> 채팅 | Android <br/> 피드 <br/> 프로필 |  Spring <br/> 소켓 서버    |     Spring <br/> API 서버    |     Kubernetes <br/> CI/CD     |
+|     이름      | [정현석](https://github.com/HyunseokCheong) | [이진욱](https://github.com/ssafyer) | [송기라](https://github.com/Songkira) | [유덕균](https://github.com/dokkyunYU) | [류원창](https://github.com/ryuwc) | [김태훈](https://github.com/IT-magician) |
+| :-----------: | :-----------------------------------------: | :----------------------------------: | :-----------------------------------: | :------------------------------------: | :--------------------------------: | :--------------------------------------: |
+|    포지션     |       Team Leader<br/>Front-end<br/>        |              Front-end               |               Front-end               |                Back-end                |              Back-end              |                  Infra                   |
+| 담당<br/>기능 |             Android <br/> 지도              |    Android <br/> 친구 <br/> 채팅     |    Android <br/> 피드 <br/> 프로필    |         Spring <br/> 소켓 서버         |       Spring <br/> API 서버        |          Kubernetes <br/> CI/CD          |
 
 <p align="center">
 	<img src="./readmeasset/team.jpg" width="800px">
