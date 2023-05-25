@@ -54,7 +54,8 @@
 
 #### 인프라
 
-- Docker
+- Docker Engine & Docker Compose & NGINX
+- Docker Container
 - Kubernetes
 - Argo CD
 - Gitlab Runner
